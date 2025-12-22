@@ -1,0 +1,1901 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createRoot } from 'react-dom/client';
+
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+
+const WIDGET_CONFIG = {
+  // Display
+  mode: 'dark' as 'light' | 'dark',
+  position: 'right' as 'left' | 'right',
+  
+  // Colors
+  primaryColor: '#3B82F6',
+  
+  // Branding  
+  botName: 'AI Asistent',
+  botAvatar: '',
+  
+  // Texts
+  homeTitle: 'Pozdravljeni 👋',
+  homeSubtitle: 'Kako vam lahko pomagamo?',
+  welcomeMessage: '👋 Pozdravljeni! Kako vam lahko pomagam?',
+  messagePlaceholder: 'Vnesite sporočilo...',
+  
+  // Fields
+  showNameField: true,
+  showEmailField: true,
+  
+  // Webhooks  
+  webhookUrl: 'https://hub.botmotion.ai/webhook/051e33f1-1f96-4722-af95-a28f2f3afd01/chat',
+  leadWebhookUrl: 'https://hub.botmotion.ai/webhook/lead',
+  supportWebhookUrl: 'https://hub.botmotion.ai/webhook/support',
+  healthCheckUrl: 'https://hub.botmotion.ai/webhook/health-check',
+  
+  // Booking
+  bookingEnabled: true,
+  bookingUrl: 'https://cal.com/gasper-perko-i5tznd/15min',
+  
+  // Footer
+  showFooter: true,
+  poweredByName: 'BotMotion',
+  poweredByUrl: 'https://botmotion.ai',
+  
+  // Identification
+  tableName: 'x001_botmotion',
+  
+  // Typing messages
+  typingMessages: [
+    'Preverjam podatke...',
+    'Analiziram vprašanje...',
+    'Iščem najboljši odgovor...'
+  ]
+};
+
+// ============================================================================
+// STYLES
+// ============================================================================
+
+const WIDGET_STYLES = `
+  .bm-widget-container * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .bm-widget-container {
+    --bm-primary: ${WIDGET_CONFIG.primaryColor};
+    --bm-primary-hover: ${adjustColor(WIDGET_CONFIG.primaryColor, -10)};
+    --bm-bg: ${WIDGET_CONFIG.mode === 'dark' ? '#0f0f0f' : '#ffffff'};
+    --bm-bg-secondary: ${WIDGET_CONFIG.mode === 'dark' ? '#1a1a1a' : '#f5f5f5'};
+    --bm-text: ${WIDGET_CONFIG.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
+    --bm-text-muted: ${WIDGET_CONFIG.mode === 'dark' ? '#888888' : '#666666'};
+    --bm-border: ${WIDGET_CONFIG.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
+    --bm-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    position: fixed;
+    bottom: 24px;
+    ${WIDGET_CONFIG.position}: 24px;
+    z-index: 999999;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Trigger Button */
+  .bm-trigger {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--bm-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .bm-trigger:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(59, 130, 246, 0.5);
+  }
+
+  .bm-trigger svg {
+    width: 28px;
+    height: 28px;
+    color: white;
+    transition: transform 0.2s ease;
+  }
+
+  .bm-trigger.open svg {
+    transform: rotate(90deg);
+  }
+
+  /* Welcome Bubble */
+  .bm-welcome-bubble {
+    position: absolute;
+    bottom: 72px;
+    ${WIDGET_CONFIG.position}: 0;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    box-shadow: var(--bm-shadow);
+    max-width: 280px;
+    cursor: pointer;
+    animation: bm-slide-up 0.3s ease;
+  }
+
+  .bm-welcome-bubble p {
+    color: var(--bm-text);
+    font-size: 14px;
+    margin: 0;
+    padding-right: 20px;
+  }
+
+  .bm-welcome-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+  }
+
+  .bm-welcome-close:hover {
+    background: var(--bm-bg-secondary);
+  }
+
+  .bm-welcome-close svg {
+    width: 14px;
+    height: 14px;
+    color: var(--bm-text-muted);
+  }
+
+  /* Main Widget */
+  .bm-widget {
+    position: absolute;
+    bottom: 72px;
+    ${WIDGET_CONFIG.position}: 0;
+    width: 400px;
+    height: 650px;
+    background: var(--bm-bg);
+    border-radius: 16px;
+    box-shadow: var(--bm-shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: bm-slide-up 0.25s ease;
+    border: 1px solid var(--bm-border);
+  }
+
+  @keyframes bm-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Header */
+  .bm-header {
+    background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, -20)});
+    padding: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .bm-header-chat {
+    background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, -20)});
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .bm-back-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+
+  .bm-back-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .bm-back-btn svg {
+    width: 18px;
+    height: 18px;
+    color: white;
+  }
+
+  .bm-header-info {
+    flex: 1;
+    text-align: left;
+  }
+
+  .bm-header-info h3 {
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .bm-header-info span {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+  }
+
+  .bm-close-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+
+  .bm-close-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  .bm-close-btn svg {
+    width: 18px;
+    height: 18px;
+    color: white;
+  }
+
+  /* Avatar */
+  .bm-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: white;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  .bm-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bm-avatar svg {
+    width: 32px;
+    height: 32px;
+    color: var(--bm-primary);
+  }
+
+  .bm-avatar-small {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 50%;
+    background: var(--bm-bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .bm-avatar-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .bm-avatar-small svg {
+    width: 14px;
+    height: 14px;
+    color: var(--bm-primary);
+  }
+
+  .bm-header h2 {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+
+  .bm-header p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* Content */
+  .bm-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .bm-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .bm-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .bm-content::-webkit-scrollbar-thumb {
+    background: var(--bm-border);
+    border-radius: 3px;
+  }
+
+  /* Form */
+  .bm-form-group {
+    margin-bottom: 16px;
+  }
+
+  .bm-form-group label {
+    display: block;
+    color: var(--bm-text);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .bm-form-group label span {
+    color: var(--bm-text-muted);
+    font-weight: 400;
+  }
+
+  .bm-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    color: var(--bm-text);
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .bm-input:focus {
+    outline: none;
+    border-color: var(--bm-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .bm-input::placeholder {
+    color: var(--bm-text-muted);
+  }
+
+  .bm-textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .bm-submit-btn {
+    width: 100%;
+    height: 48px;
+    background: var(--bm-primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    margin-top: 8px;
+  }
+
+  .bm-submit-btn:hover {
+    background: var(--bm-primary-hover);
+  }
+
+  .bm-submit-btn:active {
+    transform: scale(0.98);
+  }
+
+  .bm-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Messages */
+  .bm-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .bm-message {
+    display: flex;
+    gap: 10px;
+    animation: bm-fade-in 0.2s ease;
+  }
+
+  @keyframes bm-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .bm-message.user {
+    flex-direction: row-reverse;
+  }
+
+  .bm-message-content {
+    max-width: 80%;
+  }
+
+  .bm-message.user .bm-message-content {
+    text-align: right;
+  }
+
+  .bm-bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+
+  .bm-message.bot .bm-bubble {
+    background: var(--bm-bg-secondary);
+    color: var(--bm-text);
+    border-bottom-left-radius: 6px;
+  }
+
+  .bm-message.user .bm-bubble {
+    background: var(--bm-primary);
+    color: white;
+    border-bottom-right-radius: 6px;
+  }
+
+  .bm-timestamp {
+    font-size: 11px;
+    color: var(--bm-text-muted);
+    margin-top: 4px;
+  }
+
+  .bm-message.user .bm-timestamp {
+    text-align: right;
+  }
+
+  /* Typing Indicator */
+  .bm-typing {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: bm-fade-in 0.2s ease;
+  }
+
+  .bm-typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 14px 16px;
+    background: var(--bm-bg-secondary);
+    border-radius: 18px;
+    border-bottom-left-radius: 6px;
+  }
+
+  .bm-typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--bm-text-muted);
+    border-radius: 50%;
+    animation: bm-bounce 1.4s ease-in-out infinite;
+  }
+
+  .bm-typing-dot:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .bm-typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .bm-typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes bm-bounce {
+    0%, 60%, 100% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-6px);
+    }
+  }
+
+  .bm-typing-status {
+    font-size: 12px;
+    color: var(--bm-text-muted);
+    font-style: italic;
+  }
+
+  /* Input Area */
+  .bm-input-area {
+    padding: 16px 20px;
+    border-top: 1px solid var(--bm-border);
+    display: flex;
+    gap: 10px;
+    background: var(--bm-bg);
+    flex-shrink: 0;
+  }
+
+  .bm-chat-input {
+    flex: 1;
+    padding: 12px 18px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 24px;
+    color: var(--bm-text);
+    font-size: 14px;
+    transition: border-color 0.2s ease;
+  }
+
+  .bm-chat-input:focus {
+    outline: none;
+    border-color: var(--bm-primary);
+  }
+
+  .bm-chat-input::placeholder {
+    color: var(--bm-text-muted);
+  }
+
+  .bm-send-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: var(--bm-primary);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .bm-send-btn:hover {
+    background: var(--bm-primary-hover);
+  }
+
+  .bm-send-btn:active {
+    transform: scale(0.95);
+  }
+
+  .bm-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .bm-send-btn svg {
+    width: 20px;
+    height: 20px;
+    color: white;
+  }
+
+  /* Navigation */
+  .bm-nav {
+    display: flex;
+    border-top: 1px solid var(--bm-border);
+    background: var(--bm-bg);
+    flex-shrink: 0;
+  }
+
+  .bm-nav-item {
+    flex: 1;
+    padding: 14px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.2s ease;
+  }
+
+  .bm-nav-item:hover {
+    background: var(--bm-bg-secondary);
+  }
+
+  .bm-nav-item.active {
+    color: var(--bm-primary);
+  }
+
+  .bm-nav-item svg {
+    width: 20px;
+    height: 20px;
+    color: var(--bm-text-muted);
+  }
+
+  .bm-nav-item.active svg {
+    color: var(--bm-primary);
+  }
+
+  .bm-nav-item span {
+    font-size: 11px;
+    color: var(--bm-text-muted);
+  }
+
+  .bm-nav-item.active span {
+    color: var(--bm-primary);
+    font-weight: 500;
+  }
+
+  /* Footer */
+  .bm-footer {
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid var(--bm-border);
+    flex-shrink: 0;
+  }
+
+  .bm-footer a {
+    color: var(--bm-text-muted);
+    font-size: 11px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .bm-footer a:hover {
+    color: var(--bm-primary);
+  }
+
+  /* History */
+  .bm-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bm-history-item {
+    padding: 14px 16px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+
+  .bm-history-item:hover {
+    border-color: var(--bm-primary);
+  }
+
+  .bm-history-item h4 {
+    color: var(--bm-text);
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bm-history-item p {
+    color: var(--bm-text-muted);
+    font-size: 12px;
+    margin: 0;
+  }
+
+  .bm-new-chat-btn {
+    margin-top: 16px;
+  }
+
+  /* Action Buttons */
+  .bm-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: var(--bm-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s ease;
+  }
+
+  .bm-action-btn:hover {
+    background: var(--bm-primary-hover);
+  }
+
+  .bm-action-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Newsletter Form */
+  .bm-newsletter {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .bm-newsletter input {
+    flex: 1;
+    padding: 10px 14px;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 8px;
+    color: var(--bm-text);
+    font-size: 13px;
+  }
+
+  .bm-newsletter input:focus {
+    outline: none;
+    border-color: var(--bm-primary);
+  }
+
+  .bm-newsletter button {
+    padding: 10px 16px;
+    background: var(--bm-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .bm-newsletter button:hover {
+    background: var(--bm-primary-hover);
+  }
+
+  /* Product Cards */
+  .bm-products {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-top: 10px;
+  }
+
+  .bm-products::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .bm-products::-webkit-scrollbar-thumb {
+    background: var(--bm-border);
+    border-radius: 2px;
+  }
+
+  .bm-product-card {
+    flex-shrink: 0;
+    width: 140px;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .bm-product-card:hover {
+    border-color: var(--bm-primary);
+    transform: translateY(-2px);
+  }
+
+  .bm-product-card img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+  }
+
+  .bm-product-card h5 {
+    padding: 10px;
+    color: var(--bm-text);
+    font-size: 12px;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  /* Modal */
+  .bm-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999999;
+    animation: bm-fade-in 0.2s ease;
+  }
+
+  .bm-modal {
+    width: 90%;
+    max-width: 480px;
+    max-height: 90vh;
+    background: var(--bm-bg);
+    border-radius: 16px;
+    box-shadow: var(--bm-shadow);
+    overflow: hidden;
+    animation: bm-slide-up 0.25s ease;
+  }
+
+  .bm-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--bm-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .bm-modal-header h3 {
+    color: var(--bm-text);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .bm-modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--bm-bg-secondary);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+  }
+
+  .bm-modal-close:hover {
+    background: var(--bm-border);
+  }
+
+  .bm-modal-close svg {
+    width: 16px;
+    height: 16px;
+    color: var(--bm-text-muted);
+  }
+
+  .bm-modal-content {
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .bm-modal-content iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    border-radius: 8px;
+  }
+
+  /* Empty State */
+  .bm-empty {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .bm-empty svg {
+    width: 48px;
+    height: 48px;
+    color: var(--bm-text-muted);
+    margin-bottom: 16px;
+  }
+
+  .bm-empty h4 {
+    color: var(--bm-text);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 8px;
+  }
+
+  .bm-empty p {
+    color: var(--bm-text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .bm-widget {
+      width: calc(100vw - 32px);
+      height: calc(100vh - 100px);
+      bottom: 80px;
+      ${WIDGET_CONFIG.position}: 16px;
+    }
+
+    .bm-welcome-bubble {
+      ${WIDGET_CONFIG.position}: 0;
+      max-width: calc(100vw - 100px);
+    }
+  }
+`;
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+function adjustColor(hex: string, percent: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.max(Math.min((num >> 16) + amt, 255), 0);
+  const G = Math.max(Math.min((num >> 8 & 0x00FF) + amt, 255), 0);
+  const B = Math.max(Math.min((num & 0x0000FF) + amt, 255), 0);
+  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+function formatTime(date: Date): string {
+  return date.toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' });
+}
+
+function generateSessionId(): string {
+  return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+interface Message {
+  id: string;
+  role: 'user' | 'bot';
+  content: string;
+  timestamp: Date;
+}
+
+interface Session {
+  id: string;
+  messages: Message[];
+  createdAt: Date;
+  preview: string;
+}
+
+type View = 'home' | 'chat' | 'history';
+type ModalType = 'contact' | 'booking' | null;
+
+// ============================================================================
+// ICONS
+// ============================================================================
+
+const Icons = {
+  Chat: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
+  Close: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  ),
+  Send: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  ),
+  Back: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  ),
+  Home: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  ),
+  History: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+  Bot: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <circle cx="12" cy="5" r="2" />
+      <path d="M12 7v4" />
+      <line x1="8" y1="16" x2="8" y2="16" />
+      <line x1="16" y1="16" x2="16" y2="16" />
+    </svg>
+  ),
+  Calendar: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  ),
+  Mail: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  ),
+  MessageSquare: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
+};
+
+// ============================================================================
+// COMPONENTS
+// ============================================================================
+
+const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
+  const className = small ? 'bm-avatar-small' : 'bm-avatar';
+  
+  if (WIDGET_CONFIG.botAvatar) {
+    return (
+      <div className={className}>
+        <img src={WIDGET_CONFIG.botAvatar} alt={WIDGET_CONFIG.botName} />
+      </div>
+    );
+  }
+  
+  return (
+    <div className={className}>
+      <Icons.Bot />
+    </div>
+  );
+};
+
+const ContactModal: React.FC<{
+  onClose: () => void;
+  chatHistory: Message[];
+}> = ({ onClose, chatHistory }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await fetch(WIDGET_CONFIG.supportWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          chatHistory: chatHistory.map(m => ({
+            role: m.role,
+            content: m.content,
+            timestamp: m.timestamp
+          })),
+          tableName: WIDGET_CONFIG.tableName
+        })
+      });
+      setSuccess(true);
+      setTimeout(onClose, 2000);
+    } catch (error) {
+      console.error('Contact form error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bm-modal-overlay" onClick={onClose}>
+      <div className="bm-modal" onClick={e => e.stopPropagation()}>
+        <div className="bm-modal-header">
+          <h3>Kontaktiraj nas</h3>
+          <button className="bm-modal-close" onClick={onClose}>
+            <Icons.Close />
+          </button>
+        </div>
+        <div className="bm-modal-content">
+          {success ? (
+            <div className="bm-empty">
+              <Icons.Mail />
+              <h4>Sporočilo poslano!</h4>
+              <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="bm-form-group">
+                <label>Ime</label>
+                <input
+                  type="text"
+                  className="bm-input"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="bm-form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  className="bm-input"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="bm-form-group">
+                <label>Sporočilo</label>
+                <textarea
+                  className="bm-input bm-textarea"
+                  value={message}
+                  onChange={e => setMessage(e.target.value)}
+                  required
+                />
+              </div>
+              <button type="submit" className="bm-submit-btn" disabled={loading}>
+                {loading ? 'Pošiljam...' : 'Pošlji sporočilo'}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const BookingModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  return (
+    <div className="bm-modal-overlay" onClick={onClose}>
+      <div className="bm-modal" onClick={e => e.stopPropagation()}>
+        <div className="bm-modal-header">
+          <h3>Rezerviraj termin</h3>
+          <button className="bm-modal-close" onClick={onClose}>
+            <Icons.Close />
+          </button>
+        </div>
+        <div className="bm-modal-content">
+          <iframe src={WIDGET_CONFIG.bookingUrl} title="Booking" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const MessageContent: React.FC<{
+  content: string;
+  onContactClick: () => void;
+  onBookingClick: () => void;
+}> = ({ content, onContactClick, onBookingClick }) => {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+
+  const handleNewsletterSubmit = async () => {
+    try {
+      await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newsletterEmail,
+          type: 'newsletter',
+          tableName: WIDGET_CONFIG.tableName
+        })
+      });
+      setNewsletterSubmitted(true);
+    } catch (error) {
+      console.error('Newsletter error:', error);
+    }
+  };
+
+  // Parse special markers
+  const parts: React.ReactNode[] = [];
+  let remaining = content;
+  let key = 0;
+
+  // Contact form
+  if (remaining.includes('[CONTACT_FORM]')) {
+    const [before, after] = remaining.split('[CONTACT_FORM]');
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    parts.push(
+      <button key={key++} className="bm-action-btn" onClick={onContactClick}>
+        <Icons.Mail />
+        Kontaktiraj nas
+      </button>
+    );
+    remaining = after || '';
+  }
+
+  // Booking
+  if (remaining.includes('[BOOKING]') && WIDGET_CONFIG.bookingEnabled) {
+    const [before, after] = remaining.split('[BOOKING]');
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    parts.push(
+      <button key={key++} className="bm-action-btn" onClick={onBookingClick}>
+        <Icons.Calendar />
+        Rezerviraj termin
+      </button>
+    );
+    remaining = after || '';
+  }
+
+  // Newsletter
+  if (remaining.includes('[NEWSLETTER]')) {
+    const [before, after] = remaining.split('[NEWSLETTER]');
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    parts.push(
+      <div key={key++} className="bm-newsletter">
+        {newsletterSubmitted ? (
+          <span style={{ color: 'var(--bm-primary)' }}>Hvala za prijavo!</span>
+        ) : (
+          <>
+            <input
+              type="email"
+              placeholder="Vaš email"
+              value={newsletterEmail}
+              onChange={e => setNewsletterEmail(e.target.value)}
+            />
+            <button onClick={handleNewsletterSubmit}>Prijava</button>
+          </>
+        )}
+      </div>
+    );
+    remaining = after || '';
+  }
+
+  // Product cards
+  const productMatch = remaining.match(/\[PRODUCT_CARDS\](.*?)\[\/PRODUCT_CARDS\]/s);
+  if (productMatch) {
+    const [before] = remaining.split('[PRODUCT_CARDS]');
+    const afterProducts = remaining.split('[/PRODUCT_CARDS]')[1] || '';
+    
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    
+    try {
+      const products = JSON.parse(productMatch[1]);
+      parts.push(
+        <div key={key++} className="bm-products">
+          {products.map((product: any, i: number) => (
+            <a
+              key={i}
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bm-product-card"
+            >
+              {product.image && <img src={product.image} alt={product.ime} />}
+              <h5>{product.ime}</h5>
+            </a>
+          ))}
+        </div>
+      );
+    } catch (e) {
+      console.error('Product cards parse error:', e);
+    }
+    
+    remaining = afterProducts;
+  }
+
+  if (remaining) {
+    parts.push(<span key={key++}>{remaining}</span>);
+  }
+
+  return <>{parts.length > 0 ? parts : content}</>;
+};
+
+// ============================================================================
+// MAIN WIDGET
+// ============================================================================
+
+const ChatWidget: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
+  const [view, setView] = useState<View>('home');
+  const [modal, setModal] = useState<ModalType>(null);
+  
+  // Form state
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [initialMessage, setInitialMessage] = useState('');
+  
+  // Chat state
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingMessage, setTypingMessage] = useState('');
+  
+  // Session state
+  const [currentSessionId, setCurrentSessionId] = useState<string>('');
+  const [sessions, setSessions] = useState<Session[]>([]);
+  
+  // Health check
+  const [isHealthy, setIsHealthy] = useState(true);
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingMessageIndex = useRef(0);
+
+  // Health check on mount
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const response = await fetch(WIDGET_CONFIG.healthCheckUrl, { method: 'GET' });
+        setIsHealthy(response.ok);
+      } catch {
+        setIsHealthy(false);
+      }
+    };
+    checkHealth();
+  }, []);
+
+  // Load sessions from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(`bm_sessions_${WIDGET_CONFIG.tableName}`);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setSessions(parsed.map((s: any) => ({
+          ...s,
+          createdAt: new Date(s.createdAt),
+          messages: s.messages.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp)
+          }))
+        })));
+      } catch (e) {
+        console.error('Failed to parse sessions:', e);
+      }
+    }
+  }, []);
+
+  // Save sessions to localStorage
+  useEffect(() => {
+    if (sessions.length > 0) {
+      localStorage.setItem(
+        `bm_sessions_${WIDGET_CONFIG.tableName}`,
+        JSON.stringify(sessions)
+      );
+    }
+  }, [sessions]);
+
+  // Show welcome bubble after delay
+  useEffect(() => {
+    if (!isOpen && !welcomeDismissed && isHealthy) {
+      const timer = setTimeout(() => setShowWelcome(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, welcomeDismissed, isHealthy]);
+
+  // Scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
+
+  // Rotate typing messages
+  useEffect(() => {
+    if (isTyping) {
+      const interval = setInterval(() => {
+        typingMessageIndex.current = (typingMessageIndex.current + 1) % WIDGET_CONFIG.typingMessages.length;
+        setTypingMessage(WIDGET_CONFIG.typingMessages[typingMessageIndex.current]);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isTyping]);
+
+  const startNewSession = useCallback(() => {
+    const sessionId = generateSessionId();
+    setCurrentSessionId(sessionId);
+    setMessages([]);
+    setView('home');
+    setUserName('');
+    setUserEmail('');
+    setInitialMessage('');
+  }, []);
+
+  const loadSession = useCallback((session: Session) => {
+    setCurrentSessionId(session.id);
+    setMessages(session.messages);
+    setView('chat');
+  }, []);
+
+  const saveCurrentSession = useCallback(() => {
+    if (messages.length === 0 || !currentSessionId) return;
+    
+    const firstUserMessage = messages.find(m => m.role === 'user');
+    const preview = firstUserMessage?.content.slice(0, 50) || 'Nov pogovor';
+    
+    setSessions(prev => {
+      const existing = prev.findIndex(s => s.id === currentSessionId);
+      const session: Session = {
+        id: currentSessionId,
+        messages,
+        createdAt: existing >= 0 ? prev[existing].createdAt : new Date(),
+        preview
+      };
+      
+      if (existing >= 0) {
+        const updated = [...prev];
+        updated[existing] = session;
+        return updated;
+      }
+      return [session, ...prev];
+    });
+  }, [messages, currentSessionId]);
+
+  // Save session when messages change
+  useEffect(() => {
+    saveCurrentSession();
+  }, [messages, saveCurrentSession]);
+
+  const sendMessage = async (content: string) => {
+    if (!content.trim()) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: content.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsTyping(true);
+    setTypingMessage(WIDGET_CONFIG.typingMessages[0]);
+
+    try {
+      const response = await fetch(WIDGET_CONFIG.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: content,
+          sessionId: currentSessionId,
+          userName,
+          userEmail,
+          tableName: WIDGET_CONFIG.tableName,
+          history: messages.map(m => ({
+            role: m.role,
+            content: m.content
+          }))
+        })
+      });
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let botContent = '';
+
+      if (reader) {
+        const botMessageId = (Date.now() + 1).toString();
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n').filter(line => line.trim());
+
+          for (const line of lines) {
+            try {
+              const data = JSON.parse(line);
+              
+              if (data.type === 'item' && data.content) {
+                botContent += data.content;
+                setMessages(prev => {
+                  const existing = prev.find(m => m.id === botMessageId);
+                  if (existing) {
+                    return prev.map(m => 
+                      m.id === botMessageId 
+                        ? { ...m, content: botContent }
+                        : m
+                    );
+                  }
+                  return [...prev, {
+                    id: botMessageId,
+                    role: 'bot',
+                    content: botContent,
+                    timestamp: new Date()
+                  }];
+                });
+              } else if (data.type === 'end') {
+                break;
+              } else if (data.output) {
+                // Non-streaming response
+                botContent = data.output;
+                setMessages(prev => [...prev, {
+                  id: botMessageId,
+                  role: 'bot',
+                  content: botContent,
+                  timestamp: new Date()
+                }]);
+              }
+            } catch {
+              // Not JSON, might be raw text
+              if (line.trim()) {
+                botContent += line;
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Send message error:', error);
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'bot',
+        content: 'Oprostite, prišlo je do napake. Poskusite znova.',
+        timestamp: new Date()
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleStartConversation = async () => {
+    if (!initialMessage.trim()) return;
+    
+    // Send lead data
+    if (userName || userEmail) {
+      try {
+        await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: userName,
+            email: userEmail,
+            tableName: WIDGET_CONFIG.tableName
+          })
+        });
+      } catch (error) {
+        console.error('Lead webhook error:', error);
+      }
+    }
+
+    if (!currentSessionId) {
+      setCurrentSessionId(generateSessionId());
+    }
+    
+    setView('chat');
+    await sendMessage(initialMessage);
+    setInitialMessage('');
+  };
+
+  const handleOpen = () => {
+    setIsOpen(true);
+    setShowWelcome(false);
+    if (!currentSessionId) {
+      startNewSession();
+    }
+  };
+
+  if (!isHealthy) {
+    return null;
+  }
+
+  return (
+    <div className="bm-widget-container">
+      {/* Welcome Bubble */}
+      {showWelcome && !isOpen && (
+        <div className="bm-welcome-bubble" onClick={handleOpen}>
+          <p>{WIDGET_CONFIG.welcomeMessage}</p>
+          <button 
+            className="bm-welcome-close" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowWelcome(false);
+              setWelcomeDismissed(true);
+            }}
+          >
+            <Icons.Close />
+          </button>
+        </div>
+      )}
+
+      {/* Trigger Button */}
+      <button 
+        className={`bm-trigger ${isOpen ? 'open' : ''}`}
+        onClick={() => isOpen ? setIsOpen(false) : handleOpen()}
+      >
+        {isOpen ? <Icons.Close /> : <Icons.Chat />}
+      </button>
+
+      {/* Widget */}
+      {isOpen && (
+        <div className="bm-widget">
+          {view === 'home' && (
+            <>
+              <div className="bm-header">
+                <Avatar />
+                <h2>{WIDGET_CONFIG.homeTitle}</h2>
+                <p>{WIDGET_CONFIG.homeSubtitle}</p>
+              </div>
+              <div className="bm-content">
+                {WIDGET_CONFIG.showNameField && (
+                  <div className="bm-form-group">
+                    <label>Ime <span>(opcijsko)</span></label>
+                    <input
+                      type="text"
+                      className="bm-input"
+                      placeholder="Vaše ime"
+                      value={userName}
+                      onChange={e => setUserName(e.target.value)}
+                    />
+                  </div>
+                )}
+                {WIDGET_CONFIG.showEmailField && (
+                  <div className="bm-form-group">
+                    <label>Email <span>(opcijsko)</span></label>
+                    <input
+                      type="email"
+                      className="bm-input"
+                      placeholder="vas@email.com"
+                      value={userEmail}
+                      onChange={e => setUserEmail(e.target.value)}
+                    />
+                  </div>
+                )}
+                <div className="bm-form-group">
+                  <label>Sporočilo</label>
+                  <textarea
+                    className="bm-input bm-textarea"
+                    placeholder={WIDGET_CONFIG.messagePlaceholder}
+                    value={initialMessage}
+                    onChange={e => setInitialMessage(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleStartConversation();
+                      }
+                    }}
+                  />
+                </div>
+                <button 
+                  className="bm-submit-btn"
+                  onClick={handleStartConversation}
+                  disabled={!initialMessage.trim()}
+                >
+                  Začni pogovor
+                </button>
+              </div>
+              <div className="bm-nav">
+                <button className="bm-nav-item active">
+                  <Icons.Home />
+                  <span>Domov</span>
+                </button>
+                <button 
+                  className="bm-nav-item"
+                  onClick={() => setView('history')}
+                >
+                  <Icons.History />
+                  <span>Zgodovina</span>
+                </button>
+              </div>
+              {WIDGET_CONFIG.showFooter && (
+                <div className="bm-footer">
+                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
+                    Powered by {WIDGET_CONFIG.poweredByName}
+                  </a>
+                </div>
+              )}
+            </>
+          )}
+
+          {view === 'chat' && (
+            <>
+              <div className="bm-header-chat">
+                <button className="bm-back-btn" onClick={() => setView('home')}>
+                  <Icons.Back />
+                </button>
+                <Avatar small />
+                <div className="bm-header-info">
+                  <h3>{WIDGET_CONFIG.botName}</h3>
+                  <span>Običajno odgovorimo v nekaj minutah</span>
+                </div>
+                <button className="bm-close-btn" onClick={() => setIsOpen(false)}>
+                  <Icons.Close />
+                </button>
+              </div>
+              <div className="bm-content">
+                <div className="bm-messages">
+                  {messages.map(msg => (
+                    <div key={msg.id} className={`bm-message ${msg.role}`}>
+                      {msg.role === 'bot' && <Avatar small />}
+                      <div className="bm-message-content">
+                        <div className="bm-bubble">
+                          <MessageContent
+                            content={msg.content}
+                            onContactClick={() => setModal('contact')}
+                            onBookingClick={() => setModal('booking')}
+                          />
+                        </div>
+                        <div className="bm-timestamp">{formatTime(msg.timestamp)}</div>
+                      </div>
+                    </div>
+                  ))}
+                  {isTyping && (
+                    <div className="bm-typing">
+                      <Avatar small />
+                      <div>
+                        <div className="bm-typing-dots">
+                          <div className="bm-typing-dot" />
+                          <div className="bm-typing-dot" />
+                          <div className="bm-typing-dot" />
+                        </div>
+                        <div className="bm-typing-status">{typingMessage}</div>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={messagesEndRef} />
+                </div>
+              </div>
+              <div className="bm-input-area">
+                <input
+                  type="text"
+                  className="bm-chat-input"
+                  placeholder={WIDGET_CONFIG.messagePlaceholder}
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage(inputValue);
+                    }
+                  }}
+                  disabled={isTyping}
+                />
+                <button 
+                  className="bm-send-btn"
+                  onClick={() => sendMessage(inputValue)}
+                  disabled={!inputValue.trim() || isTyping}
+                >
+                  <Icons.Send />
+                </button>
+              </div>
+              {WIDGET_CONFIG.showFooter && (
+                <div className="bm-footer">
+                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
+                    Powered by {WIDGET_CONFIG.poweredByName}
+                  </a>
+                </div>
+              )}
+            </>
+          )}
+
+          {view === 'history' && (
+            <>
+              <div className="bm-header-chat">
+                <button className="bm-back-btn" onClick={() => setView('home')}>
+                  <Icons.Back />
+                </button>
+                <div className="bm-header-info">
+                  <h3>Zgodovina pogovorov</h3>
+                  <span>{sessions.length} pogovor(ov)</span>
+                </div>
+                <button className="bm-close-btn" onClick={() => setIsOpen(false)}>
+                  <Icons.Close />
+                </button>
+              </div>
+              <div className="bm-content">
+                {sessions.length === 0 ? (
+                  <div className="bm-empty">
+                    <Icons.MessageSquare />
+                    <h4>Ni preteklih pogovorov</h4>
+                    <p>Vaši pogovori bodo shranjeni tukaj.</p>
+                  </div>
+                ) : (
+                  <div className="bm-history-list">
+                    {sessions.map(session => (
+                      <div 
+                        key={session.id} 
+                        className="bm-history-item"
+                        onClick={() => loadSession(session)}
+                      >
+                        <h4>{session.preview}...</h4>
+                        <p>{session.messages.length} sporočil(a) · {formatTime(session.createdAt)}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button 
+                  className="bm-submit-btn bm-new-chat-btn"
+                  onClick={startNewSession}
+                >
+                  Nov pogovor
+                </button>
+              </div>
+              <div className="bm-nav">
+                <button 
+                  className="bm-nav-item"
+                  onClick={() => setView('home')}
+                >
+                  <Icons.Home />
+                  <span>Domov</span>
+                </button>
+                <button className="bm-nav-item active">
+                  <Icons.History />
+                  <span>Zgodovina</span>
+                </button>
+              </div>
+              {WIDGET_CONFIG.showFooter && (
+                <div className="bm-footer">
+                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
+                    Powered by {WIDGET_CONFIG.poweredByName}
+                  </a>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Modals */}
+      {modal === 'contact' && (
+        <ContactModal 
+          onClose={() => setModal(null)} 
+          chatHistory={messages}
+        />
+      )}
+      {modal === 'booking' && (
+        <BookingModal onClose={() => setModal(null)} />
+      )}
+    </div>
+  );
+};
+
+// ============================================================================
+// AUTO-INIT
+// ============================================================================
+
+function injectStyles() {
+  if (document.getElementById('bm-widget-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'bm-widget-styles';
+  style.textContent = WIDGET_STYLES;
+  document.head.appendChild(style);
+}
+
+function initWidget() {
+  injectStyles();
+  
+  let container = document.getElementById('bm-chat-widget');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'bm-chat-widget';
+    document.body.appendChild(container);
+  }
+  
+  const root = createRoot(container);
+  root.render(<ChatWidget />);
+}
+
+// Auto-init when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initWidget);
+} else {
+  initWidget();
+}
+
+export default ChatWidget;
+export { WIDGET_CONFIG, initWidget };
