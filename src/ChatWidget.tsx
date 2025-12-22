@@ -49,19 +49,8 @@ const WIDGET_CONFIG = {
   typingMessages: [
     'Preverjam podatke...',
     'Analiziram vprašanje...',
-    'Iščem najboljši odgovor...',
-    'Skoraj pripravljen...',
-    'Še trenutek...'
-  ],
-  
-  // Suggestion buttons (shown when widget is closed)
-  suggestionButtons: [
-    'Kako deluje vaša storitev?',
-    'Koliko stane?'
-  ],
-  
-  // Timeout
-  timeoutMs: 120000 // 2 minutes
+    'Iščem najboljši odgovor...'
+  ]
 };
 
 // ============================================================================
@@ -125,106 +114,51 @@ const WIDGET_STYLES = `
     transform: rotate(90deg);
   }
 
-  /* Suggestion Buttons */
-  .bm-suggestions {
-    position: absolute;
-    bottom: 72px;
-    ${WIDGET_CONFIG.position}: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    animation: bm-fade-in 0.5s ease;
-  }
-
-  .bm-suggestion-btn {
-    background: var(--bm-bg);
-    border: 1px solid var(--bm-border);
-    padding: 16px 20px;
-    border-radius: 16px;
-    box-shadow: var(--bm-shadow);
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--bm-text);
-    max-width: 300px;
-    text-align: left;
-    transition: all 0.2s;
-  }
-
-  .bm-suggestion-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-    border-color: var(--bm-primary);
-  }
-
   /* Welcome Bubble */
   .bm-welcome-bubble {
     position: absolute;
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
-    background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, 20)});
-    border-radius: 20px 20px 4px 20px;
-    padding: 16px 24px;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 16px;
+    padding: 16px 20px;
     box-shadow: var(--bm-shadow);
     max-width: 280px;
     cursor: pointer;
-    animation: bm-bounce-in 0.6s ease;
-  }
-
-  @keyframes bm-bounce-in {
-    0% {
-      opacity: 0;
-      transform: translateY(20px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-5px) scale(1.05);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  .bm-welcome-bubble:hover {
-    transform: translateY(-3px) scale(1.02);
+    animation: bm-slide-up 0.3s ease;
   }
 
   .bm-welcome-bubble p {
-    color: white;
-    font-size: 15px;
-    font-weight: 500;
+    color: var(--bm-text);
+    font-size: 14px;
     margin: 0;
     padding-right: 20px;
   }
 
   .bm-welcome-close {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    top: 8px;
+    right: 8px;
     width: 24px;
     height: 24px;
-    border: 2px solid var(--bm-border);
-    background: var(--bm-bg);
+    border: none;
+    background: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.2s ease;
-    opacity: 0;
-  }
-
-  .bm-welcome-bubble:hover .bm-welcome-close {
-    opacity: 1;
+    transition: background 0.2s ease;
   }
 
   .bm-welcome-close:hover {
     background: var(--bm-bg-secondary);
-    transform: scale(1.1);
   }
 
   .bm-welcome-close svg {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     color: var(--bm-text-muted);
   }
 
@@ -249,17 +183,6 @@ const WIDGET_STYLES = `
     from {
       opacity: 0;
       transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes bm-fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -514,6 +437,17 @@ const WIDGET_STYLES = `
     animation: bm-fade-in 0.2s ease;
   }
 
+  @keyframes bm-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .bm-message.user {
     flex-direction: row-reverse;
   }
@@ -556,62 +490,12 @@ const WIDGET_STYLES = `
     text-align: right;
   }
 
-  /* Markdown Styling */
-  .bm-bubble strong {
-    font-weight: 600;
-  }
-
-  .bm-bubble em {
-    font-style: italic;
-  }
-
-  .bm-bubble ul, .bm-bubble ol {
-    margin: 8px 0;
-    padding-left: 20px;
-  }
-
-  .bm-bubble li {
-    margin: 4px 0;
-  }
-
-  .bm-bubble a {
-    color: var(--bm-primary);
-    text-decoration: underline;
-  }
-
-  .bm-bubble a:hover {
-    opacity: 0.8;
-  }
-
-  /* System Message */
-  .bm-message-system {
-    display: flex;
-    justify-content: center;
-    margin: 16px 0;
-  }
-
-  .bm-message-system-bubble {
-    background: rgba(239, 68, 68, 0.1);
-    color: rgb(239, 68, 68);
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    max-width: 80%;
-    text-align: center;
-  }
-
   /* Typing Indicator */
   .bm-typing {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
     animation: bm-fade-in 0.2s ease;
-  }
-
-  .bm-typing-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
   }
 
   .bm-typing-dots {
@@ -656,7 +540,6 @@ const WIDGET_STYLES = `
     font-size: 12px;
     color: var(--bm-text-muted);
     font-style: italic;
-    animation: bm-fade-in 0.3s ease;
   }
 
   /* Input Area */
@@ -803,35 +686,10 @@ const WIDGET_STYLES = `
     border-radius: 12px;
     cursor: pointer;
     transition: border-color 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 12px;
   }
 
   .bm-history-item:hover {
     border-color: var(--bm-primary);
-  }
-
-  .bm-history-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .bm-history-icon svg {
-    width: 20px;
-    height: 20px;
-    color: var(--bm-primary);
-  }
-
-  .bm-history-content {
-    flex: 1;
-    min-width: 0;
   }
 
   .bm-history-item h4 {
@@ -859,23 +717,20 @@ const WIDGET_STYLES = `
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, 15)});
+    padding: 10px 18px;
+    background: var(--bm-primary);
     color: white;
     border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: 12px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+    margin-top: 10px;
+    transition: background 0.2s ease;
   }
 
   .bm-action-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    background: var(--bm-primary-hover);
   }
 
   .bm-action-btn svg {
@@ -883,27 +738,11 @@ const WIDGET_STYLES = `
     height: 16px;
   }
 
-  .bm-action-btn.booking {
-    background: linear-gradient(135deg, hsl(142, 71%, 45%), hsl(142, 71%, 55%));
-    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
-  }
-
-  .bm-action-btn.booking:hover {
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-  }
-
   /* Newsletter Form */
   .bm-newsletter {
-    margin-top: 12px;
-    padding: 16px;
-    background: var(--bm-bg-secondary);
-    border-radius: 12px;
-    border: 1px solid var(--bm-border);
-  }
-
-  .bm-newsletter-inner {
     display: flex;
     gap: 8px;
+    margin-top: 10px;
   }
 
   .bm-newsletter input {
@@ -913,7 +752,7 @@ const WIDGET_STYLES = `
     border: 1px solid var(--bm-border);
     border-radius: 8px;
     color: var(--bm-text);
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .bm-newsletter input:focus {
@@ -922,172 +761,67 @@ const WIDGET_STYLES = `
   }
 
   .bm-newsletter button {
-    padding: 10px 18px;
+    padding: 10px 16px;
     background: var(--bm-primary);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-
-  .bm-newsletter button:hover:not(:disabled) {
-    opacity: 0.9;
-  }
-
-  .bm-newsletter button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .bm-newsletter-dismiss {
-    display: block;
-    margin-top: 10px;
-    background: none;
-    border: none;
-    color: var(--bm-text-muted);
     font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    padding: 0;
+    transition: background 0.2s ease;
   }
 
-  .bm-newsletter-dismiss:hover {
-    color: var(--bm-text);
-  }
-
-  .bm-newsletter-success {
-    background: rgba(34, 197, 94, 0.1);
-    border-color: rgba(34, 197, 94, 0.3);
-    color: hsl(142, 50%, 40%);
-    font-size: 14px;
-    padding: 16px;
-    text-align: center;
+  .bm-newsletter button:hover {
+    background: var(--bm-primary-hover);
   }
 
   /* Product Cards */
   .bm-products {
-    margin-top: 12px;
-    position: relative;
-    width: 100%;
-    overflow: hidden;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-top: 10px;
   }
 
-  .bm-products-carousel {
-    display: flex;
-    transition: transform 0.3s ease;
+  .bm-products::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .bm-products::-webkit-scrollbar-thumb {
+    background: var(--bm-border);
+    border-radius: 2px;
   }
 
   .bm-product-card {
     flex-shrink: 0;
-    width: 100%;
-    padding: 0 4px;
-  }
-
-  .bm-product-card-inner {
+    width: 140px;
     background: var(--bm-bg);
     border: 1px solid var(--bm-border);
     border-radius: 12px;
     overflow: hidden;
-    transition: all 0.2s;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
   }
 
-  .bm-product-card-inner:hover {
+  .bm-product-card:hover {
     border-color: var(--bm-primary);
     transform: translateY(-2px);
   }
 
   .bm-product-card img {
     width: 100%;
-    height: 140px;
+    height: 100px;
     object-fit: cover;
   }
 
-  .bm-product-card-body {
-    padding: 12px;
-  }
-
   .bm-product-card h5 {
+    padding: 10px;
     color: var(--bm-text);
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0 0 4px;
-  }
-
-  .bm-product-card p {
-    color: var(--bm-text-muted);
     font-size: 12px;
-    margin: 0 0 8px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .bm-product-card a {
-    color: var(--bm-primary);
-    font-size: 13px;
     font-weight: 500;
-    text-decoration: none;
-  }
-
-  .bm-product-card a:hover {
-    text-decoration: underline;
-  }
-
-  .bm-products-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 12px;
-  }
-
-  .bm-products-nav-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--bm-bg-secondary);
-    border: 1px solid var(--bm-border);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .bm-products-nav-btn:hover:not(:disabled) {
-    border-color: var(--bm-primary);
-    background: var(--bm-bg);
-  }
-
-  .bm-products-nav-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .bm-products-nav-btn svg {
-    width: 16px;
-    height: 16px;
-    color: var(--bm-text-muted);
-  }
-
-  .bm-products-dots {
-    display: flex;
-    gap: 6px;
-  }
-
-  .bm-products-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--bm-border);
-    transition: background 0.2s;
-  }
-
-  .bm-products-dot.active {
-    background: var(--bm-primary);
+    margin: 0;
   }
 
   /* Modal */
@@ -1114,36 +848,25 @@ const WIDGET_STYLES = `
   }
 
   .bm-modal-header {
-    background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, -10)});
     padding: 20px 24px;
+    border-bottom: 1px solid var(--bm-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: relative;
   }
 
-  .bm-modal-header.booking {
-    background: linear-gradient(135deg, hsl(142, 71%, 45%), hsl(142, 71%, 55%));
-  }
-
-  .bm-modal-header-content h3 {
-    color: white;
+  .bm-modal-header h3 {
+    color: var(--bm-text);
     font-size: 18px;
     font-weight: 600;
-    margin: 0 0 2px;
-  }
-
-  .bm-modal-header-content p {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 13px;
     margin: 0;
   }
 
   .bm-modal-close {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     border: none;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bm-bg-secondary);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -1153,112 +876,25 @@ const WIDGET_STYLES = `
   }
 
   .bm-modal-close:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--bm-border);
   }
 
   .bm-modal-close svg {
-    width: 18px;
-    height: 18px;
-    color: white;
+    width: 16px;
+    height: 16px;
+    color: var(--bm-text-muted);
   }
 
   .bm-modal-content {
     padding: 24px;
     overflow-y: auto;
-    max-height: calc(90vh - 80px);
   }
 
-  /* Booking Modal - Fullscreen Style */
-  .bm-modal.booking {
-    max-width: 400px;
-    max-height: 650px;
-    width: 400px;
-    height: 650px;
-  }
-
-  .bm-modal.booking .bm-modal-content {
-    padding: 0;
-    height: calc(100% - 60px);
-    background: #1a1a1a;
-  }
-
-  .bm-modal.booking iframe {
+  .bm-modal-content iframe {
     width: 100%;
-    height: 100%;
+    height: 500px;
     border: none;
-  }
-
-  .bm-booking-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    gap: 16px;
-  }
-
-  .bm-booking-spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: hsl(142, 71%, 45%);
-    border-radius: 50%;
-    animation: bm-spin 1s linear infinite;
-  }
-
-  @keyframes bm-spin {
-    to { transform: rotate(360deg); }
-  }
-
-  .bm-booking-loading-text {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-  }
-
-  /* Form Error */
-  .bm-form-error {
-    background: rgba(239, 68, 68, 0.1);
-    color: rgb(239, 68, 68);
-    padding: 12px 14px;
     border-radius: 8px;
-    font-size: 14px;
-    margin-bottom: 16px;
-  }
-
-  /* Success State */
-  .bm-success {
-    text-align: center;
-    padding: 40px 24px;
-  }
-
-  .bm-success-icon {
-    width: 64px;
-    height: 64px;
-    background: hsl(142, 71%, 45%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 16px;
-  }
-
-  .bm-success-icon svg {
-    width: 32px;
-    height: 32px;
-    color: white;
-  }
-
-  .bm-success h3 {
-    color: var(--bm-text);
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0 0 8px;
-  }
-
-  .bm-success p {
-    color: var(--bm-text-muted);
-    font-size: 14px;
-    margin: 0;
   }
 
   /* Empty State */
@@ -1296,15 +932,9 @@ const WIDGET_STYLES = `
       ${WIDGET_CONFIG.position}: 16px;
     }
 
-    .bm-welcome-bubble,
-    .bm-suggestions {
+    .bm-welcome-bubble {
       ${WIDGET_CONFIG.position}: 0;
       max-width: calc(100vw - 100px);
-    }
-
-    .bm-modal.booking {
-      width: calc(100vw - 32px);
-      height: calc(100vh - 100px);
     }
   }
 `;
@@ -1322,25 +952,6 @@ function adjustColor(hex: string, percent: number): string {
   return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
 }
 
-function formatTimestamp(timestamp: Date | number): string {
-  const ts = typeof timestamp === 'number' ? timestamp : timestamp.getTime();
-  const now = Date.now();
-  const diff = now - ts;
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (seconds < 60) return 'sedaj';
-  if (minutes < 60) return `pred ${minutes} min`;
-  if (hours < 24) return `pred ${hours} h`;
-  if (days === 1) return 'včeraj';
-  if (days < 7) return `pred ${days} dni`;
-
-  const date = new Date(ts);
-  return date.toLocaleDateString('sl-SI', { day: 'numeric', month: 'short' });
-}
-
 function formatTime(date: Date): string {
   return date.toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' });
 }
@@ -1350,165 +961,12 @@ function generateSessionId(): string {
 }
 
 // ============================================================================
-// MARKDOWN PARSER
-// ============================================================================
-
-function parseMarkdown(text: string): React.ReactNode[] {
-  const elements: React.ReactNode[] = [];
-  let key = 0;
-
-  // Split by newlines to handle paragraphs and lists
-  const lines = text.split('\n');
-  let currentList: string[] = [];
-  let isOrderedList = false;
-
-  const flushList = () => {
-    if (currentList.length > 0) {
-      const ListTag = isOrderedList ? 'ol' : 'ul';
-      elements.push(
-        <ListTag key={key++}>
-          {currentList.map((item, i) => (
-            <li key={i}>{parseInlineMarkdown(item)}</li>
-          ))}
-        </ListTag>
-      );
-      currentList = [];
-    }
-  };
-
-  for (const line of lines) {
-    // Unordered list
-    const ulMatch = line.match(/^[-*•]\s+(.+)$/);
-    if (ulMatch) {
-      if (isOrderedList && currentList.length > 0) flushList();
-      isOrderedList = false;
-      currentList.push(ulMatch[1]);
-      continue;
-    }
-
-    // Ordered list
-    const olMatch = line.match(/^\d+[.)]\s+(.+)$/);
-    if (olMatch) {
-      if (!isOrderedList && currentList.length > 0) flushList();
-      isOrderedList = true;
-      currentList.push(olMatch[1]);
-      continue;
-    }
-
-    // Regular line
-    flushList();
-    if (line.trim()) {
-      elements.push(<span key={key++}>{parseInlineMarkdown(line)}<br /></span>);
-    } else {
-      elements.push(<br key={key++} />);
-    }
-  }
-
-  flushList();
-  return elements;
-}
-
-function parseInlineMarkdown(text: string): React.ReactNode[] {
-  const parts: React.ReactNode[] = [];
-  let key = 0;
-  let remaining = text;
-
-  // Markdown link: [text](url)
-  const markdownLinkRegex = /\[([^\]]+)\]\s*\(?\s*(https?:\/\/[^\s\)]+)\)?/g;
-  
-  let lastIndex = 0;
-  let match;
-  
-  while ((match = markdownLinkRegex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(...parseBasicMarkdown(text.substring(lastIndex, match.index), key));
-      key += 10;
-    }
-    
-    parts.push(
-      <a key={key++} href={match[2]} target="_blank" rel="noopener noreferrer">
-        {match[1]}
-      </a>
-    );
-    
-    lastIndex = match.index + match[0].length;
-  }
-
-  if (lastIndex === 0) {
-    // No markdown links found, check for plain URLs
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    remaining = text;
-    lastIndex = 0;
-    
-    while ((match = urlRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(...parseBasicMarkdown(text.substring(lastIndex, match.index), key));
-        key += 10;
-      }
-      
-      parts.push(
-        <a key={key++} href={match[1]} target="_blank" rel="noopener noreferrer">
-          {match[1]}
-        </a>
-      );
-      
-      lastIndex = match.index + match[0].length;
-    }
-    
-    if (lastIndex < text.length) {
-      parts.push(...parseBasicMarkdown(text.substring(lastIndex), key));
-    }
-  } else if (lastIndex < text.length) {
-    parts.push(...parseBasicMarkdown(text.substring(lastIndex), key));
-  }
-
-  return parts.length > 0 ? parts : [text];
-}
-
-function parseBasicMarkdown(text: string, startKey: number): React.ReactNode[] {
-  const parts: React.ReactNode[] = [];
-  let key = startKey;
-  
-  // Bold: **text** or __text__
-  const boldRegex = /\*\*(.+?)\*\*|__(.+?)__/g;
-  let lastIndex = 0;
-  let match;
-  
-  while ((match = boldRegex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(<span key={key++}>{text.substring(lastIndex, match.index)}</span>);
-    }
-    parts.push(<strong key={key++}>{match[1] || match[2]}</strong>);
-    lastIndex = match.index + match[0].length;
-  }
-  
-  if (lastIndex === 0) {
-    // No bold, check for italic
-    const italicRegex = /\*(.+?)\*|_(.+?)_/g;
-    
-    while ((match = italicRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(<span key={key++}>{text.substring(lastIndex, match.index)}</span>);
-      }
-      parts.push(<em key={key++}>{match[1] || match[2]}</em>);
-      lastIndex = match.index + match[0].length;
-    }
-  }
-  
-  if (lastIndex < text.length) {
-    parts.push(<span key={key++}>{text.substring(lastIndex)}</span>);
-  }
-  
-  return parts.length > 0 ? parts : [<span key={key}>{text}</span>];
-}
-
-// ============================================================================
 // TYPES
 // ============================================================================
 
 interface Message {
   id: string;
-  role: 'user' | 'bot' | 'system';
+  role: 'user' | 'bot';
   content: string;
   timestamp: Date;
 }
@@ -1530,7 +988,7 @@ type ModalType = 'contact' | 'booking' | null;
 const Icons = {
   Chat: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   ),
   Close: () => (
@@ -1541,42 +999,39 @@ const Icons = {
   ),
   Send: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m22 2-7 20-4-9-9-4Z" />
-      <path d="M22 2 11 13" />
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
     </svg>
   ),
   Back: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m12 19-7-7 7-7" />
-      <path d="M19 12H5" />
+      <polyline points="15 18 9 12 15 6" />
     </svg>
   ),
   Home: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
       <polyline points="9 22 9 12 15 12 15 22" />
     </svg>
   ),
   History: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-      <path d="M12 7v5l4 2" />
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
     </svg>
   ),
   Bot: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 8V4H8" />
-      <rect width="16" height="12" x="4" y="8" rx="2" />
-      <path d="M2 14h2" />
-      <path d="M20 14h2" />
-      <path d="M15 13v2" />
-      <path d="M9 13v2" />
+      <rect x="3" y="11" width="18" height="10" rx="2" />
+      <circle cx="12" cy="5" r="2" />
+      <path d="M12 7v4" />
+      <line x1="8" y1="16" x2="8" y2="16" />
+      <line x1="16" y1="16" x2="16" y2="16" />
     </svg>
   ),
   Calendar: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
       <line x1="16" y1="2" x2="16" y2="6" />
       <line x1="8" y1="2" x2="8" y2="6" />
       <line x1="3" y1="10" x2="21" y2="10" />
@@ -1584,8 +1039,8 @@ const Icons = {
   ),
   Mail: () => (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="16" x="2" y="4" rx="2" />
-      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
     </svg>
   ),
   MessageSquare: () => (
@@ -1593,233 +1048,7 @@ const Icons = {
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   ),
-  Check: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  ),
-  ChevronLeft: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  ),
-  ChevronRight: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="m9 18 6-6-6-6" />
-    </svg>
-  ),
-  Plus: () => (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
-    </svg>
-  ),
 };
-
-// ============================================================================
-// WEBHOOK HANDLER
-// ============================================================================
-
-interface WebhookResponse {
-  output: string;
-  sessionId: string;
-}
-
-async function sendMessageToWebhook(
-  sessionId: string,
-  message: string,
-  onChunk?: (text: string) => void
-): Promise<WebhookResponse> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), WIDGET_CONFIG.timeoutMs);
-
-  try {
-    const response = await fetch(WIDGET_CONFIG.webhookUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/x-ndjson, application/json, text/plain'
-      },
-      body: JSON.stringify({
-        sessionId,
-        chatInput: message
-      }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      throw new Error(`Strežnik je vrnil napako (${response.status})`);
-    }
-
-    const reader = response.body?.getReader();
-    if (!reader) {
-      throw new Error('Ni možno brati odgovora');
-    }
-
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let fullOutput = '';
-    let isStreamingDetected = false;
-    let rawText = '';
-
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value, { stream: true });
-      buffer += chunk;
-      rawText += chunk;
-
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-
-        try {
-          const evt = JSON.parse(trimmed);
-
-          // Streaming NDJSON format: {"type": "item", "content": "..."}
-          if (evt.type === 'item' && typeof evt.content === 'string') {
-            isStreamingDetected = true;
-            fullOutput += evt.content;
-            onChunk?.(fullOutput);
-          }
-
-          if (evt.type === 'end') {
-            isStreamingDetected = true;
-            onChunk?.(fullOutput);
-          }
-        } catch {
-          // Not valid JSON line
-        }
-      }
-    }
-
-    // Process remaining buffer
-    const last = buffer.trim();
-    if (last) {
-      try {
-        const evt = JSON.parse(last);
-        if (evt.type === 'item' && typeof evt.content === 'string') {
-          isStreamingDetected = true;
-          fullOutput += evt.content;
-          onChunk?.(fullOutput);
-        }
-      } catch {
-        // Ignore
-      }
-    }
-
-    // If streaming was detected and we have output, return it
-    if (isStreamingDetected && fullOutput) {
-      return { output: fullOutput, sessionId };
-    }
-
-    // Fallback: Try to parse entire response as JSON (non-streaming)
-    try {
-      const data = JSON.parse(rawText.trim());
-      const output = extractOutputFromResponse(data);
-      onChunk?.(output);
-      return { output, sessionId };
-    } catch {
-      // If all else fails and we have raw text, use it
-      if (rawText.trim()) {
-        onChunk?.(rawText.trim());
-        return { output: rawText.trim(), sessionId };
-      }
-      throw new Error('Neveljaven odgovor strežnika');
-    }
-  } catch (error: any) {
-    clearTimeout(timeoutId);
-
-    if (error.name === 'AbortError') {
-      throw new Error('Strežnik se ne odziva, poskusite ponovno');
-    }
-    throw new Error(error.message || 'Povezava ni uspela, preverite internetno povezavo');
-  }
-}
-
-function extractOutputFromResponse(data: any): string {
-  // Array format: [{"output": "..."}]
-  if (Array.isArray(data)) {
-    if (data.length > 0) {
-      const item = data[0];
-      if (item.output) return item.output;
-      if (item.response) return item.response;
-      if (item.message) return item.message;
-      if (item.text) return item.text;
-      if (item.content) return item.content;
-    }
-  }
-
-  // Object format: {"output": "..."}
-  if (data && typeof data === 'object') {
-    if (data.output) return data.output;
-    if (data.response) return data.response;
-    if (data.message) return data.message;
-    if (data.text) return data.text;
-    if (data.content) return data.content;
-    // Nested: {"data": {"output": "..."}}
-    if (data.data) {
-      if (data.data.output) return data.data.output;
-      if (data.data.response) return data.data.response;
-    }
-  }
-
-  // Fallback
-  return typeof data === 'string' ? data : JSON.stringify(data);
-}
-
-// ============================================================================
-// MARKER DETECTION
-// ============================================================================
-
-function hasContactFormMarker(content: string): boolean {
-  return content.includes('[CONTACT_FORM]');
-}
-
-function hasBookingMarker(content: string): boolean {
-  return content.includes('[BOOKING]');
-}
-
-function hasNewsletterMarker(content: string): boolean {
-  return content.includes('[NEWSLETTER]');
-}
-
-function hasProductCardsMarker(content: string): boolean {
-  return content.includes('[PRODUCT_CARDS]') && content.includes('[/PRODUCT_CARDS]');
-}
-
-interface ProductCard {
-  ime_izdelka?: string;
-  kratek_opis?: string;
-  url?: string;
-  image_url?: string;
-}
-
-function extractProductCards(content: string): ProductCard[] {
-  const match = content.match(/\[PRODUCT_CARDS\]([\s\S]*?)\[\/PRODUCT_CARDS\]/);
-  if (!match) return [];
-
-  try {
-    return JSON.parse(match[1]);
-  } catch {
-    return [];
-  }
-}
-
-function removeAllMarkers(content: string): string {
-  return content
-    .replace(/\[CONTACT_FORM\]/g, '')
-    .replace(/\[BOOKING\]/g, '')
-    .replace(/\[NEWSLETTER\]/g, '')
-    .replace(/\[PRODUCT_CARDS\][\s\S]*?\[\/PRODUCT_CARDS\]/g, '')
-    .trim();
-}
 
 // ============================================================================
 // COMPONENTS
@@ -1827,7 +1056,7 @@ function removeAllMarkers(content: string): string {
 
 const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   const className = small ? 'bm-avatar-small' : 'bm-avatar';
-
+  
   if (WIDGET_CONFIG.botAvatar) {
     return (
       <div className={className}>
@@ -1835,7 +1064,7 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
       </div>
     );
   }
-
+  
   return (
     <div className={className}>
       <Icons.Bot />
@@ -1843,201 +1072,40 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   );
 };
 
-// Newsletter Form Component
-const NewsletterForm: React.FC<{
-  sessionId: string;
-}> = ({ sessionId }) => {
-  const [email, setEmail] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isDismissed, setIsDismissed] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim() || isSubmitting) return;
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) return;
-
-    setIsSubmitting(true);
-    try {
-      await fetch(WIDGET_CONFIG.leadWebhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.trim(),
-          sessionId,
-          type: 'newsletter',
-          tableName: WIDGET_CONFIG.tableName,
-          timestamp: new Date().toISOString()
-        })
-      });
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error('Newsletter submit failed:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (isDismissed) return null;
-
-  if (isSubmitted) {
-    return (
-      <div className="bm-newsletter bm-newsletter-success">
-        ✅ Hvala! Naročeni ste na novice.
-      </div>
-    );
-  }
-
-  return (
-    <div className="bm-newsletter">
-      <form onSubmit={handleSubmit} className="bm-newsletter-inner">
-        <input
-          type="email"
-          placeholder="📧 Vaš email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={isSubmitting}
-        />
-        <button type="submit" disabled={!email.trim() || isSubmitting}>
-          {isSubmitting ? '...' : 'Pošlji'}
-        </button>
-      </form>
-      <button className="bm-newsletter-dismiss" onClick={() => setIsDismissed(true)}>
-        Ne, hvala
-      </button>
-    </div>
-  );
-};
-
-// Product Cards Carousel Component
-const ProductCarousel: React.FC<{ products: ProductCard[] }> = ({ products }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  if (!products || products.length === 0) return null;
-
-  const goToPrev = () => {
-    setCurrentIndex((prev) => Math.max(0, prev - 1));
-  };
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => Math.min(products.length - 1, prev + 1));
-  };
-
-  return (
-    <div className="bm-products">
-      <div
-        className="bm-products-carousel"
-        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-      >
-        {products.map((product, idx) => (
-          <div className="bm-product-card" key={idx}>
-            <div className="bm-product-card-inner">
-              {product.image_url ? (
-                <img
-                  src={product.image_url}
-                  alt={product.ime_izdelka || 'Produkt'}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              ) : null}
-              <div className="bm-product-card-body">
-                <h5>{product.ime_izdelka || 'Brez imena'}</h5>
-                {product.kratek_opis && <p>{product.kratek_opis}</p>}
-                <a href={product.url || '#'} target="_blank" rel="noopener noreferrer">
-                  Poglej več →
-                </a>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-      {products.length > 1 && (
-        <div className="bm-products-nav">
-          <button
-            className="bm-products-nav-btn"
-            onClick={goToPrev}
-            disabled={currentIndex === 0}
-            aria-label="Prejšnji"
-          >
-            <Icons.ChevronLeft />
-          </button>
-          <div className="bm-products-dots">
-            {products.map((_, idx) => (
-              <div
-                key={idx}
-                className={`bm-products-dot ${idx === currentIndex ? 'active' : ''}`}
-              />
-            ))}
-          </div>
-          <button
-            className="bm-products-nav-btn"
-            onClick={goToNext}
-            disabled={currentIndex === products.length - 1}
-            aria-label="Naslednji"
-          >
-            <Icons.ChevronRight />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
 const ContactModal: React.FC<{
   onClose: () => void;
   chatHistory: Message[];
-  sessionId: string;
-}> = ({ onClose, chatHistory, sessionId }) => {
+}> = ({ onClose, chatHistory }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  const getFormattedChatHistory = () => {
-    if (chatHistory.length === 0) return '[Ni zgodovine pogovora]';
-
-    return chatHistory
-      .filter((m) => m.role === 'user' || m.role === 'bot')
-      .map((m) => {
-        const role = m.role === 'user' ? 'USER' : 'AI';
-        return `${role}: ${m.content}`;
-      })
-      .join('\n\n');
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
 
     try {
-      const response = await fetch(WIDGET_CONFIG.supportWebhookUrl, {
+      await fetch(WIDGET_CONFIG.supportWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
           email,
           message,
-          sessionId,
-          chatHistory: getFormattedChatHistory(),
-          tableName: WIDGET_CONFIG.tableName,
-          timestamp: new Date().toISOString()
+          chatHistory: chatHistory.map(m => ({
+            role: m.role,
+            content: m.content,
+            timestamp: m.timestamp
+          })),
+          tableName: WIDGET_CONFIG.tableName
         })
       });
-
-      if (!response.ok) {
-        throw new Error(`Napaka pri pošiljanju (${response.status})`);
-      }
-
       setSuccess(true);
       setTimeout(onClose, 2000);
-    } catch (err: any) {
-      setError(err.message || 'Pošiljanje ni uspelo. Prosimo, poskusite ponovno.');
+    } catch (error) {
+      console.error('Contact form error:', error);
     } finally {
       setLoading(false);
     }
@@ -2045,36 +1113,29 @@ const ContactModal: React.FC<{
 
   return (
     <div className="bm-modal-overlay" onClick={onClose}>
-      <div className="bm-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="bm-modal" onClick={e => e.stopPropagation()}>
         <div className="bm-modal-header">
-          <div className="bm-modal-header-content">
-            <h3>Kontaktirajte nas</h3>
-            <p>Izpolnite obrazec in odgovorili vam bomo</p>
-          </div>
+          <h3>Kontaktiraj nas</h3>
           <button className="bm-modal-close" onClick={onClose}>
             <Icons.Close />
           </button>
         </div>
         <div className="bm-modal-content">
           {success ? (
-            <div className="bm-success">
-              <div className="bm-success-icon">
-                <Icons.Check />
-              </div>
-              <h3>Sporočilo poslano!</h3>
+            <div className="bm-empty">
+              <Icons.Mail />
+              <h4>Sporočilo poslano!</h4>
               <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              {error && <div className="bm-form-error">{error}</div>}
               <div className="bm-form-group">
                 <label>Ime</label>
                 <input
                   type="text"
                   className="bm-input"
-                  placeholder="Vaše ime"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={e => setName(e.target.value)}
                   required
                 />
               </div>
@@ -2083,9 +1144,8 @@ const ContactModal: React.FC<{
                 <input
                   type="email"
                   className="bm-input"
-                  placeholder="vas@email.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -2093,9 +1153,8 @@ const ContactModal: React.FC<{
                 <label>Sporočilo</label>
                 <textarea
                   className="bm-input bm-textarea"
-                  placeholder="Vaše sporočilo..."
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={e => setMessage(e.target.value)}
                   required
                 />
               </div>
@@ -2111,36 +1170,17 @@ const ContactModal: React.FC<{
 };
 
 const BookingModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const [isLoading, setIsLoading] = useState(true);
-
   return (
     <div className="bm-modal-overlay" onClick={onClose}>
-      <div className="bm-modal booking" onClick={(e) => e.stopPropagation()}>
-        <div className="bm-modal-header booking">
-          <button className="bm-modal-close" onClick={onClose} style={{ marginRight: 12 }}>
-            <Icons.Back />
-          </button>
-          <div className="bm-modal-header-content">
-            <h3>Rezerviraj termin</h3>
-            <p>Izberite prosti termin</p>
-          </div>
+      <div className="bm-modal" onClick={e => e.stopPropagation()}>
+        <div className="bm-modal-header">
+          <h3>Rezerviraj termin</h3>
           <button className="bm-modal-close" onClick={onClose}>
             <Icons.Close />
           </button>
         </div>
         <div className="bm-modal-content">
-          {isLoading && (
-            <div className="bm-booking-loading">
-              <div className="bm-booking-spinner" />
-              <div className="bm-booking-loading-text">Nalagam koledar...</div>
-            </div>
-          )}
-          <iframe
-            src={WIDGET_CONFIG.bookingUrl}
-            title="Booking"
-            onLoad={() => setIsLoading(false)}
-            style={{ display: isLoading ? 'none' : 'block' }}
-          />
+          <iframe src={WIDGET_CONFIG.bookingUrl} title="Booking" />
         </div>
       </div>
     </div>
@@ -2149,50 +1189,122 @@ const BookingModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 
 const MessageContent: React.FC<{
   content: string;
-  isBot: boolean;
-  sessionId: string;
   onContactClick: () => void;
   onBookingClick: () => void;
-}> = ({ content, isBot, sessionId, onContactClick, onBookingClick }) => {
-  if (!isBot) {
-    return <>{content}</>;
+}> = ({ content, onContactClick, onBookingClick }) => {
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+
+  const handleNewsletterSubmit = async () => {
+    try {
+      await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: newsletterEmail,
+          type: 'newsletter',
+          tableName: WIDGET_CONFIG.tableName
+        })
+      });
+      setNewsletterSubmitted(true);
+    } catch (error) {
+      console.error('Newsletter error:', error);
+    }
+  };
+
+  // Parse special markers
+  const parts: React.ReactNode[] = [];
+  let remaining = content;
+  let key = 0;
+
+  // Contact form
+  if (remaining.includes('[CONTACT_FORM]')) {
+    const [before, after] = remaining.split('[CONTACT_FORM]');
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    parts.push(
+      <button key={key++} className="bm-action-btn" onClick={onContactClick}>
+        <Icons.Mail />
+        Kontaktiraj nas
+      </button>
+    );
+    remaining = after || '';
   }
 
-  // Check for markers
-  const hasContact = hasContactFormMarker(content);
-  const hasBooking = hasBookingMarker(content) && WIDGET_CONFIG.bookingEnabled;
-  const hasNewsletter = hasNewsletterMarker(content);
-  const hasProducts = hasProductCardsMarker(content);
+  // Booking
+  if (remaining.includes('[BOOKING]') && WIDGET_CONFIG.bookingEnabled) {
+    const [before, after] = remaining.split('[BOOKING]');
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    parts.push(
+      <button key={key++} className="bm-action-btn" onClick={onBookingClick}>
+        <Icons.Calendar />
+        Rezerviraj termin
+      </button>
+    );
+    remaining = after || '';
+  }
 
-  // Extract product cards data
-  const products = hasProducts ? extractProductCards(content) : [];
+  // Newsletter
+  if (remaining.includes('[NEWSLETTER]')) {
+    const [before, after] = remaining.split('[NEWSLETTER]');
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    parts.push(
+      <div key={key++} className="bm-newsletter">
+        {newsletterSubmitted ? (
+          <span style={{ color: 'var(--bm-primary)' }}>Hvala za prijavo!</span>
+        ) : (
+          <>
+            <input
+              type="email"
+              placeholder="Vaš email"
+              value={newsletterEmail}
+              onChange={e => setNewsletterEmail(e.target.value)}
+            />
+            <button onClick={handleNewsletterSubmit}>Prijava</button>
+          </>
+        )}
+      </div>
+    );
+    remaining = after || '';
+  }
 
-  // Remove all markers from display
-  const displayContent = removeAllMarkers(content);
+  // Product cards
+  const productMatch = remaining.match(/\[PRODUCT_CARDS\](.*?)\[\/PRODUCT_CARDS\]/s);
+  if (productMatch) {
+    const [before] = remaining.split('[PRODUCT_CARDS]');
+    const afterProducts = remaining.split('[/PRODUCT_CARDS]')[1] || '';
+    
+    if (before) parts.push(<span key={key++}>{before}</span>);
+    
+    try {
+      const products = JSON.parse(productMatch[1]);
+      parts.push(
+        <div key={key++} className="bm-products">
+          {products.map((product: any, i: number) => (
+            <a
+              key={i}
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bm-product-card"
+            >
+              {product.image && <img src={product.image} alt={product.ime} />}
+              <h5>{product.ime}</h5>
+            </a>
+          ))}
+        </div>
+      );
+    } catch (e) {
+      console.error('Product cards parse error:', e);
+    }
+    
+    remaining = afterProducts;
+  }
 
-  return (
-    <>
-      {displayContent && <div>{parseMarkdown(displayContent)}</div>}
-      
-      {hasProducts && products.length > 0 && <ProductCarousel products={products} />}
-      
-      {hasContact && (
-        <button className="bm-action-btn" onClick={onContactClick}>
-          <Icons.Mail />
-          Odpri kontaktni obrazec
-        </button>
-      )}
-      
-      {hasBooking && (
-        <button className="bm-action-btn booking" onClick={onBookingClick}>
-          <Icons.Calendar />
-          Rezerviraj termin
-        </button>
-      )}
-      
-      {hasNewsletter && <NewsletterForm sessionId={sessionId} />}
-    </>
-  );
+  if (remaining) {
+    parts.push(<span key={key++}>{remaining}</span>);
+  }
+
+  return <>{parts.length > 0 ? parts : content}</>;
 };
 
 // ============================================================================
@@ -2202,30 +1314,28 @@ const MessageContent: React.FC<{
 const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [welcomeDismissed, setWelcomeDismissed] = useState(false);
   const [view, setView] = useState<View>('home');
   const [modal, setModal] = useState<ModalType>(null);
-
+  
   // Form state
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [initialMessage, setInitialMessage] = useState('');
-
+  
   // Chat state
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(false);
   const [typingMessage, setTypingMessage] = useState('');
-
+  
   // Session state
   const [currentSessionId, setCurrentSessionId] = useState<string>('');
   const [sessions, setSessions] = useState<Session[]>([]);
-
+  
   // Health check
   const [isHealthy, setIsHealthy] = useState(true);
-
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingMessageIndex = useRef(0);
 
@@ -2248,16 +1358,14 @@ const ChatWidget: React.FC = () => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setSessions(
-          parsed.map((s: any) => ({
-            ...s,
-            createdAt: new Date(s.createdAt),
-            messages: s.messages.map((m: any) => ({
-              ...m,
-              timestamp: new Date(m.timestamp)
-            }))
+        setSessions(parsed.map((s: any) => ({
+          ...s,
+          createdAt: new Date(s.createdAt),
+          messages: s.messages.map((m: any) => ({
+            ...m,
+            timestamp: new Date(m.timestamp)
           }))
-        );
+        })));
       } catch (e) {
         console.error('Failed to parse sessions:', e);
       }
@@ -2267,26 +1375,18 @@ const ChatWidget: React.FC = () => {
   // Save sessions to localStorage
   useEffect(() => {
     if (sessions.length > 0) {
-      localStorage.setItem(`bm_sessions_${WIDGET_CONFIG.tableName}`, JSON.stringify(sessions));
+      localStorage.setItem(
+        `bm_sessions_${WIDGET_CONFIG.tableName}`,
+        JSON.stringify(sessions)
+      );
     }
   }, [sessions]);
 
   // Show welcome bubble after delay
   useEffect(() => {
     if (!isOpen && !welcomeDismissed && isHealthy) {
-      const timer = setTimeout(() => {
-        setShowWelcome(true);
-        // Show suggestions after welcome bubble
-        setTimeout(() => {
-          if (WIDGET_CONFIG.suggestionButtons.length > 0) {
-            setShowSuggestions(true);
-          }
-        }, 500);
-      }, 800);
+      const timer = setTimeout(() => setShowWelcome(true), 1000);
       return () => clearTimeout(timer);
-    } else {
-      setShowWelcome(false);
-      setShowSuggestions(false);
     }
   }, [isOpen, welcomeDismissed, isHealthy]);
 
@@ -2295,17 +1395,16 @@ const ChatWidget: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Rotate typing messages when loading and not streaming
+  // Rotate typing messages
   useEffect(() => {
-    if (isTyping && !isStreaming) {
+    if (isTyping) {
       const interval = setInterval(() => {
-        typingMessageIndex.current =
-          (typingMessageIndex.current + 1) % WIDGET_CONFIG.typingMessages.length;
+        typingMessageIndex.current = (typingMessageIndex.current + 1) % WIDGET_CONFIG.typingMessages.length;
         setTypingMessage(WIDGET_CONFIG.typingMessages[typingMessageIndex.current]);
-      }, 2500);
+      }, 2000);
       return () => clearInterval(interval);
     }
-  }, [isTyping, isStreaming]);
+  }, [isTyping]);
 
   const startNewSession = useCallback(() => {
     const sessionId = generateSessionId();
@@ -2325,19 +1424,19 @@ const ChatWidget: React.FC = () => {
 
   const saveCurrentSession = useCallback(() => {
     if (messages.length === 0 || !currentSessionId) return;
-
-    const firstUserMessage = messages.find((m) => m.role === 'user');
+    
+    const firstUserMessage = messages.find(m => m.role === 'user');
     const preview = firstUserMessage?.content.slice(0, 50) || 'Nov pogovor';
-
-    setSessions((prev) => {
-      const existing = prev.findIndex((s) => s.id === currentSessionId);
+    
+    setSessions(prev => {
+      const existing = prev.findIndex(s => s.id === currentSessionId);
       const session: Session = {
         id: currentSessionId,
         messages,
         createdAt: existing >= 0 ? prev[existing].createdAt : new Date(),
         preview
       };
-
+      
       if (existing >= 0) {
         const updated = [...prev];
         updated[existing] = session;
@@ -2362,55 +1461,101 @@ const ChatWidget: React.FC = () => {
       timestamp: new Date()
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
-    setIsStreaming(false);
     setTypingMessage(WIDGET_CONFIG.typingMessages[0]);
 
-    const botMessageId = (Date.now() + 1).toString();
-
     try {
-      await sendMessageToWebhook(currentSessionId, content, (streamedContent) => {
-        setIsStreaming(true);
-        setMessages((prev) => {
-          const existing = prev.find((m) => m.id === botMessageId);
-          if (existing) {
-            return prev.map((m) =>
-              m.id === botMessageId ? { ...m, content: streamedContent } : m
-            );
-          }
-          return [
-            ...prev,
-            {
-              id: botMessageId,
-              role: 'bot',
-              content: streamedContent,
-              timestamp: new Date()
-            }
-          ];
-        });
+      const response = await fetch(WIDGET_CONFIG.webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: content,
+          sessionId: currentSessionId,
+          userName,
+          userEmail,
+          tableName: WIDGET_CONFIG.tableName,
+          history: messages.map(m => ({
+            role: m.role,
+            content: m.content
+          }))
+        })
       });
-    } catch (error: any) {
-      console.error('Send message error:', error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: botMessageId,
-          role: 'system',
-          content: error.message || 'Oprostite, prišlo je do napake. Poskusite znova.',
-          timestamp: new Date()
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let botContent = '';
+
+      if (reader) {
+        const botMessageId = (Date.now() + 1).toString();
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n').filter(line => line.trim());
+
+          for (const line of lines) {
+            try {
+              const data = JSON.parse(line);
+              
+              if (data.type === 'item' && data.content) {
+                botContent += data.content;
+                setMessages(prev => {
+                  const existing = prev.find(m => m.id === botMessageId);
+                  if (existing) {
+                    return prev.map(m => 
+                      m.id === botMessageId 
+                        ? { ...m, content: botContent }
+                        : m
+                    );
+                  }
+                  return [...prev, {
+                    id: botMessageId,
+                    role: 'bot',
+                    content: botContent,
+                    timestamp: new Date()
+                  }];
+                });
+              } else if (data.type === 'end') {
+                break;
+              } else if (data.output) {
+                // Non-streaming response
+                botContent = data.output;
+                setMessages(prev => [...prev, {
+                  id: botMessageId,
+                  role: 'bot',
+                  content: botContent,
+                  timestamp: new Date()
+                }]);
+              }
+            } catch {
+              // Not JSON, might be raw text
+              if (line.trim()) {
+                botContent += line;
+              }
+            }
+          }
         }
-      ]);
+      }
+    } catch (error) {
+      console.error('Send message error:', error);
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        role: 'bot',
+        content: 'Oprostite, prišlo je do napake. Poskusite znova.',
+        timestamp: new Date()
+      }]);
     } finally {
       setIsTyping(false);
-      setIsStreaming(false);
     }
   };
 
   const handleStartConversation = async () => {
     if (!initialMessage.trim()) return;
-
+    
     // Send lead data
     if (userName || userEmail) {
       try {
@@ -2420,9 +1565,7 @@ const ChatWidget: React.FC = () => {
           body: JSON.stringify({
             name: userName,
             email: userEmail,
-            sessionId: currentSessionId,
-            tableName: WIDGET_CONFIG.tableName,
-            timestamp: new Date().toISOString()
+            tableName: WIDGET_CONFIG.tableName
           })
         });
       } catch (error) {
@@ -2433,31 +1576,15 @@ const ChatWidget: React.FC = () => {
     if (!currentSessionId) {
       setCurrentSessionId(generateSessionId());
     }
-
+    
     setView('chat');
     await sendMessage(initialMessage);
     setInitialMessage('');
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setShowSuggestions(false);
-    setShowWelcome(false);
-    setWelcomeDismissed(true);
-    setIsOpen(true);
-    
-    if (!currentSessionId) {
-      const sessionId = generateSessionId();
-      setCurrentSessionId(sessionId);
-    }
-    
-    setView('chat');
-    setTimeout(() => sendMessage(suggestion), 100);
-  };
-
   const handleOpen = () => {
     setIsOpen(true);
     setShowWelcome(false);
-    setShowSuggestions(false);
     if (!currentSessionId) {
       startNewSession();
     }
@@ -2469,27 +1596,12 @@ const ChatWidget: React.FC = () => {
 
   return (
     <div className="bm-widget-container">
-      {/* Suggestion Buttons */}
-      {showSuggestions && !isOpen && WIDGET_CONFIG.suggestionButtons.length > 0 && (
-        <div className="bm-suggestions">
-          {WIDGET_CONFIG.suggestionButtons.map((suggestion, idx) => (
-            <button
-              key={idx}
-              className="bm-suggestion-btn"
-              onClick={() => handleSuggestionClick(suggestion)}
-            >
-              {suggestion}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Welcome Bubble */}
-      {showWelcome && !isOpen && !showSuggestions && (
+      {showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
           <p>{WIDGET_CONFIG.welcomeMessage}</p>
-          <button
-            className="bm-welcome-close"
+          <button 
+            className="bm-welcome-close" 
             onClick={(e) => {
               e.stopPropagation();
               setShowWelcome(false);
@@ -2502,9 +1614,9 @@ const ChatWidget: React.FC = () => {
       )}
 
       {/* Trigger Button */}
-      <button
+      <button 
         className={`bm-trigger ${isOpen ? 'open' : ''}`}
-        onClick={() => (isOpen ? setIsOpen(false) : handleOpen())}
+        onClick={() => isOpen ? setIsOpen(false) : handleOpen()}
       >
         {isOpen ? <Icons.Close /> : <Icons.Chat />}
       </button>
@@ -2522,29 +1634,25 @@ const ChatWidget: React.FC = () => {
               <div className="bm-content">
                 {WIDGET_CONFIG.showNameField && (
                   <div className="bm-form-group">
-                    <label>
-                      Ime <span>(opcijsko)</span>
-                    </label>
+                    <label>Ime <span>(opcijsko)</span></label>
                     <input
                       type="text"
                       className="bm-input"
                       placeholder="Vaše ime"
                       value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
+                      onChange={e => setUserName(e.target.value)}
                     />
                   </div>
                 )}
                 {WIDGET_CONFIG.showEmailField && (
                   <div className="bm-form-group">
-                    <label>
-                      Email <span>(opcijsko)</span>
-                    </label>
+                    <label>Email <span>(opcijsko)</span></label>
                     <input
                       type="email"
                       className="bm-input"
                       placeholder="vas@email.com"
                       value={userEmail}
-                      onChange={(e) => setUserEmail(e.target.value)}
+                      onChange={e => setUserEmail(e.target.value)}
                     />
                   </div>
                 )}
@@ -2554,8 +1662,8 @@ const ChatWidget: React.FC = () => {
                     className="bm-input bm-textarea"
                     placeholder={WIDGET_CONFIG.messagePlaceholder}
                     value={initialMessage}
-                    onChange={(e) => setInitialMessage(e.target.value)}
-                    onKeyDown={(e) => {
+                    onChange={e => setInitialMessage(e.target.value)}
+                    onKeyDown={e => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         handleStartConversation();
@@ -2563,7 +1671,7 @@ const ChatWidget: React.FC = () => {
                     }}
                   />
                 </div>
-                <button
+                <button 
                   className="bm-submit-btn"
                   onClick={handleStartConversation}
                   disabled={!initialMessage.trim()}
@@ -2576,7 +1684,10 @@ const ChatWidget: React.FC = () => {
                   <Icons.Home />
                   <span>Domov</span>
                 </button>
-                <button className="bm-nav-item" onClick={() => setView('history')}>
+                <button 
+                  className="bm-nav-item"
+                  onClick={() => setView('history')}
+                >
                   <Icons.History />
                   <span>Zgodovina</span>
                 </button>
@@ -2608,33 +1719,25 @@ const ChatWidget: React.FC = () => {
               </div>
               <div className="bm-content">
                 <div className="bm-messages">
-                  {messages.map((msg) => (
+                  {messages.map(msg => (
                     <div key={msg.id} className={`bm-message ${msg.role}`}>
                       {msg.role === 'bot' && <Avatar small />}
-                      {msg.role === 'system' ? (
-                        <div className="bm-message-system">
-                          <div className="bm-message-system-bubble">{msg.content}</div>
+                      <div className="bm-message-content">
+                        <div className="bm-bubble">
+                          <MessageContent
+                            content={msg.content}
+                            onContactClick={() => setModal('contact')}
+                            onBookingClick={() => setModal('booking')}
+                          />
                         </div>
-                      ) : (
-                        <div className="bm-message-content">
-                          <div className="bm-bubble">
-                            <MessageContent
-                              content={msg.content}
-                              isBot={msg.role === 'bot'}
-                              sessionId={currentSessionId}
-                              onContactClick={() => setModal('contact')}
-                              onBookingClick={() => setModal('booking')}
-                            />
-                          </div>
-                          <div className="bm-timestamp">{formatTime(msg.timestamp)}</div>
-                        </div>
-                      )}
+                        <div className="bm-timestamp">{formatTime(msg.timestamp)}</div>
+                      </div>
                     </div>
                   ))}
-                  {isTyping && !isStreaming && (
+                  {isTyping && (
                     <div className="bm-typing">
                       <Avatar small />
-                      <div className="bm-typing-content">
+                      <div>
                         <div className="bm-typing-dots">
                           <div className="bm-typing-dot" />
                           <div className="bm-typing-dot" />
@@ -2653,8 +1756,8 @@ const ChatWidget: React.FC = () => {
                   className="bm-chat-input"
                   placeholder={WIDGET_CONFIG.messagePlaceholder}
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyDown={(e) => {
+                  onChange={e => setInputValue(e.target.value)}
+                  onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       sendMessage(inputValue);
@@ -2662,7 +1765,7 @@ const ChatWidget: React.FC = () => {
                   }}
                   disabled={isTyping}
                 />
-                <button
+                <button 
                   className="bm-send-btn"
                   onClick={() => sendMessage(inputValue)}
                   disabled={!inputValue.trim() || isTyping}
@@ -2703,32 +1806,30 @@ const ChatWidget: React.FC = () => {
                   </div>
                 ) : (
                   <div className="bm-history-list">
-                    {sessions.map((session) => (
-                      <div
-                        key={session.id}
+                    {sessions.map(session => (
+                      <div 
+                        key={session.id} 
                         className="bm-history-item"
                         onClick={() => loadSession(session)}
                       >
-                        <div className="bm-history-icon">
-                          <Icons.MessageSquare />
-                        </div>
-                        <div className="bm-history-content">
-                          <h4>{session.preview}...</h4>
-                          <p>
-                            {session.messages.length} sporočil(a) ·{' '}
-                            {formatTimestamp(session.createdAt)}
-                          </p>
-                        </div>
+                        <h4>{session.preview}...</h4>
+                        <p>{session.messages.length} sporočil(a) · {formatTime(session.createdAt)}</p>
                       </div>
                     ))}
                   </div>
                 )}
-                <button className="bm-submit-btn bm-new-chat-btn" onClick={startNewSession}>
-                  <Icons.Plus /> Nov pogovor
+                <button 
+                  className="bm-submit-btn bm-new-chat-btn"
+                  onClick={startNewSession}
+                >
+                  Nov pogovor
                 </button>
               </div>
               <div className="bm-nav">
-                <button className="bm-nav-item" onClick={() => setView('home')}>
+                <button 
+                  className="bm-nav-item"
+                  onClick={() => setView('home')}
+                >
                   <Icons.Home />
                   <span>Domov</span>
                 </button>
@@ -2751,13 +1852,14 @@ const ChatWidget: React.FC = () => {
 
       {/* Modals */}
       {modal === 'contact' && (
-        <ContactModal
-          onClose={() => setModal(null)}
+        <ContactModal 
+          onClose={() => setModal(null)} 
           chatHistory={messages}
-          sessionId={currentSessionId}
         />
       )}
-      {modal === 'booking' && <BookingModal onClose={() => setModal(null)} />}
+      {modal === 'booking' && (
+        <BookingModal onClose={() => setModal(null)} />
+      )}
     </div>
   );
 };
@@ -2776,14 +1878,14 @@ function injectStyles() {
 
 function initWidget() {
   injectStyles();
-
+  
   let container = document.getElementById('bm-chat-widget');
   if (!container) {
     container = document.createElement('div');
     container.id = 'bm-chat-widget';
     document.body.appendChild(container);
   }
-
+  
   const root = createRoot(container);
   root.render(<ChatWidget />);
 }
