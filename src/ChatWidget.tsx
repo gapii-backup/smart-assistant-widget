@@ -889,22 +889,29 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 12px 20px;
+    padding: 8px 20px;
     text-align: center;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
     background: var(--bm-bg);
   }
 
-  .bm-footer a {
+  .bm-footer span {
     color: var(--bm-text-muted);
-    font-size: 12px;
+    font-size: 11px;
+  }
+
+  .bm-footer a {
+    color: var(--bm-primary);
+    font-size: 11px;
     text-decoration: none;
+    font-weight: 500;
     transition: color 0.2s ease;
   }
 
   .bm-footer a:hover {
-    color: var(--bm-primary);
+    color: ${adjustColor(WIDGET_CONFIG.primaryColor, 20)};
+    text-decoration: underline;
   }
 
   /* Email validation error */
@@ -2002,20 +2009,14 @@ const ChatWidget: React.FC = () => {
               {/* Input Stack - Email */}
               {WIDGET_CONFIG.showEmailField && (
                 <div className="bm-input-stack">
-                  <div>
-                    <input
-                      type="email"
-                      className={`bm-input-full ${emailError ? 'error' : ''}`}
-                      placeholder="Vaš email"
-                      value={userEmail}
-                      onChange={e => handleEmailChange(e.target.value)}
-                    />
-                    {emailError ? (
-                      <div className="bm-email-error">{emailError}</div>
-                    ) : (
-                      <div className="bm-email-hint">Email je opcijski</div>
-                    )}
-                  </div>
+                  <input
+                    type="email"
+                    className={`bm-input-full ${emailError ? 'error' : ''}`}
+                    placeholder="Email (opcijsko)"
+                    value={userEmail}
+                    onChange={e => handleEmailChange(e.target.value)}
+                  />
+                  {emailError && <div className="bm-email-error">{emailError}</div>}
                 </div>
               )}
 
@@ -2047,9 +2048,9 @@ const ChatWidget: React.FC = () => {
               {/* Footer */}
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
-                    Powered by <span style={{ color: 'var(--bm-primary)' }}>{WIDGET_CONFIG.poweredByName}</span>
-                  </a>
+                  <span>⚡Powered by </span>
+                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
+                  <span>⚡</span>
                 </div>
               )}
             </>
