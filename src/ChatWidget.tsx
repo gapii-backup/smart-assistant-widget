@@ -890,21 +890,29 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 10px;
+    padding: 14px 20px;
     text-align: center;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
+    background: var(--bm-bg);
   }
 
-  .bm-footer a {
+  .bm-footer-text {
     color: var(--bm-text-muted);
-    font-size: 11px;
-    text-decoration: none;
-    transition: color 0.2s ease;
+    font-size: 12px;
+    font-weight: 500;
   }
 
-  .bm-footer a:hover {
+  .bm-footer-link {
     color: var(--bm-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .bm-footer-link:hover {
+    color: var(--bm-primary-hover);
+    text-decoration: underline;
   }
 
   /* History */
@@ -2000,8 +2008,14 @@ const ChatWidget: React.FC = () => {
               {/* Footer */}
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
-                    Powered by <span style={{ color: 'var(--bm-primary)' }}>{WIDGET_CONFIG.poweredByName}</span>
+                  <span className="bm-footer-text">Powered by </span>
+                  <a 
+                    href={WIDGET_CONFIG.poweredByUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bm-footer-link"
+                  >
+                    {WIDGET_CONFIG.poweredByName}
                   </a>
                 </div>
               )}
