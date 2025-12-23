@@ -176,7 +176,7 @@ const WIDGET_STYLES = `
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
-    height: 716px;
+    height: 750px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: var(--bm-shadow);
@@ -402,6 +402,9 @@ const WIDGET_STYLES = `
   /* Quick Questions */
   .bm-quick-section {
     padding: 0 20px 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
   }
 
   .bm-quick-label {
@@ -467,7 +470,7 @@ const WIDGET_STYLES = `
     flex-direction: column;
     gap: 8px;
     padding: 0 20px 8px;
-    margin-top: auto;
+    flex-shrink: 0;
   }
 
   .bm-input-full {
@@ -493,9 +496,8 @@ const WIDGET_STYLES = `
 
   /* Message Input Area */
   .bm-message-input-area {
-    padding: 16px 20px 20px;
-    margin-top: auto;
-    background: linear-gradient(180deg, transparent 0%, var(--bm-bg) 30%);
+    padding: 12px 20px 16px;
+    flex-shrink: 0;
   }
 
   .bm-message-input-wrapper {
