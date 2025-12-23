@@ -116,11 +116,11 @@ const WIDGET_STYLES = `
     width: 28px;
     height: 28px;
     color: white;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .bm-trigger.open svg {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
   }
 
   /* Welcome Bubble */
