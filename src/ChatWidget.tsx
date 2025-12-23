@@ -174,8 +174,8 @@ const WIDGET_STYLES = `
     position: absolute;
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
-    width: 400px;
-    height: 650px;
+    width: 420px;
+    height: 682px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: var(--bm-shadow);
@@ -491,23 +491,31 @@ const WIDGET_STYLES = `
 
   /* Message Input Area */
   .bm-message-input-area {
-    padding: 0 20px 16px;
+    padding: 16px 20px 20px;
     margin-top: auto;
+    background: linear-gradient(180deg, transparent 0%, var(--bm-bg) 30%);
   }
 
   .bm-message-input-wrapper {
     display: flex;
     align-items: center;
-    background: var(--bm-bg);
-    border: 1px solid var(--bm-border);
-    border-radius: 24px;
-    padding: 4px 4px 4px 16px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: var(--bm-bg-secondary);
+    border: 2px solid var(--bm-border);
+    border-radius: 28px;
+    padding: 6px 6px 6px 20px;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .bm-message-input-wrapper:focus-within {
     border-color: var(--bm-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+    background: var(--bm-bg);
+  }
+
+  .bm-message-input-wrapper.has-text {
+    border-color: var(--bm-primary);
+    background: var(--bm-bg);
   }
 
   .bm-message-input-wrapper input {
@@ -515,8 +523,8 @@ const WIDGET_STYLES = `
     background: transparent;
     border: none;
     color: var(--bm-text);
-    font-size: 14px;
-    padding: 8px 0;
+    font-size: 15px;
+    padding: 10px 0;
     outline: none;
   }
 
@@ -525,8 +533,8 @@ const WIDGET_STYLES = `
   }
 
   .bm-send-btn-home {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: var(--bm-primary);
     border: none;
@@ -536,22 +544,25 @@ const WIDGET_STYLES = `
     justify-content: center;
     transition: all 0.2s ease;
     flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
   }
 
   .bm-send-btn-home:hover {
     background: var(--bm-primary-hover);
-    transform: scale(1.05);
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
   }
 
   .bm-send-btn-home:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
   }
 
   .bm-send-btn-home svg {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     color: white;
   }
 
@@ -1918,6 +1929,8 @@ const ChatWidget: React.FC = () => {
                     <button
                       key={index}
                       className="bm-quick-btn"
+                      onMouseEnter={() => setInitialMessage(question)}
+                      onMouseLeave={() => setInitialMessage('')}
                       onClick={() => {
                         setInitialMessage(question);
                         handleQuickQuestion(question);
@@ -1959,7 +1972,7 @@ const ChatWidget: React.FC = () => {
 
               {/* Message Input */}
               <div className="bm-message-input-area">
-                <div className="bm-message-input-wrapper">
+                <div className={`bm-message-input-wrapper ${initialMessage.trim() ? 'has-text' : ''}`}>
                   <input
                     type="text"
                     placeholder={WIDGET_CONFIG.messagePlaceholder}
