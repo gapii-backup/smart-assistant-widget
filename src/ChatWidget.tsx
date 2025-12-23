@@ -1123,6 +1123,17 @@ const WIDGET_STYLES = `
     left: 0;
   }
 
+  /* Message links */
+  .bm-link {
+    color: var(--bm-primary);
+    text-decoration: underline;
+    word-break: break-all;
+  }
+
+  .bm-link:hover {
+    color: ${adjustColor(WIDGET_CONFIG.primaryColor, 20)};
+  }
+
   /* Email validation error */
   .bm-email-error {
     color: #ef4444;
@@ -1843,11 +1854,56 @@ const MessageContent: React.FC<{
     remaining = afterProducts;
   }
 
+  // Parse remaining text for links and bold
+  const parseTextWithFormatting = (text: string): React.ReactNode[] => {
+    const result: React.ReactNode[] = [];
+    let idx = 0;
+    
+    // Combined regex for URLs and **bold**
+    const combinedRegex = /(https?:\/\/[^\s<>\"]+)|\*\*(.+?)\*\*/g;
+    let match;
+    let lastIndex = 0;
+    
+    while ((match = combinedRegex.exec(text)) !== null) {
+      // Add text before match
+      if (match.index > lastIndex) {
+        result.push(<span key={idx++}>{text.slice(lastIndex, match.index)}</span>);
+      }
+      
+      if (match[1]) {
+        // URL
+        result.push(
+          <a
+            key={idx++}
+            href={match[1]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bm-link"
+          >
+            {match[1]}
+          </a>
+        );
+      } else if (match[2]) {
+        // Bold text
+        result.push(<strong key={idx++}>{match[2]}</strong>);
+      }
+      
+      lastIndex = combinedRegex.lastIndex;
+    }
+    
+    // Add remaining text
+    if (lastIndex < text.length) {
+      result.push(<span key={idx++}>{text.slice(lastIndex)}</span>);
+    }
+    
+    return result.length > 0 ? result : [text];
+  };
+
   if (remaining) {
-    parts.push(<span key={key++}>{remaining}</span>);
+    parts.push(<span key={key++}>{parseTextWithFormatting(remaining)}</span>);
   }
 
-  return <>{parts.length > 0 ? parts : content}</>;
+  return <>{parts.length > 0 ? parts : parseTextWithFormatting(content)}</>;
 };
 
 // ============================================================================
