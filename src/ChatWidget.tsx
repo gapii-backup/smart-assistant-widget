@@ -18,10 +18,17 @@ const WIDGET_CONFIG = {
   botAvatar: '',
   
   // Texts
-  homeTitle: 'Pozdravljeni 👋',
-  homeSubtitle: 'Kako vam lahko pomagamo?',
+  homeTitle: 'Pozdravljeni! Kako vam lahko pomagam.',
+  homeSubtitle: '',
   welcomeMessage: '👋 Pozdravljeni! Kako vam lahko pomagam?',
-  messagePlaceholder: 'Vnesite sporočilo...',
+  messagePlaceholder: 'Napišite vprašanje...',
+  
+  // Quick questions
+  quickQuestions: [
+    'Cena storitev?',
+    'Kako začeti?',
+    'Govori z agentom'
+  ],
   
   // Fields
   showNameField: true,
@@ -190,14 +197,72 @@ const WIDGET_STYLES = `
     }
   }
 
-  /* Header */
-  .bm-header {
-    background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, -20)});
-    padding: 24px;
+  /* Header - Home */
+  .bm-header-home {
+    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, var(--bm-bg) 100%);
+    padding: 16px 20px 32px;
     text-align: center;
     flex-shrink: 0;
+    position: relative;
   }
 
+  .bm-header-home-actions {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+
+  .bm-history-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .bm-history-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .bm-history-btn svg {
+    width: 18px;
+    height: 18px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .bm-monitor-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: var(--bm-primary);
+    margin: 16px auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+  }
+
+  .bm-monitor-icon svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+  }
+
+  .bm-header-home h2 {
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  /* Header - Chat */
   .bm-header-chat {
     background: linear-gradient(135deg, var(--bm-primary), ${adjustColor(WIDGET_CONFIG.primaryColor, -20)});
     padding: 16px 20px;
@@ -331,6 +396,162 @@ const WIDGET_STYLES = `
     color: rgba(255, 255, 255, 0.85);
     font-size: 14px;
     margin: 0;
+  }
+
+  /* Quick Questions */
+  .bm-quick-section {
+    padding: 0 20px 16px;
+  }
+
+  .bm-quick-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bm-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .bm-quick-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bm-quick-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    color: var(--bm-text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+
+  .bm-quick-btn:hover {
+    background: ${WIDGET_CONFIG.mode === 'dark' ? '#252525' : '#eaeaea'};
+    border-color: var(--bm-primary);
+  }
+
+  .bm-quick-btn-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bm-quick-btn-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--bm-primary);
+  }
+
+  .bm-quick-btn svg {
+    width: 16px;
+    height: 16px;
+    color: var(--bm-text-muted);
+  }
+
+  /* Input Row */
+  .bm-input-row {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 16px;
+  }
+
+  .bm-input-half {
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    color: var(--bm-text);
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .bm-input-half:focus {
+    outline: none;
+    border-color: var(--bm-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .bm-input-half::placeholder {
+    color: var(--bm-text-muted);
+  }
+
+  /* Message Input Area */
+  .bm-message-input-area {
+    padding: 0 20px 16px;
+    margin-top: auto;
+  }
+
+  .bm-message-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 24px;
+    padding: 4px 4px 4px 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .bm-message-input-wrapper:focus-within {
+    border-color: var(--bm-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  }
+
+  .bm-message-input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--bm-text);
+    font-size: 14px;
+    padding: 8px 0;
+    outline: none;
+  }
+
+  .bm-message-input-wrapper input::placeholder {
+    color: var(--bm-text-muted);
+  }
+
+  .bm-send-btn-home {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bm-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .bm-send-btn-home:hover {
+    background: var(--bm-primary-hover);
+    transform: scale(1.05);
+  }
+
+  .bm-send-btn-home:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .bm-send-btn-home svg {
+    width: 18px;
+    height: 18px;
+    color: white;
   }
 
   /* Content */
@@ -1048,6 +1269,24 @@ const Icons = {
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
     </svg>
   ),
+  Monitor: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+    </svg>
+  ),
+  ChevronRight: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  ),
+  ArrowUp: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="19" x2="12" y2="5" />
+      <polyline points="5 12 12 5 19 12" />
+    </svg>
+  ),
 };
 
 // ============================================================================
@@ -1582,6 +1821,33 @@ const ChatWidget: React.FC = () => {
     setInitialMessage('');
   };
 
+  const handleQuickQuestion = async (question: string) => {
+    // Send lead data if available
+    if (userName || userEmail) {
+      try {
+        await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: userName,
+            email: userEmail,
+            tableName: WIDGET_CONFIG.tableName
+          })
+        });
+      } catch (error) {
+        console.error('Lead webhook error:', error);
+      }
+    }
+
+    if (!currentSessionId) {
+      setCurrentSessionId(generateSessionId());
+    }
+    
+    setView('chat');
+    await sendMessage(question);
+    setInitialMessage('');
+  };
+
   const handleOpen = () => {
     setIsOpen(true);
     setShowWelcome(false);
@@ -1626,76 +1892,100 @@ const ChatWidget: React.FC = () => {
         <div className="bm-widget">
           {view === 'home' && (
             <>
-              <div className="bm-header">
-                <Avatar />
+              {/* Header with gradient */}
+              <div className="bm-header-home">
+                <div className="bm-header-home-actions">
+                  <button 
+                    className="bm-history-btn"
+                    onClick={() => setView('history')}
+                    title="Zgodovina"
+                  >
+                    <Icons.History />
+                  </button>
+                </div>
+                <div className="bm-monitor-icon">
+                  <Icons.Monitor />
+                </div>
                 <h2>{WIDGET_CONFIG.homeTitle}</h2>
-                <p>{WIDGET_CONFIG.homeSubtitle}</p>
               </div>
-              <div className="bm-content">
-                {WIDGET_CONFIG.showNameField && (
-                  <div className="bm-form-group">
-                    <label>Ime <span>(opcijsko)</span></label>
+
+              {/* Quick Questions */}
+              <div className="bm-quick-section">
+                <div className="bm-quick-label">Pogosta vprašanja</div>
+                <div className="bm-quick-questions">
+                  {WIDGET_CONFIG.quickQuestions.map((question, index) => (
+                    <button
+                      key={index}
+                      className="bm-quick-btn"
+                      onClick={() => {
+                        setInitialMessage(question);
+                        handleQuickQuestion(question);
+                      }}
+                    >
+                      <div className="bm-quick-btn-content">
+                        <div className="bm-quick-btn-dot" />
+                        <span>{question}</span>
+                      </div>
+                      <Icons.ChevronRight />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Input Row - Name and Email */}
+              {(WIDGET_CONFIG.showNameField || WIDGET_CONFIG.showEmailField) && (
+                <div className="bm-input-row">
+                  {WIDGET_CONFIG.showNameField && (
                     <input
                       type="text"
-                      className="bm-input"
-                      placeholder="Vaše ime"
+                      className="bm-input-half"
+                      placeholder="Ime in priimek"
                       value={userName}
                       onChange={e => setUserName(e.target.value)}
                     />
-                  </div>
-                )}
-                {WIDGET_CONFIG.showEmailField && (
-                  <div className="bm-form-group">
-                    <label>Email <span>(opcijsko)</span></label>
+                  )}
+                  {WIDGET_CONFIG.showEmailField && (
                     <input
                       type="email"
-                      className="bm-input"
-                      placeholder="vas@email.com"
+                      className="bm-input-half"
+                      placeholder="Vaš email"
                       value={userEmail}
                       onChange={e => setUserEmail(e.target.value)}
                     />
-                  </div>
-                )}
-                <div className="bm-form-group">
-                  <label>Sporočilo</label>
-                  <textarea
-                    className="bm-input bm-textarea"
+                  )}
+                </div>
+              )}
+
+              {/* Message Input */}
+              <div className="bm-message-input-area">
+                <div className="bm-message-input-wrapper">
+                  <input
+                    type="text"
                     placeholder={WIDGET_CONFIG.messagePlaceholder}
                     value={initialMessage}
                     onChange={e => setInitialMessage(e.target.value)}
                     onKeyDown={e => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
+                      if (e.key === 'Enter' && initialMessage.trim()) {
                         e.preventDefault();
                         handleStartConversation();
                       }
                     }}
                   />
+                  <button 
+                    className="bm-send-btn-home"
+                    onClick={handleStartConversation}
+                    disabled={!initialMessage.trim()}
+                  >
+                    <Icons.ArrowUp />
+                  </button>
                 </div>
-                <button 
-                  className="bm-submit-btn"
-                  onClick={handleStartConversation}
-                  disabled={!initialMessage.trim()}
-                >
-                  Začni pogovor
-                </button>
               </div>
-              <div className="bm-nav">
-                <button className="bm-nav-item active">
-                  <Icons.Home />
-                  <span>Domov</span>
-                </button>
-                <button 
-                  className="bm-nav-item"
-                  onClick={() => setView('history')}
-                >
-                  <Icons.History />
-                  <span>Zgodovina</span>
-                </button>
-              </div>
+
+              {/* Footer */}
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
                   <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
-                    Powered by {WIDGET_CONFIG.poweredByName}
+                    Powered by <span style={{ color: 'var(--bm-primary)' }}>{WIDGET_CONFIG.poweredByName}</span>
                   </a>
                 </div>
               )}
