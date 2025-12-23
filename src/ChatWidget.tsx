@@ -143,6 +143,11 @@ const WIDGET_STYLES = `
     font-size: 15px;
     font-weight: 500;
     margin: 0;
+    padding-right: 0;
+    transition: padding-right 0.2s ease;
+  }
+
+  .bm-welcome-bubble:hover p {
     padding-right: 24px;
   }
 
@@ -159,7 +164,12 @@ const WIDGET_STYLES = `
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background 0.2s ease;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    opacity: 0;
+  }
+
+  .bm-welcome-bubble:hover .bm-welcome-close {
+    opacity: 1;
   }
 
   .bm-welcome-close:hover {
