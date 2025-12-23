@@ -483,8 +483,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-input-full {
-    width: 95%;
-    margin: 0 auto;
+    width: 100%;
     padding: 14px 16px;
     background: var(--bm-bg-secondary);
     border: 1px solid var(--bm-border);
