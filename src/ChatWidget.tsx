@@ -2317,9 +2317,8 @@ const ChatWidget: React.FC = () => {
                 <button className="bm-back-btn" onClick={() => setView('home')}>
                   <Icons.Back />
                 </button>
-                <div className="bm-header-info">
-                  <h3>Zgodovina pogovorov</h3>
-                  <span>{sessions.length} pogovor(ov)</span>
+                <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
+                  <h3 style={{ fontSize: '18px' }}>Moji pogovori</h3>
                 </div>
                 <button className="bm-close-btn" onClick={handleClose}>
                   <Icons.Close />
