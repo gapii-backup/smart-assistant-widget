@@ -494,6 +494,7 @@ const WIDGET_STYLES = `
   /* Message Input Area */
   .bm-message-input-area {
     padding: 12px 20px 8px;
+    margin-top: auto;
     background: var(--bm-bg);
   }
 
