@@ -890,9 +890,15 @@ const WIDGET_STYLES = `
   /* Typing Indicator */
   .bm-typing {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 10px;
     animation: bm-fade-in 0.2s ease;
+  }
+
+  .bm-typing-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .bm-typing-dots {
@@ -902,6 +908,7 @@ const WIDGET_STYLES = `
     background: var(--bm-bg-secondary);
     border-radius: 18px;
     border-bottom-left-radius: 6px;
+    width: fit-content;
   }
 
   .bm-typing-dot {
@@ -937,6 +944,7 @@ const WIDGET_STYLES = `
     font-size: 12px;
     color: var(--bm-text-muted);
     font-style: italic;
+    padding-left: 4px;
   }
 
   /* Input Area */
@@ -2398,7 +2406,7 @@ const ChatWidget: React.FC = () => {
                   {isTyping && (
                     <div className="bm-typing">
                       <Avatar small />
-                      <div>
+                      <div className="bm-typing-content">
                         <div className="bm-typing-dots">
                           <div className="bm-typing-dot" />
                           <div className="bm-typing-dot" />
