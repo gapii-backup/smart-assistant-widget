@@ -889,7 +889,7 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 8px 20px;
+    padding: 6px 20px;
     text-align: center;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
@@ -898,20 +898,37 @@ const WIDGET_STYLES = `
 
   .bm-footer span {
     color: var(--bm-text-muted);
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .bm-footer a {
     color: var(--bm-primary);
-    font-size: 11px;
+    font-size: 12px;
     text-decoration: none;
     font-weight: 500;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .bm-footer a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 50%;
+    background: var(--bm-primary);
+    transition: all 0.3s ease;
   }
 
   .bm-footer a:hover {
-    color: ${adjustColor(WIDGET_CONFIG.primaryColor, 20)};
-    text-decoration: underline;
+    color: ${adjustColor(WIDGET_CONFIG.primaryColor, 30)};
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  }
+
+  .bm-footer a:hover::after {
+    width: 100%;
+    left: 0;
   }
 
   /* Email validation error */
