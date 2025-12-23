@@ -128,21 +128,22 @@ const WIDGET_STYLES = `
     position: absolute;
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
-    background: var(--bm-bg);
-    border: 1px solid var(--bm-border);
-    border-radius: 16px;
-    padding: 16px 20px;
-    box-shadow: var(--bm-shadow);
-    max-width: 320px;
+    background: var(--bm-primary);
+    border: none;
+    border-radius: 20px;
+    padding: 14px 20px;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    min-width: 280px;
     cursor: pointer;
     animation: bm-slide-up 0.3s ease;
   }
 
   .bm-welcome-bubble p {
-    color: var(--bm-text);
-    font-size: 14px;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
     margin: 0;
-    padding-right: 20px;
+    padding-right: 24px;
   }
 
   .bm-welcome-close {
@@ -162,13 +163,13 @@ const WIDGET_STYLES = `
   }
 
   .bm-welcome-close:hover {
-    background: var(--bm-bg-secondary);
+    background: rgba(255, 255, 255, 0.2);
   }
 
   .bm-welcome-close svg {
     width: 14px;
     height: 14px;
-    color: var(--bm-text-muted);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   /* Main Widget */
