@@ -214,6 +214,37 @@ const WIDGET_STYLES = `
     }
   }
 
+  /* View transition animations */
+  @keyframes bm-view-slide-left {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes bm-view-slide-right {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .bm-view-enter-left {
+    animation: bm-view-slide-left 0.3s ease-out;
+  }
+
+  .bm-view-enter-right {
+    animation: bm-view-slide-right 0.3s ease-out;
+  }
+
   /* Header - Home */
   .bm-header-home {
     background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, var(--bm-bg) 100%);
@@ -1732,7 +1763,14 @@ const ChatWidget: React.FC = () => {
     return sessionStorage.getItem('bm-welcome-dismissed') === 'true';
   });
   const [view, setView] = useState<View>('home');
+  const [viewDirection, setViewDirection] = useState<'left' | 'right'>('left');
   const [modal, setModal] = useState<ModalType>(null);
+
+  // Custom setView with direction
+  const navigateTo = (newView: View, direction: 'left' | 'right') => {
+    setViewDirection(direction);
+    setView(newView);
+  };
   
   // Form state
   const [userName, setUserName] = useState('');
@@ -2036,7 +2074,7 @@ const ChatWidget: React.FC = () => {
       setCurrentSessionId(generateSessionId());
     }
     
-    setView('chat');
+    navigateTo('chat', 'left');
     await sendMessage(initialMessage);
     setInitialMessage('');
   };
@@ -2070,7 +2108,7 @@ const ChatWidget: React.FC = () => {
       setCurrentSessionId(generateSessionId());
     }
     
-    setView('chat');
+    navigateTo('chat', 'left');
     await sendMessage(question);
     setInitialMessage('');
   };
@@ -2126,13 +2164,13 @@ const ChatWidget: React.FC = () => {
       {isOpen && (
         <div className="bm-widget">
           {view === 'home' && (
-            <>
+            <div className={`bm-view-enter-${viewDirection}`}>
               {/* Header with gradient */}
               <div className="bm-header-home">
                 <div className="bm-header-home-actions">
                   <button 
                     className="bm-history-btn"
-                    onClick={() => setView('history')}
+                    onClick={() => navigateTo('history', 'left')}
                     title="Zgodovina"
                   >
                     <Icons.History />
@@ -2227,13 +2265,13 @@ const ChatWidget: React.FC = () => {
                   <span>⚡</span>
                 </div>
               )}
-            </>
+            </div>
           )}
 
           {view === 'chat' && (
-            <>
+            <div className={`bm-view-enter-${viewDirection}`}>
               <div className="bm-header-chat">
-                <button className="bm-back-btn" onClick={() => setView('home')}>
+                <button className="bm-back-btn" onClick={() => navigateTo('home', 'right')}>
                   <Icons.Back />
                 </button>
                 <Avatar small />
@@ -2308,13 +2346,13 @@ const ChatWidget: React.FC = () => {
                   </a>
                 </div>
               )}
-            </>
+            </div>
           )}
 
           {view === 'history' && (
-            <>
+            <div className={`bm-view-enter-${viewDirection}`}>
               <div className="bm-header-chat">
-                <button className="bm-back-btn" onClick={() => setView('home')}>
+                <button className="bm-back-btn" onClick={() => navigateTo('home', 'right')}>
                   <Icons.Back />
                 </button>
                 <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
@@ -2376,7 +2414,7 @@ const ChatWidget: React.FC = () => {
                   <span>⚡</span>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       )}
