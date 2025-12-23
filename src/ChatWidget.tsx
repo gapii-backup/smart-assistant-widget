@@ -134,7 +134,7 @@ const WIDGET_STYLES = `
     padding: 14px 20px;
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
     max-width: 500px;
-    display: inline-block;
+    width: max-content;
     cursor: pointer;
     animation: bm-slide-up 0.3s ease;
   }
@@ -1279,7 +1279,7 @@ const WIDGET_STYLES = `
 
     .bm-welcome-bubble {
       ${WIDGET_CONFIG.position}: 0;
-      max-width: calc(100vw - 100px);
+      max-width: calc(100vw - 32px);
     }
   }
 `;
