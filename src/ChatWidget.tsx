@@ -18,7 +18,8 @@ const WIDGET_CONFIG = {
   botAvatar: '',
   
   // Texts
-  homeTitle: 'Pozdravljeni! Kako vam lahko pomagam.',
+  homeTitle: 'Pozdravljeni!',
+  homeSubtitleLine2: 'Kako vam lahko pomagam?',
   homeSubtitle: '',
   welcomeMessage: '👋 Pozdravljeni! Kako vam lahko pomagam?',
   messagePlaceholder: 'Napišite vprašanje...',
@@ -257,10 +258,14 @@ const WIDGET_STYLES = `
 
   .bm-header-home h2 {
     color: white;
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
+  }
+
+  .bm-header-home h2 span {
+    display: block;
   }
 
   /* Header - Chat */
@@ -904,10 +909,10 @@ const WIDGET_STYLES = `
     line-height: 1;
 
     /* hard lock height (prevents “tall footer” on published) */
-    flex: 0 0 24px !important;
-    height: 24px !important;
-    min-height: 24px !important;
-    max-height: 24px !important;
+    flex: 0 0 32px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    max-height: 32px !important;
     overflow: hidden;
     box-sizing: border-box;
   }
@@ -2017,7 +2022,10 @@ const ChatWidget: React.FC = () => {
                 <div className="bm-monitor-icon">
                   <Icons.Monitor />
                 </div>
-                <h2>{WIDGET_CONFIG.homeTitle}</h2>
+                <h2>
+                  <span>{WIDGET_CONFIG.homeTitle}</span>
+                  <span>{WIDGET_CONFIG.homeSubtitleLine2}</span>
+                </h2>
               </div>
 
               {/* Quick Questions */}
