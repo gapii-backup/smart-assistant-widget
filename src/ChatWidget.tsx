@@ -379,6 +379,22 @@ const WIDGET_STYLES = `
     font-size: 12px;
   }
 
+  .bm-online-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+  }
+
+  .bm-online-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+  }
+
   .bm-close-btn {
     width: 36px;
     height: 36px;
@@ -2293,7 +2309,10 @@ const ChatWidget: React.FC = () => {
                 <Avatar small />
                 <div className="bm-header-info">
                   <h3>{WIDGET_CONFIG.botName}</h3>
-                  <span>Običajno odgovorimo v nekaj minutah</span>
+                  <span className="bm-online-status">
+                    <span className="bm-online-dot"></span>
+                    Online
+                  </span>
                 </div>
                 <button className="bm-close-btn" onClick={handleClose}>
                   <Icons.Close />
@@ -2357,9 +2376,9 @@ const ChatWidget: React.FC = () => {
               </div>
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
-                    Powered by {WIDGET_CONFIG.poweredByName}
-                  </a>
+                  <span>⚡Powered by </span>
+                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
+                  <span>⚡</span>
                 </div>
               )}
             </div>
