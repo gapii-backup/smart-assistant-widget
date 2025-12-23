@@ -28,8 +28,7 @@ const WIDGET_CONFIG = {
     'Cena storitev?',
     'Kako začeti?',
     'Govori z agentom',
-    'Kakšne so prednosti?',
-    'Koliko časa traja?'
+    'Kakšne so prednosti?'
   ],
   
   // Fields
@@ -405,20 +404,6 @@ const WIDGET_STYLES = `
     padding: 0 20px 16px;
   }
 
-  /* Home scroll area (keeps footer visible) */
-  .bm-home-scroll {
-    flex: 1;
-    overflow-y: auto;
-  }
-
-  .bm-home-scroll::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .bm-home-scroll::-webkit-scrollbar-thumb {
-    background: var(--bm-border);
-    border-radius: 3px;
-  }
 
   .bm-quick-label {
     font-size: 11px;
@@ -926,6 +911,13 @@ const WIDGET_STYLES = `
   .bm-email-error {
     color: #ef4444;
     font-size: 12px;
+    margin-top: 4px;
+    padding-left: 4px;
+  }
+
+  .bm-email-hint {
+    color: var(--bm-text-muted);
+    font-size: 11px;
     margin-top: 4px;
     padding-left: 4px;
   }
@@ -1982,60 +1974,50 @@ const ChatWidget: React.FC = () => {
                 <h2>{WIDGET_CONFIG.homeTitle}</h2>
               </div>
 
-              {/* Scrollable content (keeps footer visible) */}
-              <div className="bm-home-scroll">
-                {/* Quick Questions */}
-                <div className="bm-quick-section">
-                  <div className="bm-quick-label">Pogosta vprašanja</div>
-                  <div className="bm-quick-questions">
-                    {WIDGET_CONFIG.quickQuestions.map((question, index) => (
-                      <button
-                        key={index}
-                        className="bm-quick-btn"
-                        onMouseEnter={() => setInitialMessage(question)}
-                        onMouseLeave={() => setInitialMessage('')}
-                        onClick={() => {
-                          setInitialMessage(question);
-                          handleQuickQuestion(question);
-                        }}
-                      >
-                        <div className="bm-quick-btn-content">
-                          <div className="bm-quick-btn-dot" />
-                          <span>{question}</span>
-                        </div>
-                        <Icons.ChevronRight />
-                      </button>
-                    ))}
+              {/* Quick Questions */}
+              <div className="bm-quick-section">
+                <div className="bm-quick-label">Pogosta vprašanja</div>
+                <div className="bm-quick-questions">
+                  {WIDGET_CONFIG.quickQuestions.map((question, index) => (
+                    <button
+                      key={index}
+                      className="bm-quick-btn"
+                      onMouseEnter={() => setInitialMessage(question)}
+                      onMouseLeave={() => setInitialMessage('')}
+                      onClick={() => {
+                        setInitialMessage(question);
+                        handleQuickQuestion(question);
+                      }}
+                    >
+                      <div className="bm-quick-btn-content">
+                        <div className="bm-quick-btn-dot" />
+                        <span>{question}</span>
+                      </div>
+                      <Icons.ChevronRight />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Input Stack - Email */}
+              {WIDGET_CONFIG.showEmailField && (
+                <div className="bm-input-stack">
+                  <div>
+                    <input
+                      type="email"
+                      className={`bm-input-full ${emailError ? 'error' : ''}`}
+                      placeholder="Vaš email"
+                      value={userEmail}
+                      onChange={e => handleEmailChange(e.target.value)}
+                    />
+                    {emailError ? (
+                      <div className="bm-email-error">{emailError}</div>
+                    ) : (
+                      <div className="bm-email-hint">Email je opcijski</div>
+                    )}
                   </div>
                 </div>
-
-                {/* Input Stack - Name and Email */}
-                {(WIDGET_CONFIG.showNameField || WIDGET_CONFIG.showEmailField) && (
-                  <div className="bm-input-stack">
-                    {WIDGET_CONFIG.showNameField && (
-                      <input
-                        type="text"
-                        className="bm-input-full"
-                        placeholder="Ime in priimek"
-                        value={userName}
-                        onChange={e => setUserName(e.target.value)}
-                      />
-                    )}
-                    {WIDGET_CONFIG.showEmailField && (
-                      <div>
-                        <input
-                          type="email"
-                          className={`bm-input-full ${emailError ? 'error' : ''}`}
-                          placeholder="Vaš email"
-                          value={userEmail}
-                          onChange={e => handleEmailChange(e.target.value)}
-                        />
-                        {emailError && <div className="bm-email-error">{emailError}</div>}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              )}
 
               {/* Message Input */}
               <div className="bm-message-input-area">
