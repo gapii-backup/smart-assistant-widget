@@ -889,23 +889,30 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 6px 20px;
-    text-align: center;
+    padding: 4px 12px;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
     background: var(--bm-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    line-height: 1;
+    white-space: nowrap;
   }
 
   .bm-footer span {
     color: var(--bm-text-muted);
     font-size: 12px;
+    line-height: 1;
   }
 
   .bm-footer a {
     color: var(--bm-primary);
     font-size: 12px;
+    line-height: 1;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.3s ease;
     position: relative;
   }
