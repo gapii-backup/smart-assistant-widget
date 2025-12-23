@@ -1104,6 +1104,35 @@ const WIDGET_STYLES = `
     height: 16px;
   }
 
+  .bm-history-delete {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bm-text-muted);
+    transition: all 0.2s ease;
+    opacity: 0;
+  }
+
+  .bm-history-item:hover .bm-history-delete {
+    opacity: 1;
+  }
+
+  .bm-history-delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .bm-history-delete svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .bm-new-chat-btn {
     margin-top: 16px;
   }
@@ -1460,6 +1489,12 @@ const Icons = {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="19" x2="12" y2="5" />
       <polyline points="5 12 12 5 19 12" />
+    </svg>
+  ),
+  Trash: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     </svg>
   ),
 };
@@ -1851,6 +1886,14 @@ const ChatWidget: React.FC = () => {
     setMessages(session.messages);
     setView('chat');
   }, []);
+
+  const deleteSession = useCallback((sessionId: string) => {
+    setSessions(prev => prev.filter(s => s.id !== sessionId));
+    // If deleting the current session, start a new one
+    if (sessionId === currentSessionId) {
+      startNewSession();
+    }
+  }, [currentSessionId, startNewSession]);
 
   const saveCurrentSession = useCallback(() => {
     if (messages.length === 0 || !currentSessionId) return;
@@ -2353,10 +2396,17 @@ const ChatWidget: React.FC = () => {
                           </div>
                           <div className="bm-history-meta">
                             <span className="bm-history-date">{dateStr}</span>
-                            <div className="bm-history-arrow">
-                              <Icons.ChevronRight />
-                            </div>
                           </div>
+                          <button 
+                            className="bm-history-delete"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteSession(session.id);
+                            }}
+                            title="Izbriši pogovor"
+                          >
+                            <Icons.Trash />
+                          </button>
                         </div>
                       );
                     })}
