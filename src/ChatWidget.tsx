@@ -145,8 +145,8 @@ const WIDGET_STYLES = `
     font-weight: 500;
     margin: 0;
     white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   .bm-welcome-bubble:hover p {
