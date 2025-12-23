@@ -27,12 +27,14 @@ const WIDGET_CONFIG = {
   quickQuestions: [
     'Cena storitev?',
     'Kako začeti?',
-    'Govori z agentom'
+    'Govori z agentom',
+    'Kakšne so prednosti?',
+    'Koliko časa traja?'
   ],
   
   // Fields
-  showNameField: true,
-  showEmailField: true,
+  showNameField: false,
+  showEmailField: false,
   
   // Webhooks  
   webhookUrl: 'https://hub.botmotion.ai/webhook/051e33f1-1f96-4722-af95-a28f2f3afd01/chat',
