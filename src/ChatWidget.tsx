@@ -2256,7 +2256,12 @@ const ChatWidget: React.FC = () => {
 // ============================================================================
 
 function injectStyles() {
-  if (document.getElementById('bm-widget-styles')) return;
+  const existing = document.getElementById('bm-widget-styles') as HTMLStyleElement | null;
+  if (existing) {
+    // Always refresh styles so published/embedded versions can't get stuck with old CSS.
+    existing.textContent = WIDGET_STYLES;
+    return;
+  }
   const style = document.createElement('style');
   style.id = 'bm-widget-styles';
   style.textContent = WIDGET_STYLES;
