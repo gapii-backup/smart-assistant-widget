@@ -175,7 +175,7 @@ const WIDGET_STYLES = `
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
-    height: 682px;
+    height: 716px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: var(--bm-shadow);
