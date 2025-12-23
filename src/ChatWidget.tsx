@@ -2140,6 +2140,7 @@ const ChatWidget: React.FC = () => {
 
   const handleClose = () => {
     setIsOpen(false);
+    setViewDirection('none');
     // Welcome bubble stays dismissed after widget was opened
   };
 
