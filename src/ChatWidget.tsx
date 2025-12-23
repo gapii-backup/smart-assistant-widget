@@ -889,19 +889,25 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 2px 10px !important;
+    padding: 0 10px !important;
     margin: 0 !important;
     border-top: 1px solid var(--bm-border);
-    flex-shrink: 0;
     background: var(--bm-bg);
+
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 3px;
-    line-height: 1;
+
     white-space: nowrap;
-    height: 22px;
-    max-height: 22px;
+    line-height: 1;
+
+    /* hard lock height (prevents “tall footer” on published) */
+    flex: 0 0 18px !important;
+    height: 18px !important;
+    min-height: 18px !important;
+    max-height: 18px !important;
+    overflow: hidden;
     box-sizing: border-box;
   }
 
