@@ -116,28 +116,11 @@ const WIDGET_STYLES = `
     width: 28px;
     height: 28px;
     color: white;
-    position: absolute;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    transition: transform 0.2s ease;
   }
 
-  .bm-trigger .bm-icon-chat {
-    opacity: 1;
-    transform: rotate(0deg);
-  }
-
-  .bm-trigger.open .bm-icon-chat {
-    opacity: 0;
-    transform: rotate(180deg);
-  }
-
-  .bm-trigger .bm-icon-close {
-    opacity: 0;
-    transform: rotate(-180deg);
-  }
-
-  .bm-trigger.open .bm-icon-close {
-    opacity: 1;
-    transform: rotate(0deg);
+  .bm-trigger.open svg {
+    transform: rotate(90deg);
   }
 
   /* Welcome Bubble */
@@ -2063,8 +2046,7 @@ const ChatWidget: React.FC = () => {
         className={`bm-trigger ${isOpen ? 'open' : ''}`}
         onClick={() => isOpen ? handleClose() : handleOpen()}
       >
-        <span className="bm-icon-chat"><Icons.Chat /></span>
-        <span className="bm-icon-close"><Icons.Close /></span>
+        {isOpen ? <Icons.Close /> : <Icons.Chat />}
       </button>
 
       {/* Widget */}
