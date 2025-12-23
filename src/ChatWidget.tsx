@@ -27,8 +27,7 @@ const WIDGET_CONFIG = {
   quickQuestions: [
     'Cena storitev?',
     'Kako začeti?',
-    'Govori z agentom',
-    'Kaj ponujate?'
+    'Govori z agentom'
   ],
   
   // Fields
@@ -176,7 +175,7 @@ const WIDGET_STYLES = `
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
-    height: 750px;
+    height: 716px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: var(--bm-shadow);
@@ -402,9 +401,6 @@ const WIDGET_STYLES = `
   /* Quick Questions */
   .bm-quick-section {
     padding: 0 20px 16px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
   }
 
   .bm-quick-label {
@@ -469,8 +465,7 @@ const WIDGET_STYLES = `
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 0 20px 8px;
-    flex-shrink: 0;
+    padding: 0 20px 16px;
   }
 
   .bm-input-full {
@@ -496,8 +491,9 @@ const WIDGET_STYLES = `
 
   /* Message Input Area */
   .bm-message-input-area {
-    padding: 12px 20px 16px;
-    flex-shrink: 0;
+    padding: 16px 20px 20px;
+    margin-top: auto;
+    background: linear-gradient(180deg, transparent 0%, var(--bm-bg) 30%);
   }
 
   .bm-message-input-wrapper {
@@ -892,29 +888,21 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 14px 20px;
+    padding: 10px;
     text-align: center;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
-    background: var(--bm-bg);
   }
 
-  .bm-footer-text {
+  .bm-footer a {
     color: var(--bm-text-muted);
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .bm-footer-link {
-    color: var(--bm-primary);
-    font-weight: 600;
+    font-size: 11px;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
   }
 
-  .bm-footer-link:hover {
-    color: var(--bm-primary-hover);
-    text-decoration: underline;
+  .bm-footer a:hover {
+    color: var(--bm-primary);
   }
 
   /* History */
@@ -2010,14 +1998,8 @@ const ChatWidget: React.FC = () => {
               {/* Footer */}
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <span className="bm-footer-text">Powered by </span>
-                  <a 
-                    href={WIDGET_CONFIG.poweredByUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="bm-footer-link"
-                  >
-                    {WIDGET_CONFIG.poweredByName}
+                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
+                    Powered by <span style={{ color: 'var(--bm-primary)' }}>{WIDGET_CONFIG.poweredByName}</span>
                   </a>
                 </div>
               )}
