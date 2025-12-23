@@ -148,24 +148,25 @@ const WIDGET_STYLES = `
   }
 
   .bm-welcome-bubble:hover p {
-    padding-right: 24px;
+    padding-right: 0;
   }
 
   .bm-welcome-close {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 24px;
-    height: 24px;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
     border: none;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: opacity 0.2s ease, background 0.2s ease;
+    transition: opacity 0.2s ease, background 0.2s ease, transform 0.2s ease;
     opacity: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .bm-welcome-bubble:hover .bm-welcome-close {
@@ -173,13 +174,14 @@ const WIDGET_STYLES = `
   }
 
   .bm-welcome-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: white;
+    transform: scale(1.1);
   }
 
   .bm-welcome-close svg {
-    width: 14px;
-    height: 14px;
-    color: rgba(255, 255, 255, 0.8);
+    width: 12px;
+    height: 12px;
+    color: #666;
   }
 
   /* Main Widget */
