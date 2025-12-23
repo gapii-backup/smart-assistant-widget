@@ -132,7 +132,7 @@ const WIDGET_STYLES = `
     border: none;
     border-radius: 20px;
     padding: 14px 20px;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
     max-width: 500px;
     width: max-content;
     cursor: pointer;
@@ -142,7 +142,7 @@ const WIDGET_STYLES = `
   .bm-welcome-bubble p {
     color: white;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 400;
     margin: 0;
     white-space: normal;
     overflow-wrap: break-word;
@@ -1677,7 +1677,9 @@ const MessageContent: React.FC<{
 const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [welcomeDismissed, setWelcomeDismissed] = useState(false);
+  const [welcomeDismissed, setWelcomeDismissed] = useState(() => {
+    return sessionStorage.getItem('bm-welcome-dismissed') === 'true';
+  });
   const [view, setView] = useState<View>('home');
   const [modal, setModal] = useState<ModalType>(null);
   
@@ -2003,7 +2005,8 @@ const ChatWidget: React.FC = () => {
   const handleOpen = () => {
     setIsOpen(true);
     setShowWelcome(false);
-    setWelcomeDismissed(true); // Hide welcome bubble permanently after opening widget
+    setWelcomeDismissed(true);
+    sessionStorage.setItem('bm-welcome-dismissed', 'true');
     if (!currentSessionId) {
       startNewSession();
     }
@@ -2030,6 +2033,7 @@ const ChatWidget: React.FC = () => {
               e.stopPropagation();
               setShowWelcome(false);
               setWelcomeDismissed(true);
+              sessionStorage.setItem('bm-welcome-dismissed', 'true');
             }}
           >
             <Icons.Close />
