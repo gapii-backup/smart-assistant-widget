@@ -1134,6 +1134,16 @@ const WIDGET_STYLES = `
     color: ${adjustColor(WIDGET_CONFIG.primaryColor, 20)};
   }
 
+  /* Message lists */
+  .bm-list {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+
+  .bm-list li {
+    margin: 4px 0;
+  }
+
   /* Email validation error */
   .bm-email-error {
     color: #ef4444;
@@ -1854,10 +1864,10 @@ const MessageContent: React.FC<{
     remaining = afterProducts;
   }
 
-  // Parse remaining text for links and bold
-  const parseTextWithFormatting = (text: string): React.ReactNode[] => {
+  // Parse inline formatting (links, bold)
+  const parseInlineFormatting = (text: string, startIdx: number): React.ReactNode[] => {
     const result: React.ReactNode[] = [];
-    let idx = 0;
+    let idx = startIdx;
     
     // Combined regex for URLs and **bold**
     const combinedRegex = /(https?:\/\/[^\s<>\"]+)|\*\*(.+?)\*\*/g;
@@ -1865,38 +1875,104 @@ const MessageContent: React.FC<{
     let lastIndex = 0;
     
     while ((match = combinedRegex.exec(text)) !== null) {
-      // Add text before match
       if (match.index > lastIndex) {
         result.push(<span key={idx++}>{text.slice(lastIndex, match.index)}</span>);
       }
       
       if (match[1]) {
-        // URL
         result.push(
-          <a
-            key={idx++}
-            href={match[1]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bm-link"
-          >
+          <a key={idx++} href={match[1]} target="_blank" rel="noopener noreferrer" className="bm-link">
             {match[1]}
           </a>
         );
       } else if (match[2]) {
-        // Bold text
         result.push(<strong key={idx++}>{match[2]}</strong>);
       }
       
       lastIndex = combinedRegex.lastIndex;
     }
     
-    // Add remaining text
     if (lastIndex < text.length) {
       result.push(<span key={idx++}>{text.slice(lastIndex)}</span>);
     }
     
-    return result.length > 0 ? result : [text];
+    return result.length > 0 ? result : [<span key={idx}>{text}</span>];
+  };
+
+  // Parse text with line breaks, lists, and inline formatting
+  const parseTextWithFormatting = (text: string): React.ReactNode[] => {
+    const result: React.ReactNode[] = [];
+    let idx = 0;
+    
+    // Split by lines
+    const lines = text.split('\n');
+    let currentList: { type: 'ul' | 'ol'; items: React.ReactNode[] } | null = null;
+    
+    lines.forEach((line, lineIndex) => {
+      const trimmedLine = line.trim();
+      
+      // Check for bullet points (- or * or •)
+      const bulletMatch = trimmedLine.match(/^[-*•]\s+(.+)$/);
+      // Check for numbered list (1. or 1) etc)
+      const numberMatch = trimmedLine.match(/^(\d+)[.)]\s+(.+)$/);
+      
+      if (bulletMatch) {
+        if (!currentList || currentList.type !== 'ul') {
+          if (currentList) {
+            result.push(
+              currentList.type === 'ul' 
+                ? <ul key={idx++} className="bm-list">{currentList.items}</ul>
+                : <ol key={idx++} className="bm-list">{currentList.items}</ol>
+            );
+          }
+          currentList = { type: 'ul', items: [] };
+        }
+        currentList.items.push(<li key={idx++}>{parseInlineFormatting(bulletMatch[1], idx)}</li>);
+      } else if (numberMatch) {
+        if (!currentList || currentList.type !== 'ol') {
+          if (currentList) {
+            result.push(
+              currentList.type === 'ul' 
+                ? <ul key={idx++} className="bm-list">{currentList.items}</ul>
+                : <ol key={idx++} className="bm-list">{currentList.items}</ol>
+            );
+          }
+          currentList = { type: 'ol', items: [] };
+        }
+        currentList.items.push(<li key={idx++}>{parseInlineFormatting(numberMatch[2], idx)}</li>);
+      } else {
+        // Close any open list
+        if (currentList) {
+          result.push(
+            currentList.type === 'ul' 
+              ? <ul key={idx++} className="bm-list">{currentList.items}</ul>
+              : <ol key={idx++} className="bm-list">{currentList.items}</ol>
+          );
+          currentList = null;
+        }
+        
+        // Regular line
+        if (trimmedLine) {
+          result.push(<span key={idx++}>{parseInlineFormatting(line, idx)}</span>);
+        }
+        
+        // Add line break between lines (but not after last line)
+        if (lineIndex < lines.length - 1 && !bulletMatch && !numberMatch) {
+          result.push(<br key={idx++} />);
+        }
+      }
+    });
+    
+    // Close any remaining open list
+    if (currentList) {
+      result.push(
+        currentList.type === 'ul' 
+          ? <ul key={idx++} className="bm-list">{currentList.items}</ul>
+          : <ol key={idx++} className="bm-list">{currentList.items}</ol>
+      );
+    }
+    
+    return result;
   };
 
   if (remaining) {
