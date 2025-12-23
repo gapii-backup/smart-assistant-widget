@@ -1890,22 +1890,12 @@ const ChatWidget: React.FC = () => {
         throw new Error(`Server error (${response.status})`);
       }
 
-      // Try streaming approach first
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
       let fullOutput = '';
-      let lastFlush = 0;
       let isStreamingDetected = false;
       let rawText = '';
-
-      function flush(text: string) {
-        const now = Date.now();
-        if (now - lastFlush > 30) {
-          if (onChunk) onChunk(text);
-          lastFlush = now;
-        }
-      }
 
       while (true) {
         const { value, done } = await reader.read();
@@ -1925,11 +1915,17 @@ const ChatWidget: React.FC = () => {
           try {
             const evt = JSON.parse(trimmed);
 
-            // Streaming NDJSON format: {"type": "item", "content": "..."}
+            // n8n streaming format: {"type": "begin"}, {"type": "item", "content": "..."}, {"type": "end"}
+            if (evt.type === 'begin') {
+              isStreamingDetected = true;
+              continue;
+            }
+
             if (evt.type === 'item' && typeof evt.content === 'string') {
               isStreamingDetected = true;
               fullOutput += evt.content;
-              flush(fullOutput);
+              // Immediately call onChunk for real-time streaming effect
+              if (onChunk) onChunk(fullOutput);
             }
 
             if (evt.type === 'end') {
@@ -1937,7 +1933,7 @@ const ChatWidget: React.FC = () => {
               if (onChunk) onChunk(fullOutput);
             }
           } catch (_) {
-            // Not valid JSON line
+            // Not valid JSON line - ignore
           }
         }
       }
@@ -1952,15 +1948,18 @@ const ChatWidget: React.FC = () => {
             fullOutput += evt.content;
             if (onChunk) onChunk(fullOutput);
           }
+          if (evt.type === 'end') {
+            isStreamingDetected = true;
+          }
         } catch (_) {}
       }
 
-      // If streaming detected, return
+      // If streaming detected, return the accumulated output
       if (isStreamingDetected && fullOutput) {
         return { output: fullOutput, sessionId };
       }
       
-      // Fallback: Parse as JSON (non-streaming)
+      // Fallback: Parse as JSON (non-streaming response)
       try {
         const data = JSON.parse(rawText.trim());
         const output = extractOutputFromResponse(data);
