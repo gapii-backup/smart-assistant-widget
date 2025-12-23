@@ -1025,6 +1025,9 @@ const WIDGET_STYLES = `
   }
 
   .bm-history-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 14px 16px;
     background: var(--bm-bg-secondary);
     border: 1px solid var(--bm-border);
@@ -1037,11 +1040,33 @@ const WIDGET_STYLES = `
     border-color: var(--bm-primary);
   }
 
+  .bm-history-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+    background: var(--bm-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bm-history-icon svg {
+    width: 18px;
+    height: 18px;
+    color: white;
+  }
+
+  .bm-history-content {
+    flex: 1;
+    min-width: 0;
+  }
+
   .bm-history-item h4 {
     color: var(--bm-text);
     font-size: 14px;
-    font-weight: 500;
-    margin: 0 0 4px;
+    font-weight: 600;
+    margin: 0 0 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1051,6 +1076,32 @@ const WIDGET_STYLES = `
     color: var(--bm-text-muted);
     font-size: 12px;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .bm-history-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .bm-history-date {
+    color: var(--bm-text-muted);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .bm-history-arrow {
+    color: var(--bm-text-muted);
+  }
+
+  .bm-history-arrow svg {
+    width: 16px;
+    height: 16px;
   }
 
   .bm-new-chat-btn {
@@ -2283,16 +2334,33 @@ const ChatWidget: React.FC = () => {
                   </div>
                 ) : (
                   <div className="bm-history-list">
-                    {sessions.map(session => (
-                      <div 
-                        key={session.id} 
-                        className="bm-history-item"
-                        onClick={() => loadSession(session)}
-                      >
-                        <h4>{session.preview}...</h4>
-                        <p>{session.messages.length} sporočil(a) · {formatTime(session.createdAt)}</p>
-                      </div>
-                    ))}
+                    {sessions.map(session => {
+                      const firstUserMsg = session.messages.find(m => m.role === 'user');
+                      const firstBotMsg = session.messages.find(m => m.role === 'bot');
+                      const dateStr = session.createdAt.toLocaleDateString('sl-SI', { day: 'numeric', month: 'short' }).toUpperCase().replace('.', '');
+                      
+                      return (
+                        <div 
+                          key={session.id} 
+                          className="bm-history-item"
+                          onClick={() => loadSession(session)}
+                        >
+                          <div className="bm-history-icon">
+                            <Icons.MessageSquare />
+                          </div>
+                          <div className="bm-history-content">
+                            <h4>{firstUserMsg?.content.slice(0, 40) || 'Nov pogovor'}{(firstUserMsg?.content.length || 0) > 40 ? '...' : ''}</h4>
+                            <p>{firstBotMsg?.content.slice(0, 45) || 'Brez odgovora'}{(firstBotMsg?.content.length || 0) > 45 ? '...' : ''}</p>
+                          </div>
+                          <div className="bm-history-meta">
+                            <span className="bm-history-date">{dateStr}</span>
+                            <div className="bm-history-arrow">
+                              <Icons.ChevronRight />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
                 <button 
