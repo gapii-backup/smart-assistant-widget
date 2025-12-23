@@ -493,9 +493,8 @@ const WIDGET_STYLES = `
 
   /* Message Input Area */
   .bm-message-input-area {
-    padding: 16px 20px 20px;
-    margin-top: auto;
-    background: linear-gradient(180deg, transparent 0%, var(--bm-bg) 30%);
+    padding: 12px 20px 8px;
+    background: var(--bm-bg);
   }
 
   .bm-message-input-wrapper {
@@ -890,21 +889,38 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 10px;
+    padding: 12px 20px;
     text-align: center;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
+    background: var(--bm-bg);
   }
 
   .bm-footer a {
     color: var(--bm-text-muted);
-    font-size: 11px;
+    font-size: 12px;
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
   .bm-footer a:hover {
     color: var(--bm-primary);
+  }
+
+  /* Email validation error */
+  .bm-email-error {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+    padding-left: 4px;
+  }
+
+  .bm-input-full.error {
+    border-color: #ef4444;
+  }
+
+  .bm-input-full.error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
   }
 
   /* History */
@@ -1574,7 +1590,24 @@ const ChatWidget: React.FC = () => {
   // Form state
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [initialMessage, setInitialMessage] = useState('');
+
+  // Email validation
+  const validateEmail = (email: string): boolean => {
+    if (!email.trim()) return true; // Empty is ok
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (value: string) => {
+    setUserEmail(value);
+    if (value && !validateEmail(value)) {
+      setEmailError('Prosim vnesite veljaven email naslov');
+    } else {
+      setEmailError('');
+    }
+  };
   
   // Chat state
   const [messages, setMessages] = useState<Message[]>([]);
@@ -1961,13 +1994,16 @@ const ChatWidget: React.FC = () => {
                     />
                   )}
                   {WIDGET_CONFIG.showEmailField && (
-                    <input
-                      type="email"
-                      className="bm-input-full"
-                      placeholder="Vaš email"
-                      value={userEmail}
-                      onChange={e => setUserEmail(e.target.value)}
-                    />
+                    <div>
+                      <input
+                        type="email"
+                        className={`bm-input-full ${emailError ? 'error' : ''}`}
+                        placeholder="Vaš email"
+                        value={userEmail}
+                        onChange={e => handleEmailChange(e.target.value)}
+                      />
+                      {emailError && <div className="bm-email-error">{emailError}</div>}
+                    </div>
                   )}
                 </div>
               )}
