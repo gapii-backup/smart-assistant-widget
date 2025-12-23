@@ -1859,12 +1859,11 @@ const ChatWidget: React.FC = () => {
     return typeof data === 'string' ? data : JSON.stringify(data);
   };
 
-  // Webhook function with streaming (NDJSON) and non-streaming support
+  // Simple non-streaming webhook function
   const sendMessageToWebhook = async (
     webhookUrl: string,
     sessionId: string,
-    message: string,
-    onChunk?: (text: string) => void
+    message: string
   ): Promise<{ output: string; sessionId: string }> => {
     const TIMEOUT_MS = 30000;
     const controller = new AbortController();
@@ -1874,8 +1873,7 @@ const ChatWidget: React.FC = () => {
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/x-ndjson, application/json, text/plain'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           sessionId,
@@ -1890,85 +1888,16 @@ const ChatWidget: React.FC = () => {
         throw new Error(`Server error (${response.status})`);
       }
 
-      const reader = response.body!.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let fullOutput = '';
-      let isStreamingDetected = false;
-      let rawText = '';
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        buffer += chunk;
-        rawText += chunk;
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-
-          try {
-            const evt = JSON.parse(trimmed);
-
-            // n8n streaming format: {"type": "begin"}, {"type": "item", "content": "..."}, {"type": "end"}
-            if (evt.type === 'begin') {
-              isStreamingDetected = true;
-              continue;
-            }
-
-            if (evt.type === 'item' && typeof evt.content === 'string') {
-              isStreamingDetected = true;
-              fullOutput += evt.content;
-              // Immediately call onChunk for real-time streaming effect
-              if (onChunk) onChunk(fullOutput);
-            }
-
-            if (evt.type === 'end') {
-              isStreamingDetected = true;
-              if (onChunk) onChunk(fullOutput);
-            }
-          } catch (_) {
-            // Not valid JSON line - ignore
-          }
-        }
-      }
-
-      // Process remaining buffer
-      const last = buffer.trim();
-      if (last) {
-        try {
-          const evt = JSON.parse(last);
-          if (evt.type === 'item' && typeof evt.content === 'string') {
-            isStreamingDetected = true;
-            fullOutput += evt.content;
-            if (onChunk) onChunk(fullOutput);
-          }
-          if (evt.type === 'end') {
-            isStreamingDetected = true;
-          }
-        } catch (_) {}
-      }
-
-      // If streaming detected, return the accumulated output
-      if (isStreamingDetected && fullOutput) {
-        return { output: fullOutput, sessionId };
-      }
+      const text = await response.text();
       
-      // Fallback: Parse as JSON (non-streaming response)
       try {
-        const data = JSON.parse(rawText.trim());
+        const data = JSON.parse(text);
         const output = extractOutputFromResponse(data);
-        if (onChunk) onChunk(output);
         return { output, sessionId };
       } catch (_) {
-        if (rawText.trim()) {
-          if (onChunk) onChunk(rawText.trim());
-          return { output: rawText.trim(), sessionId };
+        // Not JSON, return as plain text
+        if (text.trim()) {
+          return { output: text.trim(), sessionId };
         }
         throw new Error('Invalid server response');
       }
@@ -1998,52 +1927,20 @@ const ChatWidget: React.FC = () => {
     setTypingMessage(WIDGET_CONFIG.typingMessages[0]);
 
     const botMessageId = (Date.now() + 1).toString();
-    let currentBotMessage = '';
 
     try {
       const result = await sendMessageToWebhook(
         WIDGET_CONFIG.webhookUrl,
         currentSessionId,
-        content.trim(),
-        (partialText) => {
-          // Update UI with partial response (streaming)
-          currentBotMessage = partialText;
-          setMessages(prev => {
-            const existing = prev.find(m => m.id === botMessageId);
-            if (existing) {
-              return prev.map(m => 
-                m.id === botMessageId 
-                  ? { ...m, content: currentBotMessage }
-                  : m
-              );
-            }
-            return [...prev, {
-              id: botMessageId,
-              role: 'bot',
-              content: currentBotMessage,
-              timestamp: new Date()
-            }];
-          });
-        }
+        content.trim()
       );
 
-      // Ensure final message is set
-      setMessages(prev => {
-        const existing = prev.find(m => m.id === botMessageId);
-        if (existing) {
-          return prev.map(m => 
-            m.id === botMessageId 
-              ? { ...m, content: result.output }
-              : m
-          );
-        }
-        return [...prev, {
-          id: botMessageId,
-          role: 'bot',
-          content: result.output,
-          timestamp: new Date()
-        }];
-      });
+      setMessages(prev => [...prev, {
+        id: botMessageId,
+        role: 'bot',
+        content: result.output,
+        timestamp: new Date()
+      }]);
     } catch (error) {
       console.error('Send message error:', error);
       setMessages(prev => [...prev, {
