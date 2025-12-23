@@ -467,14 +467,19 @@ const WIDGET_STYLES = `
     color: var(--bm-text-muted);
   }
 
+  /* Bottom Fixed Section (email + message input) */
+  .bm-bottom-section {
+    margin-top: auto;
+    flex-shrink: 0;
+    background: var(--bm-bg);
+  }
+
   /* Input Stack */
   .bm-input-stack {
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding: 0 20px 8px;
-    margin-top: auto;
-    margin-bottom: 5%;
   }
 
   .bm-input-full {
@@ -2069,47 +2074,50 @@ const ChatWidget: React.FC = () => {
                 </div>
               </div>
 
-              {/* Input Stack - Email */}
-              {WIDGET_CONFIG.showEmailField && (
-                <div className="bm-input-stack">
-                  <input
-                    type="email"
-                    className={`bm-input-full ${emailError ? 'error' : ''}`}
-                    placeholder="Email (opcijsko)"
-                    value={userEmail}
-                    onChange={e => handleEmailChange(e.target.value)}
-                  />
-                  {emailError && <div className="bm-email-error">{emailError}</div>}
-                </div>
-              )}
+              {/* Bottom Section - Email + Message Input (fixed together) */}
+              <div className="bm-bottom-section">
+                {/* Input Stack - Email */}
+                {WIDGET_CONFIG.showEmailField && (
+                  <div className="bm-input-stack">
+                    <input
+                      type="email"
+                      className={`bm-input-full ${emailError ? 'error' : ''}`}
+                      placeholder="Email (opcijsko)"
+                      value={userEmail}
+                      onChange={e => handleEmailChange(e.target.value)}
+                    />
+                    {emailError && <div className="bm-email-error">{emailError}</div>}
+                  </div>
+                )}
 
-              {/* Message Input */}
-              <div className="bm-message-input-area">
-                <div className={`bm-message-input-wrapper ${initialMessage.trim() ? 'has-text' : ''}`}>
-                  <textarea
-                    placeholder={WIDGET_CONFIG.messagePlaceholder}
-                    value={initialMessage}
-                    onChange={e => {
-                      setInitialMessage(e.target.value);
-                      // Auto-resize textarea
-                      e.target.style.height = 'auto';
-                      e.target.style.height = Math.min(e.target.scrollHeight, 72) + 'px';
-                    }}
-                    onKeyDown={e => {
-                      if (e.key === 'Enter' && !e.shiftKey && initialMessage.trim()) {
-                        e.preventDefault();
-                        handleStartConversation();
-                      }
-                    }}
-                    rows={1}
-                  />
-                  <button 
-                    className="bm-send-btn-home"
-                    onClick={handleStartConversation}
-                    disabled={!initialMessage.trim()}
-                  >
-                    <Icons.ArrowUp />
-                  </button>
+                {/* Message Input */}
+                <div className="bm-message-input-area">
+                  <div className={`bm-message-input-wrapper ${initialMessage.trim() ? 'has-text' : ''}`}>
+                    <textarea
+                      placeholder={WIDGET_CONFIG.messagePlaceholder}
+                      value={initialMessage}
+                      onChange={e => {
+                        setInitialMessage(e.target.value);
+                        // Auto-resize textarea
+                        e.target.style.height = 'auto';
+                        e.target.style.height = Math.min(e.target.scrollHeight, 72) + 'px';
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey && initialMessage.trim()) {
+                          e.preventDefault();
+                          handleStartConversation();
+                        }
+                      }}
+                      rows={1}
+                    />
+                    <button 
+                      className="bm-send-btn-home"
+                      onClick={handleStartConversation}
+                      disabled={!initialMessage.trim()}
+                    >
+                      <Icons.ArrowUp />
+                    </button>
+                  </div>
                 </div>
               </div>
 
