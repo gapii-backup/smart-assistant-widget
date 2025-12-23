@@ -2302,24 +2302,11 @@ const ChatWidget: React.FC = () => {
                   Nov pogovor
                 </button>
               </div>
-              <div className="bm-nav">
-                <button 
-                  className="bm-nav-item"
-                  onClick={() => setView('home')}
-                >
-                  <Icons.Home />
-                  <span>Domov</span>
-                </button>
-                <button className="bm-nav-item active">
-                  <Icons.History />
-                  <span>Zgodovina</span>
-                </button>
-              </div>
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <a href={WIDGET_CONFIG.poweredByUrl} target="_blank" rel="noopener noreferrer">
-                    Powered by {WIDGET_CONFIG.poweredByName}
-                  </a>
+                  <span>⚡Powered by </span>
+                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
+                  <span>⚡</span>
                 </div>
               )}
             </>
