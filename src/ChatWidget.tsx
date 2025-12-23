@@ -144,8 +144,12 @@ const WIDGET_STYLES = `
     font-size: 15px;
     font-weight: 500;
     margin: 0;
-    padding-right: 0;
-    transition: padding-right 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .bm-welcome-bubble.bm-text-wrap p {
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   .bm-welcome-bubble:hover p {
