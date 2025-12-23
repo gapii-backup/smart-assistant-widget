@@ -889,7 +889,7 @@ const WIDGET_STYLES = `
 
   /* Footer */
   .bm-footer {
-    padding: 6px 12px !important;
+    padding: 2px 10px !important;
     margin: 0 !important;
     border-top: 1px solid var(--bm-border);
     flex-shrink: 0;
@@ -897,18 +897,17 @@ const WIDGET_STYLES = `
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    line-height: 1.2;
+    gap: 3px;
+    line-height: 1;
     white-space: nowrap;
-    min-height: 0;
-    max-height: 28px;
-    height: 28px;
+    height: 22px;
+    max-height: 22px;
     box-sizing: border-box;
   }
 
   .bm-footer span {
     color: var(--bm-text-muted);
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1;
     margin: 0;
     padding: 0;
@@ -916,11 +915,11 @@ const WIDGET_STYLES = `
 
   .bm-footer a {
     color: var(--bm-primary);
-    font-size: 12px;
+    font-size: 11px;
     line-height: 1;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     position: relative;
     margin: 0;
     padding: 0;
