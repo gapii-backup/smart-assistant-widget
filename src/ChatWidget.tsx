@@ -142,7 +142,7 @@ const WIDGET_STYLES = `
   .bm-welcome-bubble p {
     color: white;
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 480;
     margin: 0;
     white-space: normal;
     overflow-wrap: break-word;
