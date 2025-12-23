@@ -460,16 +460,17 @@ const WIDGET_STYLES = `
     color: var(--bm-text-muted);
   }
 
-  /* Input Row */
-  .bm-input-row {
+  /* Input Stack */
+  .bm-input-stack {
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
     padding: 0 20px 16px;
   }
 
-  .bm-input-half {
-    flex: 1;
-    padding: 12px 14px;
+  .bm-input-full {
+    width: 100%;
+    padding: 14px 16px;
     background: var(--bm-bg-secondary);
     border: 1px solid var(--bm-border);
     border-radius: 12px;
@@ -478,13 +479,13 @@ const WIDGET_STYLES = `
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
 
-  .bm-input-half:focus {
+  .bm-input-full:focus {
     outline: none;
     border-color: var(--bm-primary);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   }
 
-  .bm-input-half::placeholder {
+  .bm-input-full::placeholder {
     color: var(--bm-text-muted);
   }
 
@@ -1932,13 +1933,13 @@ const ChatWidget: React.FC = () => {
                 </div>
               </div>
 
-              {/* Input Row - Name and Email */}
+              {/* Input Stack - Name and Email */}
               {(WIDGET_CONFIG.showNameField || WIDGET_CONFIG.showEmailField) && (
-                <div className="bm-input-row">
+                <div className="bm-input-stack">
                   {WIDGET_CONFIG.showNameField && (
                     <input
                       type="text"
-                      className="bm-input-half"
+                      className="bm-input-full"
                       placeholder="Ime in priimek"
                       value={userName}
                       onChange={e => setUserName(e.target.value)}
@@ -1947,7 +1948,7 @@ const ChatWidget: React.FC = () => {
                   {WIDGET_CONFIG.showEmailField && (
                     <input
                       type="email"
-                      className="bm-input-half"
+                      className="bm-input-full"
                       placeholder="Vaš email"
                       value={userEmail}
                       onChange={e => setUserEmail(e.target.value)}
