@@ -506,10 +506,10 @@ const WIDGET_STYLES = `
 
   .bm-message-input-wrapper {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     background: var(--bm-bg-secondary);
     border: 2px solid var(--bm-border);
-    border-radius: 28px;
+    border-radius: 24px;
     padding: 6px 6px 6px 20px;
     transition: all 0.25s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -526,7 +526,7 @@ const WIDGET_STYLES = `
     background: var(--bm-bg);
   }
 
-  .bm-message-input-wrapper input {
+  .bm-message-input-wrapper textarea {
     flex: 1;
     background: transparent;
     border: none;
@@ -534,10 +534,25 @@ const WIDGET_STYLES = `
     font-size: 15px;
     padding: 10px 0;
     outline: none;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.4;
+    min-height: 24px;
+    max-height: 72px;
+    overflow-y: auto;
   }
 
-  .bm-message-input-wrapper input::placeholder {
+  .bm-message-input-wrapper textarea::placeholder {
     color: var(--bm-text-muted);
+  }
+
+  .bm-message-input-wrapper textarea::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .bm-message-input-wrapper textarea::-webkit-scrollbar-thumb {
+    background: var(--bm-border);
+    border-radius: 2px;
   }
 
   .bm-send-btn-home {
@@ -2071,17 +2086,22 @@ const ChatWidget: React.FC = () => {
               {/* Message Input */}
               <div className="bm-message-input-area">
                 <div className={`bm-message-input-wrapper ${initialMessage.trim() ? 'has-text' : ''}`}>
-                  <input
-                    type="text"
+                  <textarea
                     placeholder={WIDGET_CONFIG.messagePlaceholder}
                     value={initialMessage}
-                    onChange={e => setInitialMessage(e.target.value)}
+                    onChange={e => {
+                      setInitialMessage(e.target.value);
+                      // Auto-resize textarea
+                      e.target.style.height = 'auto';
+                      e.target.style.height = Math.min(e.target.scrollHeight, 72) + 'px';
+                    }}
                     onKeyDown={e => {
-                      if (e.key === 'Enter' && initialMessage.trim()) {
+                      if (e.key === 'Enter' && !e.shiftKey && initialMessage.trim()) {
                         e.preventDefault();
                         handleStartConversation();
                       }
                     }}
+                    rows={1}
                   />
                   <button 
                     className="bm-send-btn-home"
