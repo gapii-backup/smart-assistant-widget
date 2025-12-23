@@ -393,6 +393,18 @@ const WIDGET_STYLES = `
     border-radius: 50%;
     background: #22c55e;
     box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+    animation: bm-pulse-online 2s ease-in-out infinite;
+  }
+
+  @keyframes bm-pulse-online {
+    0%, 100% {
+      opacity: 1;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+    }
+    50% {
+      opacity: 0.6;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
   }
 
   .bm-close-btn {
