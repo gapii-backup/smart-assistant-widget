@@ -467,7 +467,8 @@ const WIDGET_STYLES = `
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 0 20px 16px;
+    padding: 0 20px 8px;
+    margin-top: auto;
   }
 
   .bm-input-full {
@@ -493,8 +494,7 @@ const WIDGET_STYLES = `
 
   /* Message Input Area */
   .bm-message-input-area {
-    padding: 12px 20px 8px;
-    margin-top: auto;
+    padding: 8px 20px 8px;
     background: var(--bm-bg);
   }
 
@@ -904,17 +904,17 @@ const WIDGET_STYLES = `
     line-height: 1;
 
     /* hard lock height (prevents “tall footer” on published) */
-    flex: 0 0 18px !important;
-    height: 18px !important;
-    min-height: 18px !important;
-    max-height: 18px !important;
+    flex: 0 0 24px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
     overflow: hidden;
     box-sizing: border-box;
   }
 
   .bm-footer span {
     color: var(--bm-text-muted);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
     margin: 0;
     padding: 0;
@@ -922,7 +922,7 @@ const WIDGET_STYLES = `
 
   .bm-footer a {
     color: var(--bm-primary);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1;
     text-decoration: none;
     font-weight: 600;
