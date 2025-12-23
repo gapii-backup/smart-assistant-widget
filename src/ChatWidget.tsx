@@ -1830,6 +1830,159 @@ const ChatWidget: React.FC = () => {
     saveCurrentSession();
   }, [messages, saveCurrentSession]);
 
+  // Helper: Extract output from various JSON formats
+  const extractOutputFromResponse = (data: any): string => {
+    // Array format: [{"output": "..."}]
+    if (Array.isArray(data) && data.length > 0) {
+      const item = data[0];
+      if (item.output) return item.output;
+      if (item.response) return item.response;
+      if (item.message) return item.message;
+      if (item.text) return item.text;
+      if (item.content) return item.content;
+    }
+    
+    // Object format: {"output": "..."}
+    if (data && typeof data === 'object') {
+      if (data.output) return data.output;
+      if (data.response) return data.response;
+      if (data.message) return data.message;
+      if (data.text) return data.text;
+      if (data.content) return data.content;
+      // Nested: {"data": {"output": "..."}}
+      if (data.data) {
+        if (data.data.output) return data.data.output;
+        if (data.data.response) return data.data.response;
+      }
+    }
+    
+    return typeof data === 'string' ? data : JSON.stringify(data);
+  };
+
+  // Webhook function with streaming (NDJSON) and non-streaming support
+  const sendMessageToWebhook = async (
+    webhookUrl: string,
+    sessionId: string,
+    message: string,
+    onChunk?: (text: string) => void
+  ): Promise<{ output: string; sessionId: string }> => {
+    const TIMEOUT_MS = 30000;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+    try {
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/x-ndjson, application/json, text/plain'
+        },
+        body: JSON.stringify({
+          sessionId,
+          chatInput: message
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`Server error (${response.status})`);
+      }
+
+      // Try streaming approach first
+      const reader = response.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let fullOutput = '';
+      let lastFlush = 0;
+      let isStreamingDetected = false;
+      let rawText = '';
+
+      function flush(text: string) {
+        const now = Date.now();
+        if (now - lastFlush > 30) {
+          if (onChunk) onChunk(text);
+          lastFlush = now;
+        }
+      }
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+        rawText += chunk;
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          try {
+            const evt = JSON.parse(trimmed);
+
+            // Streaming NDJSON format: {"type": "item", "content": "..."}
+            if (evt.type === 'item' && typeof evt.content === 'string') {
+              isStreamingDetected = true;
+              fullOutput += evt.content;
+              flush(fullOutput);
+            }
+
+            if (evt.type === 'end') {
+              isStreamingDetected = true;
+              if (onChunk) onChunk(fullOutput);
+            }
+          } catch (_) {
+            // Not valid JSON line
+          }
+        }
+      }
+
+      // Process remaining buffer
+      const last = buffer.trim();
+      if (last) {
+        try {
+          const evt = JSON.parse(last);
+          if (evt.type === 'item' && typeof evt.content === 'string') {
+            isStreamingDetected = true;
+            fullOutput += evt.content;
+            if (onChunk) onChunk(fullOutput);
+          }
+        } catch (_) {}
+      }
+
+      // If streaming detected, return
+      if (isStreamingDetected && fullOutput) {
+        return { output: fullOutput, sessionId };
+      }
+      
+      // Fallback: Parse as JSON (non-streaming)
+      try {
+        const data = JSON.parse(rawText.trim());
+        const output = extractOutputFromResponse(data);
+        if (onChunk) onChunk(output);
+        return { output, sessionId };
+      } catch (_) {
+        if (rawText.trim()) {
+          if (onChunk) onChunk(rawText.trim());
+          return { output: rawText.trim(), sessionId };
+        }
+        throw new Error('Invalid server response');
+      }
+
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      throw new Error('Connection failed');
+    }
+  };
+
   const sendMessage = async (content: string) => {
     if (!content.trim()) return;
 
@@ -1845,84 +1998,57 @@ const ChatWidget: React.FC = () => {
     setIsTyping(true);
     setTypingMessage(WIDGET_CONFIG.typingMessages[0]);
 
+    const botMessageId = (Date.now() + 1).toString();
+    let currentBotMessage = '';
+
     try {
-      const response = await fetch(WIDGET_CONFIG.webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: content,
-          sessionId: currentSessionId,
-          userName,
-          userEmail,
-          tableName: WIDGET_CONFIG.tableName,
-          history: messages.map(m => ({
-            role: m.role,
-            content: m.content
-          }))
-        })
-      });
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let botContent = '';
-
-      if (reader) {
-        const botMessageId = (Date.now() + 1).toString();
-        
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n').filter(line => line.trim());
-
-          for (const line of lines) {
-            try {
-              const data = JSON.parse(line);
-              
-              if (data.type === 'item' && data.content) {
-                botContent += data.content;
-                setMessages(prev => {
-                  const existing = prev.find(m => m.id === botMessageId);
-                  if (existing) {
-                    return prev.map(m => 
-                      m.id === botMessageId 
-                        ? { ...m, content: botContent }
-                        : m
-                    );
-                  }
-                  return [...prev, {
-                    id: botMessageId,
-                    role: 'bot',
-                    content: botContent,
-                    timestamp: new Date()
-                  }];
-                });
-              } else if (data.type === 'end') {
-                break;
-              } else if (data.output) {
-                // Non-streaming response
-                botContent = data.output;
-                setMessages(prev => [...prev, {
-                  id: botMessageId,
-                  role: 'bot',
-                  content: botContent,
-                  timestamp: new Date()
-                }]);
-              }
-            } catch {
-              // Not JSON, might be raw text
-              if (line.trim()) {
-                botContent += line;
-              }
+      const result = await sendMessageToWebhook(
+        WIDGET_CONFIG.webhookUrl,
+        currentSessionId,
+        content.trim(),
+        (partialText) => {
+          // Update UI with partial response (streaming)
+          currentBotMessage = partialText;
+          setMessages(prev => {
+            const existing = prev.find(m => m.id === botMessageId);
+            if (existing) {
+              return prev.map(m => 
+                m.id === botMessageId 
+                  ? { ...m, content: currentBotMessage }
+                  : m
+              );
             }
-          }
+            return [...prev, {
+              id: botMessageId,
+              role: 'bot',
+              content: currentBotMessage,
+              timestamp: new Date()
+            }];
+          });
         }
-      }
+      );
+
+      // Ensure final message is set
+      setMessages(prev => {
+        const existing = prev.find(m => m.id === botMessageId);
+        if (existing) {
+          return prev.map(m => 
+            m.id === botMessageId 
+              ? { ...m, content: result.output }
+              : m
+          );
+        }
+        return [...prev, {
+          id: botMessageId,
+          role: 'bot',
+          content: result.output,
+          timestamp: new Date()
+        }];
+      });
     } catch (error) {
       console.error('Send message error:', error);
       setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
+        id: botMessageId,
         role: 'bot',
         content: 'Oprostite, prišlo je do napake. Poskusite znova.',
         timestamp: new Date()
