@@ -27,7 +27,8 @@ const WIDGET_CONFIG = {
   quickQuestions: [
     'Cena storitev?',
     'Kako začeti?',
-    'Govori z agentom'
+    'Govori z agentom',
+    'Kaj ponujate?'
   ],
   
   // Fields
@@ -465,7 +466,8 @@ const WIDGET_STYLES = `
     display: flex;
     flex-direction: column;
     gap: 8px;
-    padding: 0 20px 16px;
+    padding: 0 20px 8px;
+    margin-top: auto;
   }
 
   .bm-input-full {
