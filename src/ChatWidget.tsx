@@ -177,7 +177,7 @@ const WIDGET_STYLES = `
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
-    height: 716px;
+    height: 780px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: var(--bm-shadow);
@@ -1595,18 +1595,15 @@ const ChatWidget: React.FC = () => {
 
   // Email validation
   const validateEmail = (email: string): boolean => {
-    if (!email.trim()) return true; // Empty is ok
+    if (!email.trim()) return true; // Empty is ok (optional field)
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
   const handleEmailChange = (value: string) => {
     setUserEmail(value);
-    if (value && !validateEmail(value)) {
-      setEmailError('Prosim vnesite veljaven email naslov');
-    } else {
-      setEmailError('');
-    }
+    // Clear error when user is typing
+    if (emailError) setEmailError('');
   };
   
   // Chat state
@@ -1842,6 +1839,13 @@ const ChatWidget: React.FC = () => {
   const handleStartConversation = async () => {
     if (!initialMessage.trim()) return;
     
+    // Validate email if provided
+    if (userEmail && !validateEmail(userEmail)) {
+      setEmailError('Prosim vnesite veljaven email naslov');
+      return;
+    }
+    setEmailError('');
+    
     // Send lead data
     if (userName || userEmail) {
       try {
@@ -1869,6 +1873,13 @@ const ChatWidget: React.FC = () => {
   };
 
   const handleQuickQuestion = async (question: string) => {
+    // Validate email if provided
+    if (userEmail && !validateEmail(userEmail)) {
+      setEmailError('Prosim vnesite veljaven email naslov');
+      return;
+    }
+    setEmailError('');
+    
     // Send lead data if available
     if (userName || userEmail) {
       try {
