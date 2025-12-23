@@ -474,6 +474,7 @@ const WIDGET_STYLES = `
     gap: 8px;
     padding: 0 20px 8px;
     margin-top: auto;
+    margin-bottom: 5%;
   }
 
   .bm-input-full {
