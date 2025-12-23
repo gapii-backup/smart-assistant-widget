@@ -253,6 +253,13 @@ const WIDGET_STYLES = `
     min-height: 0;
   }
 
+  .bm-view-enter-none {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
   /* Header - Home */
   .bm-header-home {
     background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, var(--bm-bg) 100%);
@@ -1771,7 +1778,7 @@ const ChatWidget: React.FC = () => {
     return sessionStorage.getItem('bm-welcome-dismissed') === 'true';
   });
   const [view, setView] = useState<View>('home');
-  const [viewDirection, setViewDirection] = useState<'left' | 'right'>('left');
+  const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
   const [modal, setModal] = useState<ModalType>(null);
 
   // Custom setView with direction
