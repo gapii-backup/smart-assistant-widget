@@ -909,10 +909,10 @@ const WIDGET_STYLES = `
     line-height: 1;
 
     /* hard lock height (prevents “tall footer” on published) */
-    flex: 0 0 32px !important;
-    height: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
+    flex: 0 0 42px !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
     overflow: hidden;
     box-sizing: border-box;
   }
