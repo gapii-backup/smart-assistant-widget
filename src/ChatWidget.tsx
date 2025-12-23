@@ -133,7 +133,7 @@ const WIDGET_STYLES = `
     border-radius: 20px;
     padding: 14px 20px;
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
-    max-width: 320px;
+    max-width: 500px;
     display: inline-block;
     cursor: pointer;
     animation: bm-slide-up 0.3s ease;
