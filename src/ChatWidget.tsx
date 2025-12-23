@@ -506,7 +506,7 @@ const WIDGET_STYLES = `
 
   .bm-message-input-wrapper {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     background: var(--bm-bg-secondary);
     border: 2px solid var(--bm-border);
     border-radius: 24px;
