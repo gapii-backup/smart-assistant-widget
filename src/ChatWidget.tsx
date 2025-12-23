@@ -1864,13 +1864,13 @@ const MessageContent: React.FC<{
     remaining = afterProducts;
   }
 
-  // Parse inline formatting (links, bold)
+  // Parse inline formatting (markdown links, URLs, bold)
   const parseInlineFormatting = (text: string, startIdx: number): React.ReactNode[] => {
     const result: React.ReactNode[] = [];
     let idx = startIdx;
     
-    // Combined regex for URLs and **bold**
-    const combinedRegex = /(https?:\/\/[^\s<>\"]+)|\*\*(.+?)\*\*/g;
+    // Combined regex for markdown links [text](url), plain URLs, and **bold**
+    const combinedRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)|(https?:\/\/[^\s<>\")\]]+)|\*\*(.+?)\*\*/g;
     let match;
     let lastIndex = 0;
     
@@ -1879,14 +1879,23 @@ const MessageContent: React.FC<{
         result.push(<span key={idx++}>{text.slice(lastIndex, match.index)}</span>);
       }
       
-      if (match[1]) {
+      if (match[1] && match[2]) {
+        // Markdown link [text](url)
         result.push(
-          <a key={idx++} href={match[1]} target="_blank" rel="noopener noreferrer" className="bm-link">
+          <a key={idx++} href={match[2]} target="_blank" rel="noopener noreferrer" className="bm-link">
             {match[1]}
           </a>
         );
-      } else if (match[2]) {
-        result.push(<strong key={idx++}>{match[2]}</strong>);
+      } else if (match[3]) {
+        // Plain URL
+        result.push(
+          <a key={idx++} href={match[3]} target="_blank" rel="noopener noreferrer" className="bm-link">
+            {match[3]}
+          </a>
+        );
+      } else if (match[4]) {
+        // Bold text
+        result.push(<strong key={idx++}>{match[4]}</strong>);
       }
       
       lastIndex = combinedRegex.lastIndex;
