@@ -133,7 +133,7 @@ const WIDGET_STYLES = `
     border-radius: 16px;
     padding: 16px 20px;
     box-shadow: var(--bm-shadow);
-    max-width: 280px;
+    max-width: 320px;
     cursor: pointer;
     animation: bm-slide-up 0.3s ease;
   }
