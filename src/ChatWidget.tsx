@@ -239,10 +239,18 @@ const WIDGET_STYLES = `
 
   .bm-view-enter-left {
     animation: bm-view-slide-left 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 
   .bm-view-enter-right {
     animation: bm-view-slide-right 0.3s ease-out;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
   }
 
   /* Header - Home */
