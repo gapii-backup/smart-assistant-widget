@@ -2003,9 +2003,15 @@ const ChatWidget: React.FC = () => {
   const handleOpen = () => {
     setIsOpen(true);
     setShowWelcome(false);
+    setWelcomeDismissed(true); // Hide welcome bubble permanently after opening widget
     if (!currentSessionId) {
       startNewSession();
     }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    // Welcome bubble stays dismissed after widget was opened
   };
 
   if (!isHealthy) {
@@ -2034,7 +2040,7 @@ const ChatWidget: React.FC = () => {
       {/* Trigger Button */}
       <button 
         className={`bm-trigger ${isOpen ? 'open' : ''}`}
-        onClick={() => isOpen ? setIsOpen(false) : handleOpen()}
+        onClick={() => isOpen ? handleClose() : handleOpen()}
       >
         {isOpen ? <Icons.Close /> : <Icons.Chat />}
       </button>
@@ -2158,7 +2164,7 @@ const ChatWidget: React.FC = () => {
                   <h3>{WIDGET_CONFIG.botName}</h3>
                   <span>Običajno odgovorimo v nekaj minutah</span>
                 </div>
-                <button className="bm-close-btn" onClick={() => setIsOpen(false)}>
+                <button className="bm-close-btn" onClick={handleClose}>
                   <Icons.Close />
                 </button>
               </div>
@@ -2238,7 +2244,7 @@ const ChatWidget: React.FC = () => {
                   <h3>Zgodovina pogovorov</h3>
                   <span>{sessions.length} pogovor(ov)</span>
                 </div>
-                <button className="bm-close-btn" onClick={() => setIsOpen(false)}>
+                <button className="bm-close-btn" onClick={handleClose}>
                   <Icons.Close />
                 </button>
               </div>
