@@ -1138,6 +1138,15 @@ const WIDGET_STYLES = `
   .bm-list {
     margin: 8px 0;
     padding-left: 20px;
+    list-style-position: outside;
+  }
+
+  ul.bm-list {
+    list-style-type: disc;
+  }
+
+  ol.bm-list {
+    list-style-type: decimal;
   }
 
   .bm-list li {
@@ -1985,7 +1994,11 @@ const MessageContent: React.FC<{
   };
 
   if (remaining) {
-    parts.push(<span key={key++}>{parseTextWithFormatting(remaining)}</span>);
+    parts.push(
+      <React.Fragment key={key++}>
+        {parseTextWithFormatting(remaining)}
+      </React.Fragment>
+    );
   }
 
   return <>{parts.length > 0 ? parts : parseTextWithFormatting(content)}</>;
