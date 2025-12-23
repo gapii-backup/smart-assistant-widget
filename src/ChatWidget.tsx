@@ -123,6 +123,53 @@ const WIDGET_STYLES = `
     transform: rotate(90deg);
   }
 
+  /* Notification dot with ripple */
+  .bm-trigger-dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    border: 2px solid var(--bm-primary);
+  }
+
+  .bm-trigger-dot::before,
+  .bm-trigger-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: translate(-50%, -50%);
+    animation: bm-ripple 2s ease-out infinite;
+  }
+
+  .bm-trigger-dot::after {
+    animation-delay: 1s;
+  }
+
+  @keyframes bm-ripple {
+    0% {
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+    }
+    100% {
+      width: 300%;
+      height: 300%;
+      opacity: 0;
+    }
+  }
+
+  .bm-trigger.open .bm-trigger-dot {
+    display: none;
+  }
+
   /* Welcome Bubble */
   .bm-welcome-bubble {
     position: absolute;
@@ -2202,6 +2249,7 @@ const ChatWidget: React.FC = () => {
         onClick={() => isOpen ? handleClose() : handleOpen()}
       >
         {isOpen ? <Icons.Close /> : <Icons.Chat />}
+        <span className="bm-trigger-dot"></span>
       </button>
 
       {/* Widget */}
