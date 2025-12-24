@@ -1550,39 +1550,20 @@ const WIDGET_STYLES = `
     cursor: not-allowed;
   }
 
-  /* Product card wrapper for animations */
+  /* Carousel track - flex container */
+  .bm-carousel-track {
+    display: flex;
+    transition: transform 0.3s ease-out;
+  }
+
+  .bm-carousel-track.bm-swiping {
+    transition: none;
+  }
+
+  /* Product card wrapper - each card takes full width */
   .bm-product-card-wrapper {
-    transition: all 0.3s ease;
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .bm-carousel-animate-right {
-    animation: slideOutLeft 0.15s ease-out forwards, slideInRight 0.15s ease-out 0.15s forwards;
-  }
-
-  .bm-carousel-animate-left {
-    animation: slideOutRight 0.15s ease-out forwards, slideInLeft 0.15s ease-out 0.15s forwards;
-  }
-
-  @keyframes slideOutLeft {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(-20px); }
-  }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  @keyframes slideOutRight {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(20px); }
-  }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
+    flex: 0 0 100%;
+    min-width: 0;
   }
 
   /* Large product card - single view */
@@ -2673,57 +2654,42 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
 const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   // Swipe gesture state
   const touchStartX = useRef<number | null>(null);
   const minSwipeDistance = 50;
-  const maxSwipeOffset = 100;
 
   const goToNext = useCallback(() => {
-    if (isAnimating || currentIndex >= products.length - 1) return;
-    setDirection('right');
-    setIsAnimating(true);
+    if (currentIndex >= products.length - 1) return;
+    setCurrentIndex(prev => prev + 1);
     setSwipeOffset(0);
-    setTimeout(() => {
-      setCurrentIndex(prev => prev + 1);
-      setIsAnimating(false);
-    }, 300);
-  }, [isAnimating, currentIndex, products.length]);
+  }, [currentIndex, products.length]);
 
   const goToPrev = useCallback(() => {
-    if (isAnimating || currentIndex <= 0) return;
-    setDirection('left');
-    setIsAnimating(true);
+    if (currentIndex <= 0) return;
+    setCurrentIndex(prev => prev - 1);
     setSwipeOffset(0);
-    setTimeout(() => {
-      setCurrentIndex(prev => prev - 1);
-      setIsAnimating(false);
-    }, 300);
-  }, [isAnimating, currentIndex]);
+  }, [currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (isAnimating) return;
     touchStartX.current = e.targetTouches[0].clientX;
     setIsSwiping(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStartX.current || isAnimating) return;
+    if (!touchStartX.current) return;
     
     const currentX = e.targetTouches[0].clientX;
     let offset = currentX - touchStartX.current;
     
-    // Limit offset and add resistance at edges
+    // Add resistance at edges
     if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
-      offset = offset * 0.3; // Add resistance at boundaries
+      offset = offset * 0.3;
     }
     
-    // Clamp offset
-    offset = Math.max(-maxSwipeOffset, Math.min(maxSwipeOffset, offset));
     setSwipeOffset(offset);
   };
 
@@ -2737,34 +2703,32 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
       goToPrev();
     } else {
-      // Snap back with animation
       setSwipeOffset(0);
     }
     
     touchStartX.current = null;
   };
 
-  const product = products[currentIndex];
-  if (!product) return null;
+  if (products.length === 0) return null;
 
-  // Calculate transform style for swipe feedback
-  const cardStyle: React.CSSProperties = isSwiping && !isAnimating
-    ? {
-        transform: `translateX(${swipeOffset}px) rotate(${swipeOffset * 0.02}deg)`,
-        opacity: 1 - Math.abs(swipeOffset) * 0.002,
-        transition: 'none'
-      }
-    : swipeOffset !== 0 && !isAnimating
-    ? {
-        transform: 'translateX(0)',
-        transition: 'transform 0.3s ease, opacity 0.3s ease'
-      }
-    : {};
+  // Get container width for pixel-based transform
+  const containerWidth = containerRef.current?.offsetWidth || 0;
+  
+  // Calculate transform: base position + swipe offset
+  const baseTranslate = -currentIndex * 100; // percentage
+  const swipeTranslatePixels = isSwiping ? swipeOffset : 0;
+
+  const trackStyle: React.CSSProperties = {
+    transform: containerWidth > 0 && isSwiping
+      ? `translateX(calc(${baseTranslate}% + ${swipeTranslatePixels}px))`
+      : `translateX(${baseTranslate}%)`
+  };
 
   return (
     <div 
+      ref={containerRef}
       className="bm-products-carousel" 
-      style={{ marginTop: '12px' }}
+      style={{ marginTop: '12px', overflow: 'hidden' }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -2795,12 +2759,16 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
         </>
       )}
 
-      {/* Product card */}
+      {/* Carousel track with all cards */}
       <div 
-        className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
-        style={cardStyle}
+        className={`bm-carousel-track ${isSwiping ? 'bm-swiping' : ''}`}
+        style={trackStyle}
       >
-        <ProductCard key={currentIndex} product={product} />
+        {products.map((product, index) => (
+          <div key={index} className="bm-product-card-wrapper">
+            <ProductCard product={product} />
+          </div>
+        ))}
       </div>
 
       {/* Dots indicator */}
@@ -2810,15 +2778,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
             <button
               key={i}
               className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
-              onClick={() => {
-                if (isAnimating) return;
-                setDirection(i > currentIndex ? 'right' : 'left');
-                setIsAnimating(true);
-                setTimeout(() => {
-                  setCurrentIndex(i);
-                  setIsAnimating(false);
-                }, 300);
-              }}
+              onClick={() => setCurrentIndex(i)}
               aria-label={`Produkt ${i + 1}`}
             />
           ))}
