@@ -3373,7 +3373,7 @@ const ChatWidget: React.FC = () => {
                     setMessages(prev => [...prev, {
                       id: Date.now().toString(),
                       role: 'bot',
-                      content: 'Vam še kako lahko pomagam?',
+                      content: 'Support ticket uspešno ustvarjen! ✅\nPotrditev ste prejeli na vaš email. 😊',
                       timestamp: new Date()
                     }]);
                   }, 300);
@@ -3483,7 +3483,7 @@ const ChatWidget: React.FC = () => {
                       setMessages(prev => [...prev, {
                         id: Date.now().toString(),
                         role: 'bot',
-                        content: '✅ Termin je uspešno rezerviran! Potrditev ste prejeli na email. Vam lahko še kako pomagam?',
+                        content: 'Termin je uspešno rezerviran! ✅\nPotrditev ste prejeli na vaš email. 😊',
                         timestamp: new Date()
                       }]);
                     }, 300);
