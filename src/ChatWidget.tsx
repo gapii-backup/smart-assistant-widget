@@ -2669,12 +2669,6 @@ const ChatWidget: React.FC = () => {
                     })}
                   </div>
                 )}
-                <button 
-                  className="bm-submit-btn bm-new-chat-btn"
-                  onClick={startNewSession}
-                >
-                  Nov pogovor
-                </button>
               </div>
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
