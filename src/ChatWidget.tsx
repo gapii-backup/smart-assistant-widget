@@ -813,9 +813,32 @@ const WIDGET_STYLES = `
 
   .bm-textarea {
     min-height: 100px;
-    max-height: 150px;
-    resize: none;
-    overflow-y: auto;
+    max-height: 200px;
+    resize: vertical;
+  }
+
+  .bm-email-domains {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .bm-email-domain-btn {
+    padding: 6px 10px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 8px;
+    color: var(--bm-text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .bm-email-domain-btn:hover {
+    background: var(--bm-primary);
+    border-color: var(--bm-primary);
+    color: white;
   }
 
   .bm-input-error {
@@ -2076,6 +2099,7 @@ const ContactForm: React.FC<{
                   type="text"
                   className={`bm-input ${errors.name ? 'bm-input-error' : ''}`}
                   placeholder="Vaše ime in priimek"
+                  autoComplete="name"
                   value={name}
                   onChange={e => {
                     setName(e.target.value);
@@ -2090,6 +2114,7 @@ const ContactForm: React.FC<{
                   type="email"
                   className={`bm-input ${errors.email ? 'bm-input-error' : ''}`}
                   placeholder="vas.email@primer.si"
+                  autoComplete="email"
                   value={email}
                   onChange={e => {
                     setEmail(e.target.value);
@@ -2097,6 +2122,23 @@ const ContactForm: React.FC<{
                   }}
                 />
                 {errors.email && <div className="bm-error-message">{errors.email}</div>}
+                {email && !email.includes('@') && (
+                  <div className="bm-email-domains">
+                    {['@gmail.com', '@outlook.com', '@icloud.com', '@yahoo.com', '@hotmail.com'].map(domain => (
+                      <button
+                        key={domain}
+                        type="button"
+                        className="bm-email-domain-btn"
+                        onClick={() => {
+                          setEmail(email + domain);
+                          if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
+                        }}
+                      >
+                        {domain}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="bm-form-group">
                 <label>Telefon <span style={{ opacity: 0.5, fontWeight: 400 }}>(opcijsko)</span></label>
