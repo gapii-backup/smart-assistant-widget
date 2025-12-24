@@ -2717,6 +2717,8 @@ const ChatWidget: React.FC = () => {
     setUserName('');
     setUserEmail('');
     setInitialMessage('');
+    setNewsletterSubmitted(false);
+    sessionStorage.removeItem('bm-newsletter-submitted');
   }, []);
 
   const loadSession = useCallback((session: Session) => {
@@ -3115,6 +3117,8 @@ const ChatWidget: React.FC = () => {
                   saveCurrentSession();
                   setCurrentSessionId(generateSessionId());
                   setMessages([]);
+                  setNewsletterSubmitted(false);
+                  sessionStorage.removeItem('bm-newsletter-submitted');
                   navigateTo('home', 'right');
                 }}>
                   <Icons.Back />
