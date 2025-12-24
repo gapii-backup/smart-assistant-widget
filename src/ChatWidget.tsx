@@ -775,6 +775,8 @@ const WIDGET_STYLES = `
   /* Form */
   .bm-form-group {
     margin-bottom: 16px;
+    position: relative;
+    padding-bottom: 20px;
   }
 
   .bm-form-group label {
@@ -852,10 +854,13 @@ const WIDGET_STYLES = `
   .bm-error-message {
     color: #ef4444;
     font-size: 12px;
-    margin-top: 6px;
+    margin-top: 4px;
     display: flex;
     align-items: center;
     gap: 6px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
   }
 
   .bm-error-message::before {
