@@ -1541,6 +1541,126 @@ const WIDGET_STYLES = `
     margin: 0;
   }
 
+  /* Phone Input */
+  .bm-phone-input-wrapper {
+    display: flex;
+    gap: 8px;
+  }
+
+  .bm-country-selector {
+    position: relative;
+  }
+
+  .bm-country-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px;
+    background: var(--bm-bg-secondary);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 100%;
+    min-width: 100px;
+  }
+
+  .bm-country-btn:hover {
+    background: var(--bm-border);
+  }
+
+  .bm-country-btn svg {
+    width: 12px;
+    height: 12px;
+    color: var(--bm-text-muted);
+  }
+
+  .bm-country-flag {
+    font-size: 16px;
+  }
+
+  .bm-country-code {
+    color: var(--bm-text);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .bm-country-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    min-width: 220px;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 12px;
+    box-shadow: var(--bm-shadow);
+    z-index: 100;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+
+  .bm-country-search {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid var(--bm-border);
+    background: var(--bm-bg-secondary);
+    color: var(--bm-text);
+    font-size: 13px;
+    outline: none;
+  }
+
+  .bm-country-search::placeholder {
+    color: var(--bm-text-muted);
+  }
+
+  .bm-country-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .bm-country-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+  }
+
+  .bm-country-option:hover {
+    background: var(--bm-bg-secondary);
+  }
+
+  .bm-country-option.active {
+    background: var(--bm-primary);
+  }
+
+  .bm-country-option.active .bm-country-name,
+  .bm-country-option.active .bm-country-code {
+    color: white;
+  }
+
+  .bm-country-option .bm-country-name {
+    flex: 1;
+    color: var(--bm-text);
+    font-size: 13px;
+  }
+
+  .bm-country-option .bm-country-code {
+    color: var(--bm-text-muted);
+    font-size: 12px;
+  }
+
+  .bm-phone-input {
+    flex: 1;
+  }
+
   /* Responsive */
   @media (max-width: 480px) {
     .bm-widget {
@@ -1684,6 +1804,11 @@ const Icons = {
       <polyline points="5 12 12 5 19 12" />
     </svg>
   ),
+  ChevronDown: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  ),
 };
 
 // ============================================================================
@@ -1708,20 +1833,84 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   );
 };
 
+// Country codes data
+const COUNTRY_CODES = [
+  { code: '+386', country: 'Slovenija', flag: '🇸🇮' },
+  { code: '+385', country: 'Hrvaška', flag: '🇭🇷' },
+  { code: '+43', country: 'Avstrija', flag: '🇦🇹' },
+  { code: '+39', country: 'Italija', flag: '🇮🇹' },
+  { code: '+36', country: 'Madžarska', flag: '🇭🇺' },
+  { code: '+49', country: 'Nemčija', flag: '🇩🇪' },
+  { code: '+44', country: 'Velika Britanija', flag: '🇬🇧' },
+  { code: '+33', country: 'Francija', flag: '🇫🇷' },
+  { code: '+34', country: 'Španija', flag: '🇪🇸' },
+  { code: '+31', country: 'Nizozemska', flag: '🇳🇱' },
+  { code: '+32', country: 'Belgija', flag: '🇧🇪' },
+  { code: '+41', country: 'Švica', flag: '🇨🇭' },
+  { code: '+48', country: 'Poljska', flag: '🇵🇱' },
+  { code: '+420', country: 'Češka', flag: '🇨🇿' },
+  { code: '+421', country: 'Slovaška', flag: '🇸🇰' },
+  { code: '+40', country: 'Romunija', flag: '🇷🇴' },
+  { code: '+359', country: 'Bolgarija', flag: '🇧🇬' },
+  { code: '+30', country: 'Grčija', flag: '🇬🇷' },
+  { code: '+381', country: 'Srbija', flag: '🇷🇸' },
+  { code: '+387', country: 'Bosna in Hercegovina', flag: '🇧🇦' },
+  { code: '+382', country: 'Črna gora', flag: '🇲🇪' },
+  { code: '+389', country: 'Severna Makedonija', flag: '🇲🇰' },
+  { code: '+355', country: 'Albanija', flag: '🇦🇱' },
+  { code: '+1', country: 'ZDA / Kanada', flag: '🇺🇸' },
+  { code: '+7', country: 'Rusija', flag: '🇷🇺' },
+  { code: '+380', country: 'Ukrajina', flag: '🇺🇦' },
+  { code: '+90', country: 'Turčija', flag: '🇹🇷' },
+  { code: '+61', country: 'Avstralija', flag: '🇦🇺' },
+  { code: '+86', country: 'Kitajska', flag: '🇨🇳' },
+  { code: '+81', country: 'Japonska', flag: '🇯🇵' },
+  { code: '+82', country: 'Južna Koreja', flag: '🇰🇷' },
+  { code: '+91', country: 'Indija', flag: '🇮🇳' },
+  { code: '+55', country: 'Brazilija', flag: '🇧🇷' },
+  { code: '+52', country: 'Mehika', flag: '🇲🇽' },
+];
+
+// Format phone number with spaces
+const formatPhoneNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, '');
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
+  if (digits.length <= 8) return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+  return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8, 11)}`.trim();
+};
+
 const ContactForm: React.FC<{
   onClose: () => void;
   chatHistory: Message[];
 }> = ({ onClose, chatHistory }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [countryCode, setCountryCode] = useState('+386');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
+
+  const filteredCountries = COUNTRY_CODES.filter(c => 
+    c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
+    c.code.includes(countrySearch)
+  );
+
+  const selectedCountry = COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
+
+  const handlePhoneChange = (value: string) => {
+    const formatted = formatPhoneNumber(value);
+    setPhone(formatted);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const fullPhone = phone ? `${countryCode} ${phone}` : undefined;
 
     try {
       await fetch(WIDGET_CONFIG.supportWebhookUrl, {
@@ -1730,7 +1919,7 @@ const ContactForm: React.FC<{
         body: JSON.stringify({
           name,
           email,
-          phone: phone || undefined,
+          phone: fullPhone,
           message,
           chatHistory: chatHistory.map(m => ({
             role: m.role,
@@ -1761,11 +1950,11 @@ const ContactForm: React.FC<{
         ) : (
             <form onSubmit={handleSubmit}>
               <div className="bm-form-group">
-                <label>Ime</label>
+                <label>Ime in priimek</label>
                 <input
                   type="text"
                   className="bm-input"
-                  placeholder="Vaše ime"
+                  placeholder="Vaše ime in priimek"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
@@ -1784,13 +1973,56 @@ const ContactForm: React.FC<{
               </div>
               <div className="bm-form-group">
                 <label>Telefon <span style={{ opacity: 0.5, fontWeight: 400 }}>(opcijsko)</span></label>
-                <input
-                  type="tel"
-                  className="bm-input"
-                  placeholder="+386 XX XXX XXX"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                />
+                <div className="bm-phone-input-wrapper">
+                  <div className="bm-country-selector">
+                    <button 
+                      type="button"
+                      className="bm-country-btn"
+                      onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                    >
+                      <span className="bm-country-flag">{selectedCountry.flag}</span>
+                      <span className="bm-country-code">{selectedCountry.code}</span>
+                      <Icons.ChevronDown />
+                    </button>
+                    {showCountryDropdown && (
+                      <div className="bm-country-dropdown">
+                        <input
+                          type="text"
+                          className="bm-country-search"
+                          placeholder="Išči državo..."
+                          value={countrySearch}
+                          onChange={e => setCountrySearch(e.target.value)}
+                          autoFocus
+                        />
+                        <div className="bm-country-list">
+                          {filteredCountries.map(c => (
+                            <button
+                              key={c.code}
+                              type="button"
+                              className={`bm-country-option ${c.code === countryCode ? 'active' : ''}`}
+                              onClick={() => {
+                                setCountryCode(c.code);
+                                setShowCountryDropdown(false);
+                                setCountrySearch('');
+                              }}
+                            >
+                              <span className="bm-country-flag">{c.flag}</span>
+                              <span className="bm-country-name">{c.country}</span>
+                              <span className="bm-country-code">{c.code}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    type="tel"
+                    className="bm-input bm-phone-input"
+                    placeholder="XX XXX XXX"
+                    value={phone}
+                    onChange={e => handlePhoneChange(e.target.value)}
+                  />
+                </div>
               </div>
               <div className="bm-form-group">
                 <label>Sporočilo</label>
