@@ -3565,7 +3565,6 @@ const ChatWidget: React.FC = () => {
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
           <span>{WIDGET_CONFIG.edgeTriggerText}</span>
-          <span className="bm-edge-dot"></span>
         </button>
       )}
 
