@@ -7,7 +7,7 @@ import { createRoot } from 'react-dom/client';
 
 const WIDGET_CONFIG = {
   // Display
-  mode: 'light' as 'light' | 'dark',
+  mode: 'dark' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
   
   // Colors
