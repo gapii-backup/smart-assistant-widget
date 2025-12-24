@@ -242,7 +242,7 @@ const WIDGET_STYLES = `
     height: 716px;
     background: var(--bm-bg);
     border-radius: 16px;
-    box-shadow: var(--bm-shadow);
+    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -365,7 +365,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-header-home h2 {
-    color: white;
+    color: ${WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f'};
     font-size: 26px;
     font-weight: 600;
     margin: 0;
