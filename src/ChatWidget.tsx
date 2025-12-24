@@ -2269,6 +2269,12 @@ const WIDGET_STYLES = `
       font-size: 14px;
     }
 
+    /* Smaller textarea for contact form on mobile */
+    .bm-textarea {
+      min-height: 80px;
+      max-height: 80px;
+    }
+
     .bm-message-input-area {
       padding: 8px 16px;
     }
@@ -3660,7 +3666,7 @@ const ChatWidget: React.FC = () => {
     }
   }, [isOpen, welcomeDismissed, isHealthy]);
 
-  // Lock body scroll when widget is open on mobile
+  // Lock body scroll and disable zoom when widget is open on mobile
   useEffect(() => {
     const isMobile = window.innerWidth <= 480;
     
@@ -3676,6 +3682,13 @@ const ChatWidget: React.FC = () => {
       document.body.style.overflow = 'hidden';
       document.body.style.touchAction = 'none';
       
+      // Disable zoom on mobile
+      const existingViewport = document.querySelector('meta[name="viewport"]');
+      const originalContent = existingViewport?.getAttribute('content') || '';
+      if (existingViewport) {
+        existingViewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+      
       return () => {
         // Unlock the body
         document.body.style.position = '';
@@ -3684,6 +3697,11 @@ const ChatWidget: React.FC = () => {
         document.body.style.right = '';
         document.body.style.overflow = '';
         document.body.style.touchAction = '';
+        
+        // Restore original viewport
+        if (existingViewport && originalContent) {
+          existingViewport.setAttribute('content', originalContent);
+        }
         
         // Restore scroll position
         window.scrollTo(0, scrollY);
