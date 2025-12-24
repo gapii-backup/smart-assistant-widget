@@ -2336,21 +2336,13 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = (
         console.log('Cal.com message received:', e.data);
       }
 
-      // Check various Cal.com event formats
+      // Check Cal.com event format: { originator: "CAL", type: "bookingSuccessfulV2", data: {...} }
       const data = e.data;
-      
-      // Format 1: { action: "bookingSuccessful" }
-      // Format 2: { type: "CAL:bookingSuccessful" }
-      // Format 3: { Cal: { action: "bookingSuccessful" } }
-      // Format 4: Nested in detail
       const isBookingSuccess = 
-        data?.action === 'bookingSuccessful' ||
-        data?.action === 'bookingSuccessfulV2' ||
-        data?.type === 'CAL:bookingSuccessful' ||
-        data?.type === 'CAL:bookingSuccessfulV2' ||
-        data?.Cal?.action === 'bookingSuccessful' ||
-        data?.Cal?.action === 'bookingSuccessfulV2' ||
-        (typeof data === 'string' && data.includes('bookingSuccessful'));
+        data?.originator === 'CAL' && (
+          data?.type === 'bookingSuccessful' ||
+          data?.type === 'bookingSuccessfulV2'
+        );
 
       if (isBookingSuccess) {
         console.log('Booking successful detected!', data);
