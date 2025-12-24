@@ -9,6 +9,10 @@ const WIDGET_CONFIG = {
   // Display
   mode: 'dark' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
+  triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
+  
+  // Edge trigger settings (only used when triggerStyle is 'edge')
+  edgeTriggerText: 'Klikni me',
   
   // Colors
   primaryColor: '#3B82F6',
@@ -167,6 +171,75 @@ const WIDGET_STYLES = `
   }
 
   .bm-trigger.open .bm-trigger-dot {
+    display: none;
+  }
+
+  /* Edge Trigger Style */
+  .bm-trigger-edge {
+    position: fixed;
+    ${WIDGET_CONFIG.position}: 0;
+    top: 50%;
+    transform: translateY(-50%) ${WIDGET_CONFIG.position === 'right' ? 'translateX(0)' : 'translateX(0)'};
+    background: var(--bm-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 10px;
+    border-radius: ${WIDGET_CONFIG.position === 'right' ? '8px 0 0 8px' : '0 8px 8px 0'};
+    box-shadow: -4px 0 20px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s ease;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    z-index: 999999;
+  }
+
+  .bm-trigger-edge:hover {
+    ${WIDGET_CONFIG.position === 'right' ? 'transform: translateY(-50%) translateX(-4px);' : 'transform: translateY(-50%) translateX(4px);'}
+    box-shadow: -6px 0 28px rgba(59, 130, 246, 0.4);
+  }
+
+  .bm-trigger-edge svg {
+    width: 20px;
+    height: 20px;
+    color: white;
+    transform: rotate(${WIDGET_CONFIG.position === 'right' ? '0deg' : '180deg'});
+  }
+
+  .bm-trigger-edge span {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .bm-trigger-edge .bm-edge-dot {
+    position: absolute;
+    top: 8px;
+    ${WIDGET_CONFIG.position === 'right' ? 'left: -5px;' : 'right: -5px;'}
+    width: 12px;
+    height: 12px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  .bm-trigger-edge .bm-edge-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.6);
+    transform: translate(-50%, -50%);
+    animation: bm-ripple 2s ease-out infinite;
+  }
+
+  .bm-trigger-edge.open .bm-edge-dot {
     display: none;
   }
 
@@ -3475,14 +3548,28 @@ const ChatWidget: React.FC = () => {
         </div>
       )}
 
-      {/* Trigger Button */}
-      <button 
-        className={`bm-trigger ${isOpen ? 'open' : ''}`}
-        onClick={() => isOpen ? handleClose() : handleOpen()}
-      >
-        {isOpen ? <Icons.Close /> : <Icons.Chat />}
-        <span className="bm-trigger-dot"></span>
-      </button>
+      {/* Trigger Button - Floating Style */}
+      {WIDGET_CONFIG.triggerStyle === 'floating' && (
+        <button 
+          className={`bm-trigger ${isOpen ? 'open' : ''}`}
+          onClick={() => isOpen ? handleClose() : handleOpen()}
+        >
+          {isOpen ? <Icons.Close /> : <Icons.Chat />}
+          <span className="bm-trigger-dot"></span>
+        </button>
+      )}
+
+      {/* Trigger Button - Edge Style */}
+      {WIDGET_CONFIG.triggerStyle === 'edge' && (
+        <button 
+          className={`bm-trigger-edge ${isOpen ? 'open' : ''}`}
+          onClick={() => isOpen ? handleClose() : handleOpen()}
+        >
+          <Icons.Chat />
+          <span>{WIDGET_CONFIG.edgeTriggerText}</span>
+          <span className="bm-edge-dot"></span>
+        </button>
+      )}
 
       {/* Widget */}
       {isOpen && (
