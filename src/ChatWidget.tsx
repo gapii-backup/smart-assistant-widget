@@ -513,7 +513,7 @@ const WIDGET_STYLES = `
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
 
   .bm-avatar-small img {
