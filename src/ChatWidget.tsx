@@ -247,7 +247,7 @@ const WIDGET_STYLES = `
     flex-direction: column;
     overflow: hidden;
     animation: bm-slide-up 0.25s ease;
-    border: 1px solid var(--bm-border);
+    border: 2px solid var(--bm-primary);
   }
 
   @keyframes bm-slide-up {
