@@ -1613,6 +1613,7 @@ const WIDGET_STYLES = `
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
+    text-align: center;
   }
 
   .bm-product-desc-wrapper {
