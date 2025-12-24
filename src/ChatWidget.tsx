@@ -1504,52 +1504,104 @@ const WIDGET_STYLES = `
     margin-top: 0;
   }
 
-  /* Product Cards */
+  /* Product Cards Carousel */
+  .bm-products-carousel {
+    position: relative;
+    width: 100%;
+  }
+
   .bm-products {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     overflow-x: auto;
-    padding: 10px 0;
-    margin-top: 10px;
+    padding: 8px 4px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bm-border) transparent;
   }
 
   .bm-products::-webkit-scrollbar {
     height: 4px;
   }
 
+  .bm-products::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   .bm-products::-webkit-scrollbar-thumb {
     background: var(--bm-border);
-    border-radius: 2px;
+    border-radius: 4px;
   }
 
   .bm-product-card {
     flex-shrink: 0;
-    width: 140px;
+    width: 160px;
     background: var(--bm-bg);
     border: 1px solid var(--bm-border);
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: all 0.2s ease;
+    scroll-snap-align: start;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
   }
 
   .bm-product-card:hover {
     border-color: var(--bm-primary);
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
-  .bm-product-card img {
+  .bm-product-image {
     width: 100%;
     height: 100px;
-    object-fit: cover;
+    overflow: hidden;
+    background: var(--bm-bg-secondary);
   }
 
-  .bm-product-card h5 {
+  .bm-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .bm-product-card:hover .bm-product-image img {
+    transform: scale(1.05);
+  }
+
+  .bm-product-info {
     padding: 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .bm-product-info h5 {
     color: var(--bm-text);
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     margin: 0;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .bm-product-desc {
+    color: var(--bm-text-muted);
+    font-size: 11px;
+    margin: 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* Modal */
@@ -2641,21 +2693,32 @@ const MessageContent: React.FC<{
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     
     try {
-      const products = JSON.parse(productMatch[1]);
+      const products = JSON.parse(productMatch[1].trim());
       parts.push(
-        <div key={key++} className="bm-products">
-          {products.map((product: any, i: number) => (
-            <a
-              key={i}
-              href={product.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bm-product-card"
-            >
-              {product.image && <img src={product.image} alt={product.ime} />}
-              <h5>{product.ime}</h5>
-            </a>
-          ))}
+        <div key={key++} className="bm-products-carousel" style={{ marginTop: '12px' }}>
+          <div className="bm-products">
+            {products.map((product: any, i: number) => (
+              <a
+                key={i}
+                href={product.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bm-product-card"
+              >
+                {product.image_url && (
+                  <div className="bm-product-image">
+                    <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
+                  </div>
+                )}
+                <div className="bm-product-info">
+                  <h5>{product.ime_izdelka}</h5>
+                  {product.kratek_opis && (
+                    <p className="bm-product-desc">{product.kratek_opis}</p>
+                  )}
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       );
     } catch (e) {
