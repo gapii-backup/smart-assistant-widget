@@ -1464,6 +1464,14 @@ const WIDGET_STYLES = `
     border-color: var(--bm-primary);
   }
 
+  .bm-newsletter input.bm-input-error {
+    border-color: #ef4444;
+  }
+
+  .bm-newsletter input.bm-input-error:focus {
+    border-color: #ef4444;
+  }
+
   .bm-newsletter button {
     padding: 10px 16px;
     background: var(--bm-primary);
@@ -2323,10 +2331,12 @@ const MessageContent: React.FC<{
   onContactClick: () => void;
   onBookingClick: () => void;
   sessionId?: string;
-  onNewsletterSuccess?: () => void;
-  newsletterSubmitted?: boolean;
-}> = ({ content, onContactClick, onBookingClick, sessionId, onNewsletterSuccess, newsletterSubmitted }) => {
+  messageId: string;
+  onNewsletterSuccess?: (messageId: string) => void;
+  submittedNewsletterIds: Set<string>;
+}> = ({ content, onContactClick, onBookingClick, sessionId, messageId, onNewsletterSuccess, submittedNewsletterIds }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const isValidEmail = newsletterEmail.includes('@');
 
   const handleNewsletterSubmit = async () => {
     try {
@@ -2340,7 +2350,7 @@ const MessageContent: React.FC<{
           tableName: WIDGET_CONFIG.tableName
         })
       });
-      onNewsletterSuccess?.();
+      onNewsletterSuccess?.(messageId);
     } catch (error) {
       console.error('Newsletter error:', error);
     }
@@ -2505,15 +2515,16 @@ const MessageContent: React.FC<{
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
       <div key={key++} className="bm-newsletter">
-        {newsletterSubmitted ? null : (
+        {submittedNewsletterIds.has(messageId) ? null : (
           <>
             <input
               type="email"
               placeholder="Vaš email"
               value={newsletterEmail}
               onChange={e => setNewsletterEmail(e.target.value)}
+              className={newsletterEmail && !isValidEmail ? 'bm-input-error' : ''}
             />
-            <button onClick={handleNewsletterSubmit} disabled={!newsletterEmail.trim()}>Prijava</button>
+            <button onClick={handleNewsletterSubmit} disabled={!isValidEmail}>Prijava</button>
           </>
         )}
       </div>
@@ -2580,8 +2591,9 @@ const ChatWidget: React.FC = () => {
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
   const [modal, setModal] = useState<ModalType>(null);
   const [contactSuccess, setContactSuccess] = useState(false);
-  const [newsletterSubmitted, setNewsletterSubmitted] = useState(() => {
-    return sessionStorage.getItem('bm-newsletter-submitted') === 'true';
+  const [submittedNewsletterIds, setSubmittedNewsletterIds] = useState<Set<string>>(() => {
+    const saved = sessionStorage.getItem('bm-newsletter-submitted-ids');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
   });
 
   // Custom setView with direction
@@ -2717,8 +2729,8 @@ const ChatWidget: React.FC = () => {
     setUserName('');
     setUserEmail('');
     setInitialMessage('');
-    setNewsletterSubmitted(false);
-    sessionStorage.removeItem('bm-newsletter-submitted');
+    setSubmittedNewsletterIds(new Set());
+    sessionStorage.removeItem('bm-newsletter-submitted-ids');
   }, []);
 
   const loadSession = useCallback((session: Session) => {
@@ -3117,8 +3129,8 @@ const ChatWidget: React.FC = () => {
                   saveCurrentSession();
                   setCurrentSessionId(generateSessionId());
                   setMessages([]);
-                  setNewsletterSubmitted(false);
-                  sessionStorage.removeItem('bm-newsletter-submitted');
+                  setSubmittedNewsletterIds(new Set());
+                  sessionStorage.removeItem('bm-newsletter-submitted-ids');
                   navigateTo('home', 'right');
                 }}>
                   <Icons.Back />
@@ -3149,10 +3161,13 @@ const ChatWidget: React.FC = () => {
                             onContactClick={() => navigateTo('contact', 'right')}
                             onBookingClick={() => setModal('booking')}
                             sessionId={currentSessionId}
-                            newsletterSubmitted={newsletterSubmitted}
-                            onNewsletterSuccess={() => {
-                              setNewsletterSubmitted(true);
-                              sessionStorage.setItem('bm-newsletter-submitted', 'true');
+                            messageId={msg.id}
+                            submittedNewsletterIds={submittedNewsletterIds}
+                            onNewsletterSuccess={(msgId) => {
+                              const newSet = new Set(submittedNewsletterIds);
+                              newSet.add(msgId);
+                              setSubmittedNewsletterIds(newSet);
+                              sessionStorage.setItem('bm-newsletter-submitted-ids', JSON.stringify([...newSet]));
                               setTimeout(() => {
                                 setMessages(prev => [...prev, {
                                   id: Date.now().toString(),
