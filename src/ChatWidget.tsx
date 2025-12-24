@@ -2682,8 +2682,13 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
+  
+  // Swipe gesture state
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const minSwipeDistance = 50;
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     if (isAnimating || currentIndex >= products.length - 1) return;
     setDirection('right');
     setIsAnimating(true);
@@ -2691,9 +2696,9 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       setCurrentIndex(prev => prev + 1);
       setIsAnimating(false);
     }, 300);
-  };
+  }, [isAnimating, currentIndex, products.length]);
 
-  const goToPrev = () => {
+  const goToPrev = useCallback(() => {
     if (isAnimating || currentIndex <= 0) return;
     setDirection('left');
     setIsAnimating(true);
@@ -2701,13 +2706,45 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       setCurrentIndex(prev => prev - 1);
       setIsAnimating(false);
     }, 300);
+  }, [isAnimating, currentIndex]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchEndX.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      goToNext();
+    } else if (isRightSwipe) {
+      goToPrev();
+    }
+    
+    touchStartX.current = null;
+    touchEndX.current = null;
   };
 
   const product = products[currentIndex];
   if (!product) return null;
 
   return (
-    <div className="bm-products-carousel" style={{ marginTop: '12px' }}>
+    <div 
+      className="bm-products-carousel" 
+      style={{ marginTop: '12px' }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Navigation arrows */}
       {products.length > 1 && (
         <>
