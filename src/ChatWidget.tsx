@@ -1508,7 +1508,7 @@ const WIDGET_STYLES = `
   .bm-products-carousel {
     position: relative;
     width: 100%;
-    padding: 8px 16px;
+    padding: 8px 0;
   }
 
   /* Arrow buttons */
@@ -1531,18 +1531,23 @@ const WIDGET_STYLES = `
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .bm-carousel-arrow:hover {
+  .bm-carousel-arrow:hover:not(.bm-carousel-arrow-disabled) {
     background: var(--bm-primary);
     border-color: var(--bm-primary);
     color: white;
   }
 
   .bm-carousel-arrow-left {
-    left: -4px;
+    left: -8px;
   }
 
   .bm-carousel-arrow-right {
-    right: -4px;
+    right: -8px;
+  }
+
+  .bm-carousel-arrow-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   /* Carousel track - flex container */
@@ -1608,7 +1613,6 @@ const WIDGET_STYLES = `
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
-    text-align: center;
   }
 
   .bm-product-desc-wrapper {
