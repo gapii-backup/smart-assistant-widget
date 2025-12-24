@@ -2328,6 +2328,20 @@ const ContactForm: React.FC<{
 };
 
 const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showSuccess: boolean }> = ({ onClose, onSuccess, showSuccess }) => {
+  const hasCalledSuccess = useRef(false);
+
+  const handleBookingSuccess = useCallback(() => {
+    if (hasCalledSuccess.current) return;
+    hasCalledSuccess.current = true;
+    console.log('Booking success handler called (once)');
+    onSuccess?.();
+  }, [onSuccess]);
+
+  useEffect(() => {
+    // Reset flag when component mounts
+    hasCalledSuccess.current = false;
+  }, []);
+
   useEffect(() => {
     // Listen for Cal.com booking success events via postMessage
     const handleCalMessage = (e: MessageEvent) => {
@@ -2345,8 +2359,7 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showS
         );
 
       if (isBookingSuccess) {
-        console.log('Booking successful detected!', data);
-        onSuccess?.();
+        handleBookingSuccess();
       }
     };
 
@@ -2358,21 +2371,13 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showS
       if (calNs) {
         try {
           Object.keys(calNs).forEach(namespace => {
-            // bookingSuccessful event
             calNs[namespace]?.('on', {
               action: 'bookingSuccessful',
-              callback: (e: any) => {
-                console.log('Cal.com bookingSuccessful callback!', e?.detail);
-                onSuccess?.();
-              }
+              callback: () => handleBookingSuccess()
             });
-            // bookingSuccessfulV2 event
             calNs[namespace]?.('on', {
               action: 'bookingSuccessfulV2',
-              callback: (e: any) => {
-                console.log('Cal.com bookingSuccessfulV2 callback!', e?.detail);
-                onSuccess?.();
-              }
+              callback: () => handleBookingSuccess()
             });
           });
         } catch (err) {
@@ -2381,7 +2386,6 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showS
       }
     };
 
-    // Try immediately and also after a delay (Cal might load later)
     setupCalEvents();
     const timeoutId = setTimeout(setupCalEvents, 2000);
 
@@ -2389,7 +2393,7 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showS
       window.removeEventListener('message', handleCalMessage);
       clearTimeout(timeoutId);
     };
-  }, [onSuccess]);
+  }, [handleBookingSuccess]);
 
   if (showSuccess) {
     return (
