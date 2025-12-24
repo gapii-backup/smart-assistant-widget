@@ -2138,9 +2138,10 @@ const ContactForm: React.FC<{
           email,
           phone: fullPhone,
           message,
-          chatHistory: chatHistory.map(m => 
-            `${m.role === 'user' ? '👤 User' : '🤖 Bot'}: ${m.content}`
-          ).join('\n\n'),
+          chatHistory: chatHistory.map(m => {
+            let content = m.content.replace('[CONTACT_FORM]', '').trim();
+            return `${m.role === 'user' ? '👤 User' : '🤖 Bot'}: ${content}`;
+          }).join('\n\n'),
           tableName: WIDGET_CONFIG.tableName
         })
       });
