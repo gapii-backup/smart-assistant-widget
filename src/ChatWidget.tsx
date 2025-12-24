@@ -2055,7 +2055,8 @@ const ContactForm: React.FC<{
   onClose: () => void;
   chatHistory: Message[];
   onSuccess?: () => void;
-}> = ({ onClose, chatHistory, onSuccess }) => {
+  sessionId?: string;
+}> = ({ onClose, chatHistory, onSuccess, sessionId }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [countryCode, setCountryCode] = useState('+386');
@@ -2134,6 +2135,7 @@ const ContactForm: React.FC<{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          sessionId,
           name,
           email,
           phone: fullPhone,
@@ -2158,7 +2160,7 @@ const ContactForm: React.FC<{
     <div className="bm-contact-view">
       <div className="bm-contact-content">
         {success ? (
-          <div className="bm-empty bm-success-animation" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+          <div className="bm-empty bm-success-animation" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', minHeight: '300px' }}>
             <Icons.Mail />
             <h4>Sporočilo poslano!</h4>
             <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
@@ -3222,6 +3224,7 @@ const ChatWidget: React.FC = () => {
                 }} 
                 chatHistory={messages}
                 onSuccess={() => setContactSuccess(true)}
+                sessionId={currentSessionId}
               />
             </div>
           )}
