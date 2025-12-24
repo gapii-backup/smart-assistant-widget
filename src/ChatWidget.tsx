@@ -1445,6 +1445,26 @@ const WIDGET_STYLES = `
     animation: bm-slide-up 0.25s ease;
   }
 
+  /* Contact View (inline in widget) */
+  .bm-contact-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .bm-contact-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .bm-contact-content h3 {
+    color: var(--bm-text);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+  }
+
   .bm-modal-header {
     padding: 20px 24px;
     border-bottom: 1px solid var(--bm-border);
@@ -1576,8 +1596,8 @@ interface Session {
   preview: string;
 }
 
-type View = 'home' | 'chat' | 'history';
-type ModalType = 'contact' | 'booking' | null;
+type View = 'home' | 'chat' | 'history' | 'contact';
+type ModalType = 'booking' | null;
 
 // ============================================================================
 // ICONS
@@ -1688,7 +1708,7 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   );
 };
 
-const ContactModal: React.FC<{
+const ContactForm: React.FC<{
   onClose: () => void;
   chatHistory: Message[];
 }> = ({ onClose, chatHistory }) => {
@@ -1728,22 +1748,15 @@ const ContactModal: React.FC<{
   };
 
   return (
-    <div className="bm-modal-overlay" onClick={onClose}>
-      <div className="bm-modal" onClick={e => e.stopPropagation()}>
-        <div className="bm-modal-header">
-          <h3>Kontaktiraj nas</h3>
-          <button className="bm-modal-close" onClick={onClose}>
-            <Icons.Close />
-          </button>
-        </div>
-        <div className="bm-modal-content">
-          {success ? (
-            <div className="bm-empty">
-              <Icons.Mail />
-              <h4>Sporočilo poslano!</h4>
-              <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
-            </div>
-          ) : (
+    <div className="bm-contact-view">
+      <div className="bm-contact-content">
+        {success ? (
+          <div className="bm-empty">
+            <Icons.Mail />
+            <h4>Sporočilo poslano!</h4>
+            <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
+          </div>
+        ) : (
             <form onSubmit={handleSubmit}>
               <div className="bm-form-group">
                 <label>Ime</label>
@@ -1781,7 +1794,6 @@ const ContactModal: React.FC<{
           )}
         </div>
       </div>
-    </div>
   );
 };
 
@@ -2608,7 +2620,7 @@ const ChatWidget: React.FC = () => {
                         <div className="bm-bubble">
                           <MessageContent
                             content={msg.content}
-                            onContactClick={() => setModal('contact')}
+                            onContactClick={() => navigateTo('contact', 'right')}
                             onBookingClick={() => setModal('booking')}
                           />
                         </div>
@@ -2675,6 +2687,26 @@ const ChatWidget: React.FC = () => {
                   <span>⚡</span>
                 </div>
               )}
+            </div>
+          )}
+
+          {view === 'contact' && (
+            <div className={`bm-view-enter-${viewDirection}`}>
+              <div className="bm-header-chat">
+                <button className="bm-back-btn" onClick={() => navigateTo('chat', 'left')}>
+                  <Icons.Back />
+                </button>
+                <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
+                  <h3 style={{ fontSize: '18px' }}>Kontaktiraj nas</h3>
+                </div>
+                <button className="bm-close-btn" onClick={handleClose}>
+                  <Icons.Close />
+                </button>
+              </div>
+              <ContactForm 
+                onClose={() => navigateTo('chat', 'left')} 
+                chatHistory={messages}
+              />
             </div>
           )}
 
@@ -2750,12 +2782,6 @@ const ChatWidget: React.FC = () => {
       )}
 
       {/* Modals */}
-      {modal === 'contact' && (
-        <ContactModal 
-          onClose={() => setModal(null)} 
-          chatHistory={messages}
-        />
-      )}
       {modal === 'booking' && (
         <BookingModal onClose={() => setModal(null)} />
       )}
