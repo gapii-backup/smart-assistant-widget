@@ -814,8 +814,8 @@ const WIDGET_STYLES = `
   }
 
   .bm-textarea {
-    min-height: 100px;
-    max-height: 100px;
+    min-height: 150px;
+    max-height: 150px;
     resize: none;
   }
 
