@@ -1601,24 +1601,17 @@ const WIDGET_STYLES = `
 
   .bm-product-image-large {
     width: 100%;
-    aspect-ratio: 1 / 1;
-    max-height: 200px;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
-    background: var(--bm-bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    margin: 8px;
-    margin-bottom: 0;
-    width: calc(100% - 16px);
   }
 
   .bm-product-image-large img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    padding: 12px;
+    object-fit: cover;
     transition: transform 0.3s ease;
   }
 
