@@ -1509,6 +1509,18 @@ const WIDGET_STYLES = `
     position: relative;
     width: 100%;
     padding: 8px 0;
+    overflow: hidden;
+  }
+
+  .bm-carousel-track {
+    display: flex;
+    width: 300%;
+    transition: transform 0.3s ease;
+  }
+
+  .bm-carousel-slide {
+    width: 33.333%;
+    flex-shrink: 0;
   }
 
   /* Arrow buttons */
@@ -1531,7 +1543,7 @@ const WIDGET_STYLES = `
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .bm-carousel-arrow:hover:not(.bm-carousel-arrow-disabled) {
+  .bm-carousel-arrow:hover {
     background: var(--bm-primary);
     border-color: var(--bm-primary);
     color: white;
@@ -1545,34 +1557,11 @@ const WIDGET_STYLES = `
     right: -8px;
   }
 
-  .bm-carousel-arrow-disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
   /* Product card wrapper for animations */
   .bm-product-card-wrapper {
     transition: all 0.3s ease;
     opacity: 1;
     transform: translateX(0);
-  }
-
-  .bm-carousel-animate-right {
-    animation: slideOutLeft 0.3s ease-out forwards;
-  }
-
-  .bm-carousel-animate-left {
-    animation: slideOutRight 0.3s ease-out forwards;
-  }
-
-  @keyframes slideOutLeft {
-    from { transform: translateX(0); }
-    to { transform: translateX(-100%); }
-  }
-
-  @keyframes slideOutRight {
-    from { transform: translateX(0); }
-    to { transform: translateX(100%); }
   }
 
   /* Large product card - single view */
@@ -2664,57 +2653,37 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
 const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   
   // Swipe gesture state
   const touchStartX = useRef<number | null>(null);
   const minSwipeDistance = 50;
-  const maxSwipeOffset = 100;
+
+  // Get next index with infinite loop
+  const getNextIndex = (index: number) => (index + 1) % products.length;
+  const getPrevIndex = (index: number) => (index - 1 + products.length) % products.length;
 
   const goToNext = useCallback(() => {
-    if (isAnimating || currentIndex >= products.length - 1) return;
-    setDirection('right');
-    setIsAnimating(true);
+    setCurrentIndex(prev => getNextIndex(prev));
     setSwipeOffset(0);
-    setTimeout(() => {
-      setCurrentIndex(prev => prev + 1);
-      setIsAnimating(false);
-    }, 300);
-  }, [isAnimating, currentIndex, products.length]);
+  }, [products.length]);
 
   const goToPrev = useCallback(() => {
-    if (isAnimating || currentIndex <= 0) return;
-    setDirection('left');
-    setIsAnimating(true);
+    setCurrentIndex(prev => getPrevIndex(prev));
     setSwipeOffset(0);
-    setTimeout(() => {
-      setCurrentIndex(prev => prev - 1);
-      setIsAnimating(false);
-    }, 300);
-  }, [isAnimating, currentIndex]);
+  }, [products.length]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    if (isAnimating) return;
     touchStartX.current = e.targetTouches[0].clientX;
     setIsSwiping(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStartX.current || isAnimating) return;
+    if (!touchStartX.current) return;
     
     const currentX = e.targetTouches[0].clientX;
-    let offset = currentX - touchStartX.current;
-    
-    // Limit offset and add resistance at edges
-    if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
-      offset = offset * 0.3; // Add resistance at boundaries
-    }
-    
-    // Clamp offset
-    offset = Math.max(-maxSwipeOffset, Math.min(maxSwipeOffset, offset));
+    const offset = currentX - touchStartX.current;
     setSwipeOffset(offset);
   };
 
@@ -2723,12 +2692,11 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     
     setIsSwiping(false);
     
-    if (swipeOffset < -minSwipeDistance && currentIndex < products.length - 1) {
+    if (swipeOffset < -minSwipeDistance) {
       goToNext();
-    } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
+    } else if (swipeOffset > minSwipeDistance) {
       goToPrev();
     } else {
-      // Snap back with animation
       setSwipeOffset(0);
     }
     
@@ -2736,20 +2704,13 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   };
 
   const product = products[currentIndex];
+  const nextProduct = products[getNextIndex(currentIndex)];
+  const prevProduct = products[getPrevIndex(currentIndex)];
+  
   if (!product) return null;
 
-  // Calculate transform style for swipe feedback - classic slide with translateX
-  const cardStyle: React.CSSProperties = isSwiping && !isAnimating
-    ? {
-        transform: `translateX(${swipeOffset}px)`,
-        transition: 'none'
-      }
-    : swipeOffset !== 0 && !isAnimating
-    ? {
-        transform: 'translateX(0)',
-        transition: 'transform 0.3s ease'
-      }
-    : {};
+  // Calculate track position based on swipe
+  const trackOffset = isSwiping ? swipeOffset : 0;
 
   return (
     <div 
@@ -2763,9 +2724,8 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       {products.length > 1 && (
         <>
           <button
-            className={`bm-carousel-arrow bm-carousel-arrow-left ${currentIndex === 0 ? 'bm-carousel-arrow-disabled' : ''}`}
+            className="bm-carousel-arrow bm-carousel-arrow-left"
             onClick={goToPrev}
-            disabled={currentIndex === 0}
             aria-label="Prejšnji produkt"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2773,9 +2733,8 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
             </svg>
           </button>
           <button
-            className={`bm-carousel-arrow bm-carousel-arrow-right ${currentIndex === products.length - 1 ? 'bm-carousel-arrow-disabled' : ''}`}
+            className="bm-carousel-arrow bm-carousel-arrow-right"
             onClick={goToNext}
-            disabled={currentIndex === products.length - 1}
             aria-label="Naslednji produkt"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2785,12 +2744,23 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
         </>
       )}
 
-      {/* Product card */}
+      {/* Carousel track with slides */}
       <div 
-        className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
-        style={cardStyle}
+        className="bm-carousel-track"
+        style={{
+          transform: `translateX(calc(-50% + ${trackOffset}px))`,
+          transition: isSwiping ? 'none' : 'transform 0.3s ease'
+        }}
       >
-        <ProductCard key={currentIndex} product={product} />
+        <div className="bm-carousel-slide">
+          <ProductCard key={getPrevIndex(currentIndex)} product={prevProduct} />
+        </div>
+        <div className="bm-carousel-slide">
+          <ProductCard key={currentIndex} product={product} />
+        </div>
+        <div className="bm-carousel-slide">
+          <ProductCard key={getNextIndex(currentIndex)} product={nextProduct} />
+        </div>
       </div>
 
       {/* Dots indicator */}
@@ -2800,15 +2770,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
             <button
               key={i}
               className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
-              onClick={() => {
-                if (isAnimating) return;
-                setDirection(i > currentIndex ? 'right' : 'left');
-                setIsAnimating(true);
-                setTimeout(() => {
-                  setCurrentIndex(i);
-                  setIsAnimating(false);
-                }, 300);
-              }}
+              onClick={() => setCurrentIndex(i)}
               aria-label={`Produkt ${i + 1}`}
             />
           ))}
