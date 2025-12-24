@@ -2335,9 +2335,17 @@ const MessageContent: React.FC<{
   onNewsletterSuccess?: (messageId: string) => void;
   submittedNewsletterIds: Set<string>;
 }> = ({ content, onContactClick, onBookingClick, sessionId, messageId, onNewsletterSuccess, submittedNewsletterIds }) => {
-  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterEmail, setNewsletterEmail] = useState(() => {
+    return localStorage.getItem('bm-saved-email') || '';
+  });
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const isValidEmail = newsletterEmail.includes('@');
+
+  const handleEmailChange = (email: string) => {
+    setNewsletterEmail(email);
+    setAttemptedSubmit(false);
+    localStorage.setItem('bm-saved-email', email);
+  };
 
   const handleNewsletterSubmit = async () => {
     if (!isValidEmail) {
@@ -2526,10 +2534,7 @@ const MessageContent: React.FC<{
               type="email"
               placeholder="Vaš email"
               value={newsletterEmail}
-              onChange={e => {
-                setNewsletterEmail(e.target.value);
-                setAttemptedSubmit(false);
-              }}
+              onChange={e => handleEmailChange(e.target.value)}
               className={attemptedSubmit && !isValidEmail ? 'bm-input-error' : ''}
             />
             <button onClick={handleNewsletterSubmit}>Prijava</button>
