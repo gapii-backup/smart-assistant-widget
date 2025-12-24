@@ -829,6 +829,7 @@ const WIDGET_STYLES = `
     display: flex;
     gap: 10px;
     animation: bm-fade-in 0.2s ease;
+    align-items: flex-end;
   }
 
   @keyframes bm-fade-in {
@@ -887,7 +888,7 @@ const WIDGET_STYLES = `
   /* Typing Indicator */
   .bm-typing {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 10px;
     animation: bm-fade-in 0.2s ease;
   }
