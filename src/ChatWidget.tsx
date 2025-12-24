@@ -2120,6 +2120,7 @@ const WIDGET_STYLES = `
     .bm-widget-container {
       bottom: 16px;
       ${WIDGET_CONFIG.position}: 16px;
+      --keyboard-height: 0px;
     }
 
     .bm-widget-container.widget-open {
@@ -2150,11 +2151,57 @@ const WIDGET_STYLES = `
       top: 0 !important;
       left: 0 !important;
       right: 0 !important;
-      bottom: 0 !important;
+      bottom: var(--keyboard-height, 0px) !important;
       width: 100vw !important;
-      height: 100vh !important;
+      height: calc(100vh - var(--keyboard-height, 0px)) !important;
+      height: calc(100dvh - var(--keyboard-height, 0px)) !important;
       max-height: none !important;
       border-radius: 0 !important;
+      transition: height 0.2s ease-out, bottom 0.2s ease-out;
+    }
+
+    /* When keyboard is open, adjust the widget */
+    .bm-widget-container.keyboard-open .bm-widget {
+      bottom: var(--keyboard-height, 0px) !important;
+      height: calc(100vh - var(--keyboard-height, 0px)) !important;
+      height: calc(100dvh - var(--keyboard-height, 0px)) !important;
+    }
+
+    /* Keep input areas visible when keyboard is open */
+    .bm-widget-container.keyboard-open .bm-bottom-section,
+    .bm-widget-container.keyboard-open .bm-input-area {
+      padding-bottom: 8px !important;
+    }
+
+    /* Reduce header size when keyboard is open to show more content */
+    .bm-widget-container.keyboard-open .bm-header-home {
+      padding: 12px 16px 16px;
+      padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    }
+
+    .bm-widget-container.keyboard-open .bm-header-home h2 {
+      font-size: 20px;
+    }
+
+    .bm-widget-container.keyboard-open .bm-monitor-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+    }
+
+    .bm-widget-container.keyboard-open .bm-monitor-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Hide quick questions section when keyboard is open to save space */
+    .bm-widget-container.keyboard-open .bm-quick-section {
+      display: none;
+    }
+
+    /* Adjust footer when keyboard is open */
+    .bm-widget-container.keyboard-open .bm-footer {
+      display: none;
     }
 
     .bm-welcome-bubble {
@@ -3420,6 +3467,7 @@ const ChatWidget: React.FC = () => {
   });
   const [view, setView] = useState<View>('home');
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   
   const [contactSuccess, setContactSuccess] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
@@ -3474,6 +3522,68 @@ const ChatWidget: React.FC = () => {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingMessageIndex = useRef(0);
+
+  // iOS keyboard detection using visualViewport API
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.visualViewport) {
+        const windowHeight = window.innerHeight;
+        const viewportHeight = window.visualViewport.height;
+        const keyboardH = windowHeight - viewportHeight;
+        
+        // Only set if keyboard is actually visible (> 100px difference)
+        if (keyboardH > 100) {
+          setKeyboardHeight(keyboardH);
+          // Scroll input into view
+          const activeElement = document.activeElement as HTMLElement;
+          if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+            setTimeout(() => {
+              activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+          }
+        } else {
+          setKeyboardHeight(0);
+        }
+      }
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
+    }
+
+    // Fallback for older browsers - detect focus on inputs
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+        // On iOS, when keyboard opens, we need to adjust
+        setTimeout(() => {
+          if (window.visualViewport) {
+            handleResize();
+          }
+        }, 300);
+      }
+    };
+
+    const handleFocusOut = () => {
+      // Small delay to let viewport settle
+      setTimeout(() => {
+        setKeyboardHeight(0);
+      }, 100);
+    };
+
+    document.addEventListener('focusin', handleFocusIn);
+    document.addEventListener('focusout', handleFocusOut);
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
+      }
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
+    };
+  }, []);
 
   // Health check on mount and every 10 minutes
   useEffect(() => {
@@ -3824,7 +3934,10 @@ const ChatWidget: React.FC = () => {
   }
 
   return (
-    <div className={`bm-widget-container ${isOpen ? 'widget-open' : ''}`}>
+    <div 
+      className={`bm-widget-container ${isOpen ? 'widget-open' : ''} ${keyboardHeight > 0 ? 'keyboard-open' : ''}`}
+      style={{ '--keyboard-height': `${keyboardHeight}px` } as React.CSSProperties}
+    >
       {/* Welcome Bubble */}
       {showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
