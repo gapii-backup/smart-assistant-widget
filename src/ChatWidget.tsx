@@ -2682,16 +2682,19 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
+  const [swipeOffset, setSwipeOffset] = useState(0);
+  const [isSwiping, setIsSwiping] = useState(false);
   
   // Swipe gesture state
   const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
   const minSwipeDistance = 50;
+  const maxSwipeOffset = 100;
 
   const goToNext = useCallback(() => {
     if (isAnimating || currentIndex >= products.length - 1) return;
     setDirection('right');
     setIsAnimating(true);
+    setSwipeOffset(0);
     setTimeout(() => {
       setCurrentIndex(prev => prev + 1);
       setIsAnimating(false);
@@ -2702,6 +2705,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     if (isAnimating || currentIndex <= 0) return;
     setDirection('left');
     setIsAnimating(true);
+    setSwipeOffset(0);
     setTimeout(() => {
       setCurrentIndex(prev => prev - 1);
       setIsAnimating(false);
@@ -2709,33 +2713,60 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   }, [isAnimating, currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isAnimating) return;
     touchStartX.current = e.targetTouches[0].clientX;
-    touchEndX.current = null;
+    setIsSwiping(true);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
+    if (!touchStartX.current || isAnimating) return;
+    
+    const currentX = e.targetTouches[0].clientX;
+    let offset = currentX - touchStartX.current;
+    
+    // Limit offset and add resistance at edges
+    if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
+      offset = offset * 0.3; // Add resistance at boundaries
+    }
+    
+    // Clamp offset
+    offset = Math.max(-maxSwipeOffset, Math.min(maxSwipeOffset, offset));
+    setSwipeOffset(offset);
   };
 
   const handleTouchEnd = () => {
-    if (!touchStartX.current || !touchEndX.current) return;
+    if (!touchStartX.current) return;
     
-    const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
+    setIsSwiping(false);
     
-    if (isLeftSwipe) {
+    if (swipeOffset < -minSwipeDistance && currentIndex < products.length - 1) {
       goToNext();
-    } else if (isRightSwipe) {
+    } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
       goToPrev();
+    } else {
+      // Snap back with animation
+      setSwipeOffset(0);
     }
     
     touchStartX.current = null;
-    touchEndX.current = null;
   };
 
   const product = products[currentIndex];
   if (!product) return null;
+
+  // Calculate transform style for swipe feedback
+  const cardStyle: React.CSSProperties = isSwiping && !isAnimating
+    ? {
+        transform: `translateX(${swipeOffset}px) rotate(${swipeOffset * 0.02}deg)`,
+        opacity: 1 - Math.abs(swipeOffset) * 0.002,
+        transition: 'none'
+      }
+    : swipeOffset !== 0 && !isAnimating
+    ? {
+        transform: 'translateX(0)',
+        transition: 'transform 0.3s ease, opacity 0.3s ease'
+      }
+    : {};
 
   return (
     <div 
@@ -2774,6 +2805,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       {/* Product card */}
       <div 
         className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
+        style={cardStyle}
       >
         <ProductCard key={currentIndex} product={product} />
       </div>
