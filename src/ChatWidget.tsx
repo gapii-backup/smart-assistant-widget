@@ -2603,7 +2603,7 @@ const ChatWidget: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingMessageIndex = useRef(0);
 
-  // Health check on mount
+  // Health check on mount and every 10 minutes
   useEffect(() => {
     const checkHealth = async () => {
       try {
@@ -2613,7 +2613,14 @@ const ChatWidget: React.FC = () => {
         setIsHealthy(false);
       }
     };
+    
+    // Initial check
     checkHealth();
+    
+    // Periodic check every 10 minutes (600000ms)
+    const intervalId = setInterval(checkHealth, 600000);
+    
+    return () => clearInterval(intervalId);
   }, []);
 
   // Load sessions from localStorage
