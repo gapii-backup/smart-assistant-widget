@@ -516,6 +516,23 @@ const WIDGET_STYLES = `
     margin-bottom: 22px;
   }
 
+  .bm-avatar-header {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: var(--bm-bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .bm-avatar-header svg {
+    width: 20px;
+    height: 20px;
+  }
+
   .bm-avatar-small img {
     width: 100%;
     height: 100%;
@@ -2559,7 +2576,9 @@ const ChatWidget: React.FC = () => {
                 }}>
                   <Icons.Back />
                 </button>
-                <Avatar small />
+                <div className="bm-avatar-header">
+                  <Icons.Bot />
+                </div>
                 <div className="bm-header-info">
                   <h3>{WIDGET_CONFIG.botName}</h3>
                   <span className="bm-online-status">
