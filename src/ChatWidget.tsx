@@ -2329,10 +2329,31 @@ const ContactForm: React.FC<{
 
 const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = ({ onClose, onSuccess }) => {
   useEffect(() => {
-    // Listen for Cal.com booking success event
+    // Listen for Cal.com booking success events via postMessage
     const handleCalMessage = (e: MessageEvent) => {
-      // Cal.com sends postMessage events
-      if (e.data?.action === 'bookingSuccessful' || e.data?.type === 'CAL:bookingSuccessful') {
+      // Debug: log all messages from Cal.com domain
+      if (e.origin?.includes('cal.com') || e.origin?.includes('cal.botmotion')) {
+        console.log('Cal.com message received:', e.data);
+      }
+
+      // Check various Cal.com event formats
+      const data = e.data;
+      
+      // Format 1: { action: "bookingSuccessful" }
+      // Format 2: { type: "CAL:bookingSuccessful" }
+      // Format 3: { Cal: { action: "bookingSuccessful" } }
+      // Format 4: Nested in detail
+      const isBookingSuccess = 
+        data?.action === 'bookingSuccessful' ||
+        data?.action === 'bookingSuccessfulV2' ||
+        data?.type === 'CAL:bookingSuccessful' ||
+        data?.type === 'CAL:bookingSuccessfulV2' ||
+        data?.Cal?.action === 'bookingSuccessful' ||
+        data?.Cal?.action === 'bookingSuccessfulV2' ||
+        (typeof data === 'string' && data.includes('bookingSuccessful'));
+
+      if (isBookingSuccess) {
+        console.log('Booking successful detected!', data);
         onSuccess?.();
         onClose();
       }
@@ -2341,25 +2362,43 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = (
     window.addEventListener('message', handleCalMessage);
 
     // Also try Cal.com's native event system if available
-    const calNs = (window as any).Cal?.ns;
-    if (calNs) {
-      try {
-        Object.keys(calNs).forEach(namespace => {
-          calNs[namespace]?.('on', {
-            action: 'bookingSuccessful',
-            callback: () => {
-              onSuccess?.();
-              onClose();
-            }
+    const setupCalEvents = () => {
+      const calNs = (window as any).Cal?.ns;
+      if (calNs) {
+        try {
+          Object.keys(calNs).forEach(namespace => {
+            // bookingSuccessful event
+            calNs[namespace]?.('on', {
+              action: 'bookingSuccessful',
+              callback: (e: any) => {
+                console.log('Cal.com bookingSuccessful callback!', e?.detail);
+                onSuccess?.();
+                onClose();
+              }
+            });
+            // bookingSuccessfulV2 event
+            calNs[namespace]?.('on', {
+              action: 'bookingSuccessfulV2',
+              callback: (e: any) => {
+                console.log('Cal.com bookingSuccessfulV2 callback!', e?.detail);
+                onSuccess?.();
+                onClose();
+              }
+            });
           });
-        });
-      } catch (e) {
-        // Cal.com namespace not ready, rely on postMessage
+        } catch (err) {
+          console.log('Cal.com namespace setup error:', err);
+        }
       }
-    }
+    };
+
+    // Try immediately and also after a delay (Cal might load later)
+    setupCalEvents();
+    const timeoutId = setTimeout(setupCalEvents, 2000);
 
     return () => {
       window.removeEventListener('message', handleCalMessage);
+      clearTimeout(timeoutId);
     };
   }, [onClose, onSuccess]);
 
