@@ -2330,91 +2330,6 @@ const MessageContent: React.FC<{
   let remaining = content;
   let key = 0;
 
-  // Contact form
-  if (remaining.includes('[CONTACT_FORM]')) {
-    const [before, after] = remaining.split('[CONTACT_FORM]');
-    if (before) parts.push(<span key={key++}>{before}</span>);
-    parts.push(
-      <div key={key++} style={{ marginTop: '8px' }}>
-        <button className="bm-action-btn" onClick={onContactClick}>
-          <Icons.Mail />
-          Kontaktiraj nas
-        </button>
-      </div>
-    );
-    remaining = after || '';
-  }
-
-  // Booking
-  if (remaining.includes('[BOOKING]') && WIDGET_CONFIG.bookingEnabled) {
-    const [before, after] = remaining.split('[BOOKING]');
-    if (before) parts.push(<span key={key++}>{before}</span>);
-    parts.push(
-      <button key={key++} className="bm-action-btn" onClick={onBookingClick}>
-        <Icons.Calendar />
-        Rezerviraj termin
-      </button>
-    );
-    remaining = after || '';
-  }
-
-  // Newsletter
-  if (remaining.includes('[NEWSLETTER]')) {
-    const [before, after] = remaining.split('[NEWSLETTER]');
-    if (before) parts.push(<span key={key++}>{before}</span>);
-    parts.push(
-      <div key={key++} className="bm-newsletter">
-        {newsletterSubmitted ? (
-          <span style={{ color: 'var(--bm-primary)' }}>Hvala za prijavo!</span>
-        ) : (
-          <>
-            <input
-              type="email"
-              placeholder="Vaš email"
-              value={newsletterEmail}
-              onChange={e => setNewsletterEmail(e.target.value)}
-            />
-            <button onClick={handleNewsletterSubmit}>Prijava</button>
-          </>
-        )}
-      </div>
-    );
-    remaining = after || '';
-  }
-
-  // Product cards
-  const productMatch = remaining.match(/\[PRODUCT_CARDS\](.*?)\[\/PRODUCT_CARDS\]/s);
-  if (productMatch) {
-    const [before] = remaining.split('[PRODUCT_CARDS]');
-    const afterProducts = remaining.split('[/PRODUCT_CARDS]')[1] || '';
-    
-    if (before) parts.push(<span key={key++}>{before}</span>);
-    
-    try {
-      const products = JSON.parse(productMatch[1]);
-      parts.push(
-        <div key={key++} className="bm-products">
-          {products.map((product: any, i: number) => (
-            <a
-              key={i}
-              href={product.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bm-product-card"
-            >
-              {product.image && <img src={product.image} alt={product.ime} />}
-              <h5>{product.ime}</h5>
-            </a>
-          ))}
-        </div>
-      );
-    } catch (e) {
-      console.error('Product cards parse error:', e);
-    }
-    
-    remaining = afterProducts;
-  }
-
   // Parse inline formatting (markdown links, URLs, bold)
   const parseInlineFormatting = (text: string, startIdx: number): React.ReactNode[] => {
     const result: React.ReactNode[] = [];
@@ -2534,6 +2449,92 @@ const MessageContent: React.FC<{
     
     return result;
   };
+
+  // Contact form
+  if (remaining.includes('[CONTACT_FORM]')) {
+    const [before, after] = remaining.split('[CONTACT_FORM]');
+    if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
+    parts.push(
+      <div key={key++} style={{ marginTop: '8px' }}>
+        <button className="bm-action-btn" onClick={onContactClick}>
+          <Icons.Mail />
+          Kontaktiraj nas
+        </button>
+      </div>
+    );
+    remaining = after || '';
+  }
+
+  // Booking
+  if (remaining.includes('[BOOKING]') && WIDGET_CONFIG.bookingEnabled) {
+    const [before, after] = remaining.split('[BOOKING]');
+    if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
+    parts.push(
+      <button key={key++} className="bm-action-btn" onClick={onBookingClick}>
+        <Icons.Calendar />
+        Rezerviraj termin
+      </button>
+    );
+    remaining = after || '';
+  }
+
+  // Newsletter
+  if (remaining.includes('[NEWSLETTER]')) {
+    const [before, after] = remaining.split('[NEWSLETTER]');
+    if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
+    parts.push(
+      <div key={key++} className="bm-newsletter">
+        {newsletterSubmitted ? (
+          <span style={{ color: 'var(--bm-primary)' }}>Hvala za prijavo!</span>
+        ) : (
+          <>
+            <input
+              type="email"
+              placeholder="Vaš email"
+              value={newsletterEmail}
+              onChange={e => setNewsletterEmail(e.target.value)}
+            />
+            <button onClick={handleNewsletterSubmit}>Prijava</button>
+          </>
+        )}
+      </div>
+    );
+    remaining = after || '';
+  }
+
+  // Product cards
+  const productMatch = remaining.match(/\[PRODUCT_CARDS\](.*?)\[\/PRODUCT_CARDS\]/s);
+  if (productMatch) {
+    const [before] = remaining.split('[PRODUCT_CARDS]');
+    const afterProducts = remaining.split('[/PRODUCT_CARDS]')[1] || '';
+    
+    if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
+    
+    try {
+      const products = JSON.parse(productMatch[1]);
+      parts.push(
+        <div key={key++} className="bm-products">
+          {products.map((product: any, i: number) => (
+            <a
+              key={i}
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bm-product-card"
+            >
+              {product.image && <img src={product.image} alt={product.ime} />}
+              <h5>{product.ime}</h5>
+            </a>
+          ))}
+        </div>
+      );
+    } catch (e) {
+      console.error('Product cards parse error:', e);
+    }
+    
+    remaining = afterProducts;
+  }
+
 
   if (remaining) {
     parts.push(
