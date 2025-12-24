@@ -955,6 +955,7 @@ const WIDGET_STYLES = `
     gap: 10px;
     background: var(--bm-bg);
     flex-shrink: 0;
+    align-items: center;
   }
 
   .bm-chat-input {
@@ -965,26 +966,19 @@ const WIDGET_STYLES = `
     border-radius: 24px;
     color: var(--bm-text);
     font-size: 14px;
-    transition: border-color 0.2s ease;
+    transition: border-color 0.2s ease, height 0.15s ease;
     resize: none;
     font-family: inherit;
     line-height: 1.4;
     min-height: 44px;
     max-height: 64px;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .bm-chat-input::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .bm-chat-input::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .bm-chat-input::-webkit-scrollbar-thumb {
-    background: var(--bm-border);
-    border-radius: 2px;
+    display: none;
   }
 
   .bm-chat-input:focus {
@@ -2613,6 +2607,7 @@ const ChatWidget: React.FC = () => {
               </div>
               <div className="bm-input-area">
                 <textarea
+                  id="bm-chat-textarea"
                   className="bm-chat-input"
                   placeholder={WIDGET_CONFIG.messagePlaceholder}
                   value={inputValue}
@@ -2626,6 +2621,8 @@ const ChatWidget: React.FC = () => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
                       sendMessage(inputValue);
+                      // Reset textarea height
+                      e.currentTarget.style.height = '44px';
                     }
                   }}
                   disabled={isTyping}
@@ -2633,7 +2630,12 @@ const ChatWidget: React.FC = () => {
                 />
                 <button 
                   className="bm-send-btn"
-                  onClick={() => sendMessage(inputValue)}
+                  onClick={() => {
+                    sendMessage(inputValue);
+                    // Reset textarea height
+                    const textarea = document.getElementById('bm-chat-textarea') as HTMLTextAreaElement;
+                    if (textarea) textarea.style.height = '44px';
+                  }}
                   disabled={!inputValue.trim() || isTyping}
                 >
                   <Icons.Send />
