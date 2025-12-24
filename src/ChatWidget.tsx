@@ -2480,7 +2480,7 @@ const ChatWidget: React.FC = () => {
                   </button>
                 </div>
                 <div className="bm-monitor-icon">
-                  <Icons.Monitor />
+                  <Icons.Bot />
                 </div>
                 <h2>
                   <span>{WIDGET_CONFIG.homeTitle}</span>
