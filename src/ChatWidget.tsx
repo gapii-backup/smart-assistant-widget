@@ -2324,9 +2324,9 @@ const MessageContent: React.FC<{
   onBookingClick: () => void;
   sessionId?: string;
   onNewsletterSuccess?: () => void;
-}> = ({ content, onContactClick, onBookingClick, sessionId, onNewsletterSuccess }) => {
+  newsletterSubmitted?: boolean;
+}> = ({ content, onContactClick, onBookingClick, sessionId, onNewsletterSuccess, newsletterSubmitted }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
   const handleNewsletterSubmit = async () => {
     try {
@@ -2340,7 +2340,6 @@ const MessageContent: React.FC<{
           tableName: WIDGET_CONFIG.tableName
         })
       });
-      setNewsletterSubmitted(true);
       onNewsletterSuccess?.();
     } catch (error) {
       console.error('Newsletter error:', error);
@@ -2581,6 +2580,9 @@ const ChatWidget: React.FC = () => {
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
   const [modal, setModal] = useState<ModalType>(null);
   const [contactSuccess, setContactSuccess] = useState(false);
+  const [newsletterSubmitted, setNewsletterSubmitted] = useState(() => {
+    return sessionStorage.getItem('bm-newsletter-submitted') === 'true';
+  });
 
   // Custom setView with direction
   const navigateTo = (newView: View, direction: 'left' | 'right') => {
@@ -3143,7 +3145,10 @@ const ChatWidget: React.FC = () => {
                             onContactClick={() => navigateTo('contact', 'right')}
                             onBookingClick={() => setModal('booking')}
                             sessionId={currentSessionId}
+                            newsletterSubmitted={newsletterSubmitted}
                             onNewsletterSuccess={() => {
+                              setNewsletterSubmitted(true);
+                              sessionStorage.setItem('bm-newsletter-submitted', 'true');
                               setTimeout(() => {
                                 setMessages(prev => [...prev, {
                                   id: Date.now().toString(),
