@@ -2159,20 +2159,16 @@ const ChatWidget: React.FC = () => {
     const preview = firstUserMessage?.content.slice(0, 50) || 'Nov pogovor';
     
     setSessions(prev => {
-      const existing = prev.findIndex(s => s.id === currentSessionId);
       const session: Session = {
         id: currentSessionId,
         messages,
-        createdAt: existing >= 0 ? prev[existing].createdAt : new Date(),
+        createdAt: new Date(), // Always update timestamp to current time
         preview
       };
       
-      if (existing >= 0) {
-        const updated = [...prev];
-        updated[existing] = session;
-        return updated;
-      }
-      return [session, ...prev];
+      // Remove existing session if present, then add to top
+      const filtered = prev.filter(s => s.id !== currentSessionId);
+      return [session, ...filtered];
     });
   }, [messages, currentSessionId]);
 
