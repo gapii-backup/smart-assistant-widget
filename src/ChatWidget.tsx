@@ -242,7 +242,7 @@ const WIDGET_STYLES = `
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
     height: 716px;
-    background: var(--bm-bg);
+    background: var(--bm-bg-home);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
