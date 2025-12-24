@@ -1838,10 +1838,12 @@ const MessageContent: React.FC<{
     const [before, after] = remaining.split('[CONTACT_FORM]');
     if (before) parts.push(<span key={key++}>{before}</span>);
     parts.push(
-      <button key={key++} className="bm-action-btn" onClick={onContactClick}>
-        <Icons.Mail />
-        Kontaktiraj nas
-      </button>
+      <div key={key++} style={{ marginTop: '8px' }}>
+        <button className="bm-action-btn" onClick={onContactClick}>
+          <Icons.Mail />
+          Kontaktiraj nas
+        </button>
+      </div>
     );
     remaining = after || '';
   }
