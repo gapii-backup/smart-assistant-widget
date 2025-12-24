@@ -2692,7 +2692,6 @@ const ChatWidget: React.FC = () => {
               <div className="bm-content">
                 {sessions.length === 0 ? (
                   <div className="bm-empty">
-                    <Icons.MessageSquare />
                     <h4>Ni preteklih pogovorov</h4>
                     <p>Vaši pogovori bodo shranjeni tukaj.</p>
                   </div>
