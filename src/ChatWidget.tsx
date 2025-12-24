@@ -309,8 +309,8 @@ const WIDGET_STYLES = `
 
   /* Header - Home */
   .bm-header-home {
-    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, var(--bm-bg) 100%);
-    padding: 16px 20px 32px;
+    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 30%, var(--bm-bg) 100%);
+    padding: 16px 20px 80px;
     text-align: center;
     flex-shrink: 0;
     position: relative;
