@@ -1615,6 +1615,26 @@ const WIDGET_STYLES = `
     margin: 0;
   }
 
+  /* Booking View (inline in widget) */
+  .bm-booking-view {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .bm-booking-iframe-wrapper {
+    flex: 1;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .bm-booking-iframe-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
   .bm-modal-header {
     padding: 20px 24px;
     border-bottom: 1px solid var(--bm-border);
@@ -1866,8 +1886,7 @@ interface Session {
   preview: string;
 }
 
-type View = 'home' | 'chat' | 'history' | 'contact';
-type ModalType = 'booking' | null;
+type View = 'home' | 'chat' | 'history' | 'contact' | 'booking';
 
 // ============================================================================
 // ICONS
@@ -2308,19 +2327,11 @@ const ContactForm: React.FC<{
   );
 };
 
-const BookingModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const BookingView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
-    <div className="bm-modal-overlay" onClick={onClose}>
-      <div className="bm-modal" onClick={e => e.stopPropagation()}>
-        <div className="bm-modal-header">
-          <h3>Rezerviraj termin</h3>
-          <button className="bm-modal-close" onClick={onClose}>
-            <Icons.Close />
-          </button>
-        </div>
-        <div className="bm-modal-content">
-          <iframe src={WIDGET_CONFIG.bookingUrl} title="Booking" />
-        </div>
+    <div className="bm-booking-view">
+      <div className="bm-booking-iframe-wrapper">
+        <iframe src={WIDGET_CONFIG.bookingUrl} title="Booking" />
       </div>
     </div>
   );
@@ -2597,7 +2608,7 @@ const ChatWidget: React.FC = () => {
   });
   const [view, setView] = useState<View>('home');
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
-  const [modal, setModal] = useState<ModalType>(null);
+  
   const [contactSuccess, setContactSuccess] = useState(false);
   const [submittedNewsletterIds, setSubmittedNewsletterIds] = useState<Set<string>>(() => {
     const saved = sessionStorage.getItem('bm-newsletter-submitted-ids');
@@ -3174,7 +3185,7 @@ const ChatWidget: React.FC = () => {
                           <MessageContent
                             content={msg.content}
                             onContactClick={() => navigateTo('contact', 'right')}
-                            onBookingClick={() => setModal('booking')}
+                            onBookingClick={() => navigateTo('booking', 'right')}
                             sessionId={currentSessionId}
                             messageId={msg.id}
                             submittedNewsletterIds={submittedNewsletterIds}
@@ -3362,12 +3373,29 @@ const ChatWidget: React.FC = () => {
               )}
             </div>
           )}
-        </div>
-      )}
 
-      {/* Modals */}
-      {modal === 'booking' && (
-        <BookingModal onClose={() => setModal(null)} />
+          {view === 'booking' && (
+            <div className={`bm-view-enter-${viewDirection}`}>
+              <div className="bm-header-chat">
+                <button className="bm-back-btn" onClick={() => navigateTo('chat', 'left')}>
+                  <Icons.Back />
+                </button>
+                <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
+                  <h3 style={{ fontSize: '18px' }}>Rezerviraj termin</h3>
+                </div>
+                <div style={{ width: '32px' }}></div>
+              </div>
+              <BookingView onClose={() => navigateTo('chat', 'left')} />
+              {WIDGET_CONFIG.showFooter && (
+                <div className="bm-footer">
+                  <span>⚡Powered by </span>
+                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
+                  <span>⚡</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
