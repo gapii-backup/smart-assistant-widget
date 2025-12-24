@@ -1858,64 +1858,81 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   );
 };
 
-// Country codes data with max phone digits (without country code)
-const COUNTRY_CODES = [
+// Country codes data with trunk prefix and digit limits
+const COUNTRY_CODES: { code: string; country: string; flag: string; trunk: string; minDigits: number; maxDigits: number }[] = [
   // Balkanske države
-  { code: '+386', country: 'Slovenija', flag: '🇸🇮', maxDigits: 8 },
-  { code: '+385', country: 'Hrvaška', flag: '🇭🇷', maxDigits: 9 },
-  { code: '+381', country: 'Srbija', flag: '🇷🇸', maxDigits: 9 },
-  { code: '+387', country: 'Bosna in Hercegovina', flag: '🇧🇦', maxDigits: 8 },
-  { code: '+382', country: 'Črna gora', flag: '🇲🇪', maxDigits: 8 },
-  { code: '+389', country: 'Severna Makedonija', flag: '🇲🇰', maxDigits: 8 },
-  { code: '+383', country: 'Kosovo', flag: '🇽🇰', maxDigits: 8 },
-  { code: '+355', country: 'Albanija', flag: '🇦🇱', maxDigits: 9 },
+  { code: '+386', country: 'Slovenija', flag: '🇸🇮', trunk: '0', minDigits: 8, maxDigits: 8 },
+  { code: '+385', country: 'Hrvaška', flag: '🇭🇷', trunk: '0', minDigits: 8, maxDigits: 12 },
+  { code: '+381', country: 'Srbija', flag: '🇷🇸', trunk: '0', minDigits: 4, maxDigits: 12 },
+  { code: '+387', country: 'BiH', flag: '🇧🇦', trunk: '0', minDigits: 8, maxDigits: 8 },
+  { code: '+382', country: 'Črna gora', flag: '🇲🇪', trunk: '0', minDigits: 4, maxDigits: 12 },
+  { code: '+389', country: 'S. Makedonija', flag: '🇲🇰', trunk: '0', minDigits: 8, maxDigits: 8 },
+  { code: '+383', country: 'Kosovo', flag: '🇽🇰', trunk: '0', minDigits: 8, maxDigits: 8 },
+  { code: '+355', country: 'Albanija', flag: '🇦🇱', trunk: '0', minDigits: 3, maxDigits: 9 },
   // Srednja Evropa
-  { code: '+43', country: 'Avstrija', flag: '🇦🇹', maxDigits: 10 },
-  { code: '+39', country: 'Italija', flag: '🇮🇹', maxDigits: 10 },
-  { code: '+36', country: 'Madžarska', flag: '🇭🇺', maxDigits: 9 },
-  { code: '+49', country: 'Nemčija', flag: '🇩🇪', maxDigits: 11 },
-  { code: '+41', country: 'Švica', flag: '🇨🇭', maxDigits: 9 },
-  { code: '+420', country: 'Češka', flag: '🇨🇿', maxDigits: 9 },
-  { code: '+421', country: 'Slovaška', flag: '🇸🇰', maxDigits: 9 },
-  { code: '+48', country: 'Poljska', flag: '🇵🇱', maxDigits: 9 },
-  { code: '+40', country: 'Romunija', flag: '🇷🇴', maxDigits: 9 },
-  { code: '+359', country: 'Bolgarija', flag: '🇧🇬', maxDigits: 9 },
+  { code: '+43', country: 'Avstrija', flag: '🇦🇹', trunk: '0', minDigits: 4, maxDigits: 13 },
+  { code: '+39', country: 'Italija', flag: '🇮🇹', trunk: '', minDigits: 6, maxDigits: 11 }, // ⚠️ 0 OSTANE!
+  { code: '+36', country: 'Madžarska', flag: '🇭🇺', trunk: '06', minDigits: 8, maxDigits: 9 },
+  { code: '+49', country: 'Nemčija', flag: '🇩🇪', trunk: '0', minDigits: 6, maxDigits: 13 },
+  { code: '+41', country: 'Švica', flag: '🇨🇭', trunk: '0', minDigits: 4, maxDigits: 12 },
+  { code: '+420', country: 'Češka', flag: '🇨🇿', trunk: '', minDigits: 4, maxDigits: 12 },
+  { code: '+421', country: 'Slovaška', flag: '🇸🇰', trunk: '0', minDigits: 4, maxDigits: 9 },
+  { code: '+48', country: 'Poljska', flag: '🇵🇱', trunk: '0', minDigits: 6, maxDigits: 9 },
+  { code: '+40', country: 'Romunija', flag: '🇷🇴', trunk: '0', minDigits: 9, maxDigits: 9 },
+  { code: '+359', country: 'Bolgarija', flag: '🇧🇬', trunk: '0', minDigits: 7, maxDigits: 9 },
   // Zahodna Evropa
-  { code: '+44', country: 'Velika Britanija', flag: '🇬🇧', maxDigits: 10 },
-  { code: '+33', country: 'Francija', flag: '🇫🇷', maxDigits: 9 },
-  { code: '+34', country: 'Španija', flag: '🇪🇸', maxDigits: 9 },
-  { code: '+351', country: 'Portugalska', flag: '🇵🇹', maxDigits: 9 },
-  { code: '+31', country: 'Nizozemska', flag: '🇳🇱', maxDigits: 9 },
-  { code: '+32', country: 'Belgija', flag: '🇧🇪', maxDigits: 9 },
-  { code: '+352', country: 'Luksemburg', flag: '🇱🇺', maxDigits: 9 },
-  { code: '+353', country: 'Irska', flag: '🇮🇪', maxDigits: 9 },
+  { code: '+44', country: 'V. Britanija', flag: '🇬🇧', trunk: '0', minDigits: 7, maxDigits: 10 },
+  { code: '+33', country: 'Francija', flag: '🇫🇷', trunk: '0', minDigits: 9, maxDigits: 9 },
+  { code: '+34', country: 'Španija', flag: '🇪🇸', trunk: '', minDigits: 9, maxDigits: 9 },
+  { code: '+351', country: 'Portugalska', flag: '🇵🇹', trunk: '', minDigits: 9, maxDigits: 11 },
+  { code: '+31', country: 'Nizozemska', flag: '🇳🇱', trunk: '0', minDigits: 9, maxDigits: 9 },
+  { code: '+32', country: 'Belgija', flag: '🇧🇪', trunk: '0', minDigits: 8, maxDigits: 9 },
+  { code: '+352', country: 'Luksemburg', flag: '🇱🇺', trunk: '', minDigits: 4, maxDigits: 11 },
+  { code: '+353', country: 'Irska', flag: '🇮🇪', trunk: '0', minDigits: 7, maxDigits: 11 },
+  { code: '+377', country: 'Monako', flag: '🇲🇨', trunk: '', minDigits: 5, maxDigits: 9 },
+  { code: '+423', country: 'Lihtenštajn', flag: '🇱🇮', trunk: '', minDigits: 7, maxDigits: 9 },
+  { code: '+376', country: 'Andora', flag: '🇦🇩', trunk: '', minDigits: 6, maxDigits: 9 },
+  { code: '+378', country: 'San Marino', flag: '🇸🇲', trunk: '', minDigits: 6, maxDigits: 10 },
+  { code: '+356', country: 'Malta', flag: '🇲🇹', trunk: '', minDigits: 8, maxDigits: 8 },
+  { code: '+350', country: 'Gibraltar', flag: '🇬🇮', trunk: '', minDigits: 8, maxDigits: 8 },
   // Skandinavija
-  { code: '+45', country: 'Danska', flag: '🇩🇰', maxDigits: 8 },
-  { code: '+46', country: 'Švedska', flag: '🇸🇪', maxDigits: 9 },
-  { code: '+47', country: 'Norveška', flag: '🇳🇴', maxDigits: 8 },
-  { code: '+358', country: 'Finska', flag: '🇫🇮', maxDigits: 10 },
-  { code: '+354', country: 'Islandija', flag: '🇮🇸', maxDigits: 7 },
-  // Vzhodna Evropa
-  { code: '+30', country: 'Grčija', flag: '🇬🇷', maxDigits: 10 },
-  { code: '+90', country: 'Turčija', flag: '🇹🇷', maxDigits: 10 },
-  { code: '+380', country: 'Ukrajina', flag: '🇺🇦', maxDigits: 9 },
-  { code: '+7', country: 'Rusija', flag: '🇷🇺', maxDigits: 10 },
-  { code: '+370', country: 'Litva', flag: '🇱🇹', maxDigits: 8 },
-  { code: '+371', country: 'Latvija', flag: '🇱🇻', maxDigits: 8 },
-  { code: '+372', country: 'Estonija', flag: '🇪🇪', maxDigits: 8 },
-  { code: '+375', country: 'Belorusija', flag: '🇧🇾', maxDigits: 9 },
-  { code: '+373', country: 'Moldavija', flag: '🇲🇩', maxDigits: 8 },
+  { code: '+45', country: 'Danska', flag: '🇩🇰', trunk: '', minDigits: 8, maxDigits: 8 },
+  { code: '+46', country: 'Švedska', flag: '🇸🇪', trunk: '0', minDigits: 7, maxDigits: 13 },
+  { code: '+47', country: 'Norveška', flag: '🇳🇴', trunk: '', minDigits: 5, maxDigits: 8 },
+  { code: '+358', country: 'Finska', flag: '🇫🇮', trunk: '0', minDigits: 5, maxDigits: 12 },
+  { code: '+354', country: 'Islandija', flag: '🇮🇸', trunk: '', minDigits: 7, maxDigits: 9 },
+  { code: '+298', country: 'Ferski otoki', flag: '🇫🇴', trunk: '', minDigits: 6, maxDigits: 6 },
+  // Vzhodna Evropa in Baltik
+  { code: '+30', country: 'Grčija', flag: '🇬🇷', trunk: '0', minDigits: 10, maxDigits: 10 },
+  { code: '+90', country: 'Turčija', flag: '🇹🇷', trunk: '0', minDigits: 10, maxDigits: 10 },
+  { code: '+357', country: 'Ciper', flag: '🇨🇾', trunk: '', minDigits: 8, maxDigits: 11 },
+  { code: '+380', country: 'Ukrajina', flag: '🇺🇦', trunk: '0', minDigits: 9, maxDigits: 9 },
+  { code: '+7', country: 'Rusija', flag: '🇷🇺', trunk: '8', minDigits: 10, maxDigits: 10 },
+  { code: '+375', country: 'Belorusija', flag: '🇧🇾', trunk: '8', minDigits: 9, maxDigits: 10 },
+  { code: '+373', country: 'Moldavija', flag: '🇲🇩', trunk: '0', minDigits: 8, maxDigits: 8 },
+  { code: '+370', country: 'Litva', flag: '🇱🇹', trunk: '0', minDigits: 8, maxDigits: 8 },
+  { code: '+371', country: 'Latvija', flag: '🇱🇻', trunk: '', minDigits: 7, maxDigits: 8 },
+  { code: '+372', country: 'Estonija', flag: '🇪🇪', trunk: '', minDigits: 7, maxDigits: 10 },
   // Severna Amerika
-  { code: '+1', country: 'ZDA / Kanada', flag: '🇺🇸', maxDigits: 10 },
+  { code: '+1', country: 'ZDA / Kanada', flag: '🇺🇸', trunk: '1', minDigits: 10, maxDigits: 10 },
 ];
 
 // Format phone number with spaces based on country
-const formatPhoneNumber = (value: string, maxDigits: number): string => {
-  // Remove leading zero and non-digits
+const formatPhoneNumber = (value: string, trunk: string, maxDigits: number): string => {
   let digits = value.replace(/\D/g, '');
-  if (digits.startsWith('0')) {
+  
+  // Remove trunk prefix based on country
+  if (trunk === '0' && digits.startsWith('0')) {
     digits = digits.slice(1);
+  } else if (trunk === '8' && digits.startsWith('8')) {
+    digits = digits.slice(1);
+  } else if (trunk === '1' && digits.startsWith('1')) {
+    digits = digits.slice(1);
+  } else if (trunk === '06' && digits.startsWith('06')) {
+    digits = digits.slice(2);
   }
+  // Note: Italy (trunk='') keeps the 0!
+  
   // Limit to max digits
   digits = digits.slice(0, maxDigits);
   
@@ -1967,7 +1984,7 @@ const ContactForm: React.FC<{
   const selectedCountry = COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
 
   const handlePhoneChange = (value: string) => {
-    const formatted = formatPhoneNumber(value, selectedCountry.maxDigits);
+    const formatted = formatPhoneNumber(value, selectedCountry.trunk, selectedCountry.maxDigits);
     setPhone(formatted);
   };
 
