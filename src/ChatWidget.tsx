@@ -1558,31 +1558,21 @@ const WIDGET_STYLES = `
   }
 
   .bm-carousel-animate-right {
-    animation: slideOutLeft 0.15s ease-out forwards, slideInRight 0.15s ease-out 0.15s forwards;
+    animation: slideOutLeft 0.3s ease-out forwards;
   }
 
   .bm-carousel-animate-left {
-    animation: slideOutRight 0.15s ease-out forwards, slideInLeft 0.15s ease-out 0.15s forwards;
+    animation: slideOutRight 0.3s ease-out forwards;
   }
 
   @keyframes slideOutLeft {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(-20px); }
-  }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
   }
 
   @keyframes slideOutRight {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(20px); }
-  }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
   }
 
   /* Large product card - single view */
@@ -1632,6 +1622,7 @@ const WIDGET_STYLES = `
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
+    text-align: center;
   }
 
   .bm-product-desc-wrapper {
@@ -2747,17 +2738,16 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const product = products[currentIndex];
   if (!product) return null;
 
-  // Calculate transform style for swipe feedback
+  // Calculate transform style for swipe feedback - classic slide with translateX
   const cardStyle: React.CSSProperties = isSwiping && !isAnimating
     ? {
-        transform: `translateX(${swipeOffset}px) rotate(${swipeOffset * 0.02}deg)`,
-        opacity: 1 - Math.abs(swipeOffset) * 0.002,
+        transform: `translateX(${swipeOffset}px)`,
         transition: 'none'
       }
     : swipeOffset !== 0 && !isAnimating
     ? {
         transform: 'translateX(0)',
-        transition: 'transform 0.3s ease, opacity 0.3s ease'
+        transition: 'transform 0.3s ease'
       }
     : {};
 
