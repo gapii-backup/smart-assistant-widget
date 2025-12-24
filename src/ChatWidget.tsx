@@ -2612,9 +2612,7 @@ const ChatWidget: React.FC = () => {
   
   // Form state
   const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState(() => {
-    return localStorage.getItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`) || '';
-  });
+  const [userEmail, setUserEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [initialMessage, setInitialMessage] = useState('');
 
@@ -2737,25 +2735,10 @@ const ChatWidget: React.FC = () => {
     setMessages([]);
     setView('home');
     setUserName('');
-    // Don't clear email - keep it from localStorage
+    setUserEmail('');
     setInitialMessage('');
     setSubmittedNewsletterIds(new Set());
     sessionStorage.removeItem('bm-newsletter-submitted-ids');
-    
-    // Auto-send lead webhook if we have saved email
-    const savedEmail = localStorage.getItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`);
-    if (savedEmail) {
-      fetch(WIDGET_CONFIG.leadWebhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: sessionId,
-          email: savedEmail,
-          type: 'returning_visitor',
-          tableName: WIDGET_CONFIG.tableName
-        })
-      }).catch(error => console.error('Auto lead webhook error:', error));
-    }
   }, []);
 
   const loadSession = useCallback((session: Session) => {
@@ -2929,17 +2912,8 @@ const ChatWidget: React.FC = () => {
       setCurrentSessionId(sessionId);
     }
     
-    // Save email to localStorage if valid
-    if (userEmail && validateEmail(userEmail)) {
-      localStorage.setItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`, userEmail);
-    }
-    
-    // Get saved email for webhook (use current or saved)
-    const savedEmail = localStorage.getItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`);
-    const emailToSend = userEmail || savedEmail;
-    
-    // Send lead data (always if we have saved email)
-    if (userName || emailToSend) {
+    // Send lead data
+    if (userName || userEmail) {
       try {
         await fetch(WIDGET_CONFIG.leadWebhookUrl, {
           method: 'POST',
@@ -2947,7 +2921,7 @@ const ChatWidget: React.FC = () => {
           body: JSON.stringify({
             sessionId: sessionId,
             name: userName,
-            email: emailToSend,
+            email: userEmail,
             tableName: WIDGET_CONFIG.tableName
           })
         });
@@ -2975,17 +2949,8 @@ const ChatWidget: React.FC = () => {
       setCurrentSessionId(sessionId);
     }
     
-    // Save email to localStorage if valid
-    if (userEmail && validateEmail(userEmail)) {
-      localStorage.setItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`, userEmail);
-    }
-    
-    // Get saved email for webhook (use current or saved)
-    const savedEmail = localStorage.getItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`);
-    const emailToSend = userEmail || savedEmail;
-    
-    // Send lead data (always if we have saved email)
-    if (userName || emailToSend) {
+    // Send lead data if available
+    if (userName || userEmail) {
       try {
         await fetch(WIDGET_CONFIG.leadWebhookUrl, {
           method: 'POST',
@@ -2993,7 +2958,7 @@ const ChatWidget: React.FC = () => {
           body: JSON.stringify({
             sessionId: sessionId,
             name: userName,
-            email: emailToSend,
+            email: userEmail,
             tableName: WIDGET_CONFIG.tableName
           })
         });
