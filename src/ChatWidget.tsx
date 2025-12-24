@@ -774,9 +774,9 @@ const WIDGET_STYLES = `
 
   /* Form */
   .bm-form-group {
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     position: relative;
-    padding-bottom: 20px;
+    padding-bottom: 18px;
   }
 
   .bm-form-group label {
@@ -1509,9 +1509,17 @@ const WIDGET_STYLES = `
 
   .bm-contact-content {
     flex: 1;
-    padding: 24px;
-    padding-bottom: 12px;
+    padding: 20px 24px;
+    padding-bottom: 8px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bm-contact-content form {
+    width: 100%;
+    max-width: 100%;
   }
 
   .bm-contact-content h3 {
@@ -1522,9 +1530,10 @@ const WIDGET_STYLES = `
   }
 
   .bm-contact-footer {
-    padding: 16px 24px;
+    padding: 12px 24px;
     border-top: 1px solid var(--bm-border);
     background: var(--bm-bg);
+    flex-shrink: 0;
   }
 
   .bm-contact-footer .bm-submit-btn {
