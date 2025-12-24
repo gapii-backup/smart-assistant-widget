@@ -1870,6 +1870,13 @@ const Icons = {
       <polyline points="6 9 12 15 18 9" />
     </svg>
   ),
+  Info: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </svg>
+  ),
 };
 
 // ============================================================================
@@ -2093,9 +2100,10 @@ const ContactForm: React.FC<{
           </div>
         ) : (
             <form onSubmit={handleSubmit} noValidate id="bm-contact-form">
-              <p style={{ color: 'var(--bm-text-muted)', fontSize: '14px', marginBottom: '16px', lineHeight: 1.5 }}>
-                Izpolnite spodnji obrazec in naša ekipa vas bo kontaktirala v najkrajšem možnem času.
-              </p>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--bm-text)', fontSize: '14px', marginBottom: '16px', lineHeight: 1.5 }}>
+                <span style={{ flexShrink: 0, marginTop: '2px', width: '16px', height: '16px' }}><Icons.Info /></span>
+                <span>Izpolnite spodnji obrazec in naša ekipa vas bo kontaktirala v najkrajšem možnem času.</span>
+              </div>
               <div className="bm-form-group">
                 <label>Ime in priimek</label>
                 <input
