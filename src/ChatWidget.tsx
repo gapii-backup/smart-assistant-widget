@@ -93,6 +93,23 @@ const WIDGET_STYLES = `
     z-index: 999999;
     font-size: 14px;
     line-height: 1.5;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Responsive container - Mobile */
+  @media (max-width: 500px) {
+    .bm-widget-container {
+      bottom: 16px;
+      ${WIDGET_CONFIG.position}: 16px;
+    }
+  }
+
+  /* Responsive container - Small Mobile */
+  @media (max-width: 380px) {
+    .bm-widget-container {
+      bottom: 12px;
+      ${WIDGET_CONFIG.position}: 12px;
+    }
   }
 
   /* Trigger Button */
@@ -125,6 +142,19 @@ const WIDGET_STYLES = `
 
   .bm-trigger.open svg {
     transform: rotate(90deg);
+  }
+
+  /* Responsive trigger - Mobile */
+  @media (max-width: 500px) {
+    .bm-trigger {
+      width: 56px;
+      height: 56px;
+    }
+    
+    .bm-trigger svg {
+      width: 26px;
+      height: 26px;
+    }
   }
 
   /* Notification dot with ripple */
@@ -310,8 +340,8 @@ const WIDGET_STYLES = `
     position: absolute;
     bottom: 72px;
     ${WIDGET_CONFIG.position}: 0;
-    width: 420px;
-    height: 716px;
+    width: 400px;
+    height: 650px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -320,6 +350,39 @@ const WIDGET_STYLES = `
     overflow: hidden;
     animation: bm-slide-up 0.25s ease;
     border: none;
+  }
+
+  /* Responsive - Tablet */
+  @media (max-width: 768px) {
+    .bm-widget {
+      width: 380px;
+      height: 600px;
+    }
+  }
+
+  /* Responsive - Mobile */
+  @media (max-width: 500px) {
+    .bm-widget {
+      width: calc(100vw - 32px);
+      height: calc(100vh - 120px);
+      max-height: 600px;
+      bottom: 90px;
+      left: 16px;
+      right: 16px;
+      border-radius: 16px;
+      position: fixed;
+    }
+  }
+
+  /* Responsive - Small Mobile */
+  @media (max-width: 380px) {
+    .bm-widget {
+      width: calc(100vw - 24px);
+      height: calc(100vh - 100px);
+      bottom: 80px;
+      left: 12px;
+      right: 12px;
+    }
   }
 
   @keyframes bm-slide-up {
@@ -446,6 +509,39 @@ const WIDGET_STYLES = `
 
   .bm-header-home h2 span {
     display: block;
+  }
+
+  /* Responsive header - Small Mobile */
+  @media (max-width: 380px) {
+    .bm-header-home {
+      padding: 12px 16px 24px;
+    }
+    
+    .bm-header-home h2 {
+      font-size: 20px;
+    }
+    
+    .bm-monitor-icon {
+      width: 52px;
+      height: 52px;
+      margin: 12px auto 16px;
+    }
+    
+    .bm-monitor-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+  }
+
+  /* Responsive - Mobile padding */
+  @media (max-width: 500px) {
+    .bm-header-home {
+      padding: 14px 18px 28px;
+    }
+    
+    .bm-header-home h2 {
+      font-size: 24px;
+    }
   }
 
   /* Header - Chat */
@@ -659,6 +755,18 @@ const WIDGET_STYLES = `
     gap: 8px;
   }
 
+  /* Responsive Quick Section - Small Mobile */
+  @media (max-width: 380px) {
+    .bm-quick-section {
+      padding: 0 16px 12px;
+    }
+    
+    .bm-quick-btn {
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+  }
+
   .bm-quick-btn {
     display: flex;
     align-items: center;
@@ -842,6 +950,25 @@ const WIDGET_STYLES = `
   .bm-content::-webkit-scrollbar-thumb {
     background: var(--bm-border);
     border-radius: 3px;
+  }
+
+  /* Responsive Content - Small Mobile */
+  @media (max-width: 380px) {
+    .bm-content {
+      padding: 16px;
+    }
+    
+    .bm-input-stack {
+      padding: 0 16px 8px;
+    }
+    
+    .bm-message-input-area {
+      padding: 8px 16px 8px;
+    }
+    
+    .bm-message-input-wrapper {
+      padding: 4px 4px 4px 16px;
+    }
   }
 
   /* Form */
