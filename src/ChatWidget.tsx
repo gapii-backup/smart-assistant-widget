@@ -2612,7 +2612,9 @@ const ChatWidget: React.FC = () => {
   
   // Form state
   const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState(() => {
+    return localStorage.getItem('bm-user-email') || '';
+  });
   const [emailError, setEmailError] = useState('');
   const [initialMessage, setInitialMessage] = useState('');
 
@@ -2625,6 +2627,10 @@ const ChatWidget: React.FC = () => {
 
   const handleEmailChange = (value: string) => {
     setUserEmail(value);
+    // Save to localStorage for future sessions
+    if (value.trim()) {
+      localStorage.setItem('bm-user-email', value.trim());
+    }
     // Clear error when user is typing
     if (emailError) setEmailError('');
   };
@@ -2735,7 +2741,8 @@ const ChatWidget: React.FC = () => {
     setMessages([]);
     setView('home');
     setUserName('');
-    setUserEmail('');
+    // Keep email from localStorage
+    setUserEmail(localStorage.getItem('bm-user-email') || '');
     setInitialMessage('');
     setSubmittedNewsletterIds(new Set());
     sessionStorage.removeItem('bm-newsletter-submitted-ids');
