@@ -1504,20 +1504,81 @@ const WIDGET_STYLES = `
     margin-top: 0;
   }
 
-  /* Product Cards Carousel */
+  /* Product Cards Carousel - Coverflow Style */
   .bm-products-carousel {
     position: relative;
     width: 100%;
-    padding: 8px 0;
+    padding: 20px 0;
+    perspective: 1000px;
+    overflow: hidden;
+  }
+
+  .bm-coverflow-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    height: 320px;
+    transform-style: preserve-3d;
+  }
+
+  .bm-coverflow-item {
+    position: absolute;
+    width: 75%;
+    max-width: 280px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+
+  .bm-coverflow-item-active {
+    z-index: 10;
+    transform: translateX(0) scale(1) rotateY(0deg);
+    opacity: 1;
+  }
+
+  .bm-coverflow-item-left {
+    z-index: 5;
+    transform: translateX(-55%) scale(0.75) rotateY(35deg);
+    opacity: 0.7;
+    filter: brightness(0.8);
+  }
+
+  .bm-coverflow-item-right {
+    z-index: 5;
+    transform: translateX(55%) scale(0.75) rotateY(-35deg);
+    opacity: 0.7;
+    filter: brightness(0.8);
+  }
+
+  .bm-coverflow-item-far-left {
+    z-index: 2;
+    transform: translateX(-100%) scale(0.55) rotateY(45deg);
+    opacity: 0.4;
+    filter: brightness(0.6);
+  }
+
+  .bm-coverflow-item-far-right {
+    z-index: 2;
+    transform: translateX(100%) scale(0.55) rotateY(-45deg);
+    opacity: 0.4;
+    filter: brightness(0.6);
+  }
+
+  .bm-coverflow-item-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-150%) scale(0.4) rotateY(50deg);
   }
 
   /* Arrow buttons */
   .bm-carousel-arrow {
     position: absolute;
     top: 50%;
-    transform: translateY(-70%);
-    width: 32px;
-    height: 32px;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--bm-bg);
     border: 1px solid var(--bm-border);
@@ -1527,22 +1588,23 @@ const WIDGET_STYLES = `
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .bm-carousel-arrow:hover:not(.bm-carousel-arrow-disabled) {
     background: var(--bm-primary);
     border-color: var(--bm-primary);
     color: white;
+    transform: translateY(-50%) scale(1.1);
   }
 
   .bm-carousel-arrow-left {
-    left: -8px;
+    left: 4px;
   }
 
   .bm-carousel-arrow-right {
-    right: -8px;
+    right: 4px;
   }
 
   .bm-carousel-arrow-disabled {
@@ -1557,34 +1619,6 @@ const WIDGET_STYLES = `
     transform: translateX(0);
   }
 
-  .bm-carousel-animate-right {
-    animation: slideOutLeft 0.15s ease-out forwards, slideInRight 0.15s ease-out 0.15s forwards;
-  }
-
-  .bm-carousel-animate-left {
-    animation: slideOutRight 0.15s ease-out forwards, slideInLeft 0.15s ease-out 0.15s forwards;
-  }
-
-  @keyframes slideOutLeft {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(-20px); }
-  }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  @keyframes slideOutRight {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(20px); }
-  }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
   /* Large product card - single view */
   .bm-product-card-large {
     background: var(--bm-bg);
@@ -1592,11 +1626,15 @@ const WIDGET_STYLES = `
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.2s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .bm-coverflow-item-active .bm-product-card-large {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   }
 
   .bm-product-card-large:hover {
     border-color: var(--bm-primary);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   }
 
   .bm-product-image-large {
@@ -2674,99 +2712,70 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
-  const [swipeOffset, setSwipeOffset] = useState(0);
-  const [isSwiping, setIsSwiping] = useState(false);
   
   // Swipe gesture state
   const touchStartX = useRef<number | null>(null);
   const minSwipeDistance = 50;
-  const maxSwipeOffset = 100;
 
   const goToNext = useCallback(() => {
     if (isAnimating || currentIndex >= products.length - 1) return;
-    setDirection('right');
     setIsAnimating(true);
-    setSwipeOffset(0);
-    setTimeout(() => {
-      setCurrentIndex(prev => prev + 1);
-      setIsAnimating(false);
-    }, 300);
+    setCurrentIndex(prev => prev + 1);
+    setTimeout(() => setIsAnimating(false), 400);
   }, [isAnimating, currentIndex, products.length]);
 
   const goToPrev = useCallback(() => {
     if (isAnimating || currentIndex <= 0) return;
-    setDirection('left');
     setIsAnimating(true);
-    setSwipeOffset(0);
-    setTimeout(() => {
-      setCurrentIndex(prev => prev - 1);
-      setIsAnimating(false);
-    }, 300);
+    setCurrentIndex(prev => prev - 1);
+    setTimeout(() => setIsAnimating(false), 400);
+  }, [isAnimating, currentIndex]);
+
+  const goToIndex = useCallback((index: number) => {
+    if (isAnimating || index === currentIndex) return;
+    setIsAnimating(true);
+    setCurrentIndex(index);
+    setTimeout(() => setIsAnimating(false), 400);
   }, [isAnimating, currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if (isAnimating) return;
     touchStartX.current = e.targetTouches[0].clientX;
-    setIsSwiping(true);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!touchStartX.current || isAnimating) return;
-    
-    const currentX = e.targetTouches[0].clientX;
-    let offset = currentX - touchStartX.current;
-    
-    // Limit offset and add resistance at edges
-    if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
-      offset = offset * 0.3; // Add resistance at boundaries
-    }
-    
-    // Clamp offset
-    offset = Math.max(-maxSwipeOffset, Math.min(maxSwipeOffset, offset));
-    setSwipeOffset(offset);
-  };
-
-  const handleTouchEnd = () => {
+  const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStartX.current) return;
     
-    setIsSwiping(false);
+    const endX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - endX;
     
-    if (swipeOffset < -minSwipeDistance && currentIndex < products.length - 1) {
+    if (diff > minSwipeDistance && currentIndex < products.length - 1) {
       goToNext();
-    } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
+    } else if (diff < -minSwipeDistance && currentIndex > 0) {
       goToPrev();
-    } else {
-      // Snap back with animation
-      setSwipeOffset(0);
     }
     
     touchStartX.current = null;
   };
 
-  const product = products[currentIndex];
-  if (!product) return null;
+  // Get position class for coverflow effect
+  const getPositionClass = (index: number) => {
+    const diff = index - currentIndex;
+    if (diff === 0) return 'bm-coverflow-item-active';
+    if (diff === -1) return 'bm-coverflow-item-left';
+    if (diff === 1) return 'bm-coverflow-item-right';
+    if (diff === -2) return 'bm-coverflow-item-far-left';
+    if (diff === 2) return 'bm-coverflow-item-far-right';
+    return 'bm-coverflow-item-hidden';
+  };
 
-  // Calculate transform style for swipe feedback
-  const cardStyle: React.CSSProperties = isSwiping && !isAnimating
-    ? {
-        transform: `translateX(${swipeOffset}px) rotate(${swipeOffset * 0.02}deg)`,
-        opacity: 1 - Math.abs(swipeOffset) * 0.002,
-        transition: 'none'
-      }
-    : swipeOffset !== 0 && !isAnimating
-    ? {
-        transform: 'translateX(0)',
-        transition: 'transform 0.3s ease, opacity 0.3s ease'
-      }
-    : {};
+  if (!products.length) return null;
 
   return (
     <div 
       className="bm-products-carousel" 
       style={{ marginTop: '12px' }}
       onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       {/* Navigation arrows */}
@@ -2775,7 +2784,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
           <button
             className={`bm-carousel-arrow bm-carousel-arrow-left ${currentIndex === 0 ? 'bm-carousel-arrow-disabled' : ''}`}
             onClick={goToPrev}
-            disabled={currentIndex === 0}
+            disabled={currentIndex === 0 || isAnimating}
             aria-label="Prejšnji produkt"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2785,7 +2794,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
           <button
             className={`bm-carousel-arrow bm-carousel-arrow-right ${currentIndex === products.length - 1 ? 'bm-carousel-arrow-disabled' : ''}`}
             onClick={goToNext}
-            disabled={currentIndex === products.length - 1}
+            disabled={currentIndex === products.length - 1 || isAnimating}
             aria-label="Naslednji produkt"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2795,12 +2804,17 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
         </>
       )}
 
-      {/* Product card */}
-      <div 
-        className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
-        style={cardStyle}
-      >
-        <ProductCard key={currentIndex} product={product} />
+      {/* Coverflow container */}
+      <div className="bm-coverflow-container">
+        {products.map((product, index) => (
+          <div
+            key={index}
+            className={`bm-coverflow-item ${getPositionClass(index)}`}
+            onClick={() => goToIndex(index)}
+          >
+            <ProductCard product={product} />
+          </div>
+        ))}
       </div>
 
       {/* Dots indicator */}
@@ -2810,15 +2824,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
             <button
               key={i}
               className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
-              onClick={() => {
-                if (isAnimating) return;
-                setDirection(i > currentIndex ? 'right' : 'left');
-                setIsAnimating(true);
-                setTimeout(() => {
-                  setCurrentIndex(i);
-                  setIsAnimating(false);
-                }, 300);
-              }}
+              onClick={() => goToIndex(i)}
               aria-label={`Produkt ${i + 1}`}
             />
           ))}
