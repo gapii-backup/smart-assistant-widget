@@ -2676,13 +2676,13 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     setSwipeOffset(0);
   }, [products.length]);
 
-  // Autoplay - 8 seconds
+  // Autoplay - 5 seconds
   useEffect(() => {
     if (products.length <= 1 || isPaused || isSwiping) return;
     
     autoplayRef.current = setInterval(() => {
       goToNext();
-    }, 8000);
+    }, 5000);
 
     return () => {
       if (autoplayRef.current) {
