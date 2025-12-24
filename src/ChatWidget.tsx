@@ -1480,6 +1480,28 @@ const WIDGET_STYLES = `
     background: var(--bm-primary-hover);
   }
 
+  .bm-newsletter-success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--bm-primary);
+    font-size: 13px;
+    animation: bm-success-bounce 0.4s ease-out;
+  }
+
+  .bm-newsletter-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: var(--bm-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
   /* Product Cards */
   .bm-products {
     display: flex;
@@ -2489,7 +2511,10 @@ const MessageContent: React.FC<{
     parts.push(
       <div key={key++} className="bm-newsletter">
         {newsletterSubmitted ? (
-          <span style={{ color: 'var(--bm-primary)' }}>Hvala za prijavo!</span>
+          <div className="bm-newsletter-success">
+            <span className="bm-newsletter-check">✓</span>
+            <span>Super! Zdaj boste med prvimi izvedeli za vse novosti.</span>
+          </div>
         ) : (
           <>
             <input
