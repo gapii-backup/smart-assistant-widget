@@ -2327,7 +2327,42 @@ const ContactForm: React.FC<{
   );
 };
 
-const BookingView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = ({ onClose, onSuccess }) => {
+  useEffect(() => {
+    // Listen for Cal.com booking success event
+    const handleCalMessage = (e: MessageEvent) => {
+      // Cal.com sends postMessage events
+      if (e.data?.action === 'bookingSuccessful' || e.data?.type === 'CAL:bookingSuccessful') {
+        onSuccess?.();
+        onClose();
+      }
+    };
+
+    window.addEventListener('message', handleCalMessage);
+
+    // Also try Cal.com's native event system if available
+    const calNs = (window as any).Cal?.ns;
+    if (calNs) {
+      try {
+        Object.keys(calNs).forEach(namespace => {
+          calNs[namespace]?.('on', {
+            action: 'bookingSuccessful',
+            callback: () => {
+              onSuccess?.();
+              onClose();
+            }
+          });
+        });
+      } catch (e) {
+        // Cal.com namespace not ready, rely on postMessage
+      }
+    }
+
+    return () => {
+      window.removeEventListener('message', handleCalMessage);
+    };
+  }, [onClose, onSuccess]);
+
   return (
     <div className="bm-booking-view">
       <div className="bm-booking-iframe-wrapper">
@@ -3385,7 +3420,19 @@ const ChatWidget: React.FC = () => {
                 </div>
                 <div style={{ width: '32px' }}></div>
               </div>
-              <BookingView onClose={() => navigateTo('chat', 'left')} />
+              <BookingView 
+                onClose={() => navigateTo('chat', 'left')} 
+                onSuccess={() => {
+                  setTimeout(() => {
+                    setMessages(prev => [...prev, {
+                      id: Date.now().toString(),
+                      role: 'bot',
+                      content: '✅ Termin je uspešno rezerviran! Potrditev ste prejeli na email. Vam lahko še kako pomagam?',
+                      timestamp: new Date()
+                    }]);
+                  }, 300);
+                }}
+              />
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
                   <span>⚡Powered by </span>
