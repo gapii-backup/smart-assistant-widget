@@ -2146,7 +2146,7 @@ const ContactForm: React.FC<{
       });
       setSuccess(true);
       onSuccess?.();
-      setTimeout(onClose, 2000);
+      setTimeout(onClose, 3000);
     } catch (error) {
       console.error('Contact form error:', error);
     } finally {
@@ -3194,6 +3194,15 @@ const ChatWidget: React.FC = () => {
                 onClose={() => {
                   setContactSuccess(false);
                   navigateTo('chat', 'left');
+                  // Add follow-up bot message after returning to chat
+                  setTimeout(() => {
+                    setMessages(prev => [...prev, {
+                      id: Date.now().toString(),
+                      role: 'bot',
+                      content: 'Vam še kako lahko pomagam?',
+                      timestamp: new Date()
+                    }]);
+                  }, 300);
                 }} 
                 chatHistory={messages}
                 onSuccess={() => setContactSuccess(true)}
