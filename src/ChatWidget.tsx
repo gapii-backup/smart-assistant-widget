@@ -1256,8 +1256,8 @@ const WIDGET_STYLES = `
   }
 
   .bm-footer a:hover {
-    color: ${adjustColor(WIDGET_CONFIG.primaryColor, 30)};
-    text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+    color: ${WIDGET_CONFIG.mode === 'dark' ? adjustColor(WIDGET_CONFIG.primaryColor, 30) : adjustColor(WIDGET_CONFIG.primaryColor, -20)};
+    text-shadow: ${WIDGET_CONFIG.mode === 'dark' ? '0 0 8px rgba(59, 130, 246, 0.5)' : 'none'};
   }
 
   .bm-footer a:hover::after {
