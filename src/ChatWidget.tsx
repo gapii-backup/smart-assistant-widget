@@ -508,12 +508,17 @@ const WIDGET_STYLES = `
     height: 28px;
     min-width: 28px;
     border-radius: 50%;
-    background: var(--bm-bg-secondary);
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     margin-bottom: 22px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .bm-avatar-small svg {
+    color: var(--bm-primary);
   }
 
   .bm-avatar-header {
@@ -521,16 +526,18 @@ const WIDGET_STYLES = `
     height: 36px;
     min-width: 36px;
     border-radius: 50%;
-    background: var(--bm-bg-secondary);
+    background: white;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .bm-avatar-header svg {
     width: 20px;
     height: 20px;
+    color: var(--bm-primary);
   }
 
   .bm-avatar-small img {
