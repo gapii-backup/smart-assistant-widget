@@ -44,7 +44,7 @@ const WIDGET_CONFIG = {
   
   // Booking
   bookingEnabled: true,
-  bookingUrl: 'https://cal.com/gasper-perko-i5tznd/15min',
+  bookingUrl: 'https://cal.botmotion.ai/admin/demo-klic',
   
   // Footer
   showFooter: true,
