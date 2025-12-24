@@ -9,7 +9,7 @@ const WIDGET_CONFIG = {
   // Display
   mode: 'dark' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
-  triggerStyle: 'edge' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
+  triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
   
   // Edge trigger settings (only used when triggerStyle is 'edge')
   edgeTriggerText: 'Klikni me',
