@@ -7,7 +7,7 @@ import { createRoot } from 'react-dom/client';
 
 const WIDGET_CONFIG = {
   // Display
-  mode: 'light' as 'light' | 'dark',
+  mode: 'dark' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
   
   // Colors
@@ -242,12 +242,12 @@ const WIDGET_STYLES = `
     height: 716px;
     background: var(--bm-bg);
     border-radius: 16px;
-    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--bm-shadow);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     animation: bm-slide-up 0.25s ease;
-    border: none;
+    border: 1px solid var(--bm-border);
   }
 
   @keyframes bm-slide-up {
@@ -309,7 +309,7 @@ const WIDGET_STYLES = `
 
   /* Header - Home */
   .bm-header-home {
-    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 30%, var(--bm-bg) 100%);
+    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, var(--bm-bg) 100%);
     padding: 16px 20px 32px;
     text-align: center;
     flex-shrink: 0;
@@ -365,7 +365,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-header-home h2 {
-    color: ${WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f'};
+    color: white;
     font-size: 26px;
     font-weight: 600;
     margin: 0;
@@ -1256,8 +1256,8 @@ const WIDGET_STYLES = `
   }
 
   .bm-footer a:hover {
-    color: ${WIDGET_CONFIG.mode === 'dark' ? adjustColor(WIDGET_CONFIG.primaryColor, 30) : adjustColor(WIDGET_CONFIG.primaryColor, -20)};
-    text-shadow: ${WIDGET_CONFIG.mode === 'dark' ? '0 0 8px rgba(59, 130, 246, 0.5)' : 'none'};
+    color: ${adjustColor(WIDGET_CONFIG.primaryColor, 30)};
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
   }
 
   .bm-footer a:hover::after {
@@ -1511,10 +1511,13 @@ const WIDGET_STYLES = `
     padding: 8px 0;
   }
 
-  /* Arrow buttons - positioned in dots row */
+  /* Arrow buttons */
   .bm-carousel-arrow {
-    width: 28px;
-    height: 28px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-70%);
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: var(--bm-bg);
     border: 1px solid var(--bm-border);
@@ -1524,14 +1527,22 @@ const WIDGET_STYLES = `
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    z-index: 10;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
   }
 
   .bm-carousel-arrow:hover:not(.bm-carousel-arrow-disabled) {
     background: var(--bm-primary);
     border-color: var(--bm-primary);
     color: white;
+  }
+
+  .bm-carousel-arrow-left {
+    left: -8px;
+  }
+
+  .bm-carousel-arrow-right {
+    right: -8px;
   }
 
   .bm-carousel-arrow-disabled {
@@ -1602,7 +1613,6 @@ const WIDGET_STYLES = `
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
-    text-align: center;
   }
 
   .bm-product-desc-wrapper {
@@ -1669,20 +1679,12 @@ const WIDGET_STYLES = `
     transform: translateY(-1px);
   }
 
-  /* Navigation row - arrows + dots together */
-  .bm-carousel-nav-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 12px;
-  }
-
   /* Dots indicator */
   .bm-carousel-dots {
     display: flex;
     justify-content: center;
     gap: 6px;
+    margin-top: 12px;
   }
 
   .bm-carousel-dot {
@@ -2596,7 +2598,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     <div className="bm-product-card-large">
       {product.image_url && (
         <div className="bm-product-image-large">
-          <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} loading="lazy" />
+          <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
         </div>
       )}
       <div className="bm-product-info-large">
@@ -2654,39 +2656,23 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
   
   // Swipe gesture state
   const touchStartX = useRef<number | null>(null);
   const minSwipeDistance = 50;
 
-  // Infinite loop navigation
   const goToNext = useCallback(() => {
-    setCurrentIndex(prev => (prev + 1) % products.length);
+    if (currentIndex >= products.length - 1) return;
+    setCurrentIndex(prev => prev + 1);
     setSwipeOffset(0);
-  }, [products.length]);
+  }, [currentIndex, products.length]);
 
   const goToPrev = useCallback(() => {
-    setCurrentIndex(prev => (prev - 1 + products.length) % products.length);
+    if (currentIndex <= 0) return;
+    setCurrentIndex(prev => prev - 1);
     setSwipeOffset(0);
-  }, [products.length]);
-
-  // Autoplay - 5 seconds
-  useEffect(() => {
-    if (products.length <= 1 || isPaused || isSwiping) return;
-    
-    autoplayRef.current = setInterval(() => {
-      goToNext();
-    }, 5000);
-
-    return () => {
-      if (autoplayRef.current) {
-        clearInterval(autoplayRef.current);
-      }
-    };
-  }, [goToNext, products.length, isPaused, isSwiping]);
+  }, [currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -2697,7 +2683,13 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     if (!touchStartX.current) return;
     
     const currentX = e.targetTouches[0].clientX;
-    const offset = currentX - touchStartX.current;
+    let offset = currentX - touchStartX.current;
+    
+    // Add resistance at edges
+    if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
+      offset = offset * 0.3;
+    }
+    
     setSwipeOffset(offset);
   };
 
@@ -2706,9 +2698,9 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     
     setIsSwiping(false);
     
-    if (swipeOffset < -minSwipeDistance) {
+    if (swipeOffset < -minSwipeDistance && currentIndex < products.length - 1) {
       goToNext();
-    } else if (swipeOffset > minSwipeDistance) {
+    } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
       goToPrev();
     } else {
       setSwipeOffset(0);
@@ -2740,9 +2732,33 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Navigation arrows */}
+      {products.length > 1 && (
+        <>
+          <button
+            className={`bm-carousel-arrow bm-carousel-arrow-left ${currentIndex === 0 ? 'bm-carousel-arrow-disabled' : ''}`}
+            onClick={goToPrev}
+            disabled={currentIndex === 0}
+            aria-label="Prejšnji produkt"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button
+            className={`bm-carousel-arrow bm-carousel-arrow-right ${currentIndex === products.length - 1 ? 'bm-carousel-arrow-disabled' : ''}`}
+            onClick={goToNext}
+            disabled={currentIndex === products.length - 1}
+            aria-label="Naslednji produkt"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </>
+      )}
+
       {/* Carousel track with all cards */}
       <div 
         className={`bm-carousel-track ${isSwiping ? 'bm-swiping' : ''}`}
@@ -2755,39 +2771,17 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
         ))}
       </div>
 
-      {/* Navigation row: arrows + dots */}
+      {/* Dots indicator */}
       {products.length > 1 && (
-        <div className="bm-carousel-nav-row">
-          <button
-            className="bm-carousel-arrow"
-            onClick={goToPrev}
-            aria-label="Prejšnji produkt"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-          
-          <div className="bm-carousel-dots">
-            {products.map((_, i) => (
-              <button
-                key={i}
-                className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
-                onClick={() => setCurrentIndex(i)}
-                aria-label={`Produkt ${i + 1}`}
-              />
-            ))}
-          </div>
-          
-          <button
-            className="bm-carousel-arrow"
-            onClick={goToNext}
-            aria-label="Naslednji produkt"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
+        <div className="bm-carousel-dots">
+          {products.map((_, i) => (
+            <button
+              key={i}
+              className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
+              onClick={() => setCurrentIndex(i)}
+              aria-label={`Produkt ${i + 1}`}
+            />
+          ))}
         </div>
       )}
     </div>
