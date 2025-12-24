@@ -2327,7 +2327,7 @@ const ContactForm: React.FC<{
   );
 };
 
-const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = ({ onClose, onSuccess }) => {
+const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showSuccess: boolean }> = ({ onClose, onSuccess, showSuccess }) => {
   useEffect(() => {
     // Listen for Cal.com booking success events via postMessage
     const handleCalMessage = (e: MessageEvent) => {
@@ -2347,7 +2347,6 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = (
       if (isBookingSuccess) {
         console.log('Booking successful detected!', data);
         onSuccess?.();
-        onClose();
       }
     };
 
@@ -2365,7 +2364,6 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = (
               callback: (e: any) => {
                 console.log('Cal.com bookingSuccessful callback!', e?.detail);
                 onSuccess?.();
-                onClose();
               }
             });
             // bookingSuccessfulV2 event
@@ -2374,7 +2372,6 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = (
               callback: (e: any) => {
                 console.log('Cal.com bookingSuccessfulV2 callback!', e?.detail);
                 onSuccess?.();
-                onClose();
               }
             });
           });
@@ -2392,7 +2389,19 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void }> = (
       window.removeEventListener('message', handleCalMessage);
       clearTimeout(timeoutId);
     };
-  }, [onClose, onSuccess]);
+  }, [onSuccess]);
+
+  if (showSuccess) {
+    return (
+      <div className="bm-booking-view">
+        <div className="bm-empty bm-success-animation" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', minHeight: '300px' }}>
+          <Icons.Calendar />
+          <h4>Termin uspešno rezerviran!</h4>
+          <p>Potrditev ste prejeli na vaš email naslov.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bm-booking-view">
@@ -2676,6 +2685,7 @@ const ChatWidget: React.FC = () => {
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
   
   const [contactSuccess, setContactSuccess] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
   const [submittedNewsletterIds, setSubmittedNewsletterIds] = useState<Set<string>>(() => {
     const saved = sessionStorage.getItem('bm-newsletter-submitted-ids');
     return saved ? new Set(JSON.parse(saved)) : new Set();
@@ -3443,25 +3453,37 @@ const ChatWidget: React.FC = () => {
           {view === 'booking' && (
             <div className={`bm-view-enter-${viewDirection}`}>
               <div className="bm-header-chat">
-                <button className="bm-back-btn" onClick={() => navigateTo('chat', 'left')}>
-                  <Icons.Back />
-                </button>
+                {!bookingSuccess && (
+                  <button className="bm-back-btn" onClick={() => navigateTo('chat', 'left')}>
+                    <Icons.Back />
+                  </button>
+                )}
                 <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
-                  <h3 style={{ fontSize: '18px' }}>Rezerviraj termin</h3>
+                  <h3 style={{ fontSize: '18px' }}>{bookingSuccess ? 'Termin rezerviran!' : 'Rezerviraj termin'}</h3>
                 </div>
-                <div style={{ width: '32px' }}></div>
+                {!bookingSuccess && <div style={{ width: '32px' }}></div>}
               </div>
               <BookingView 
-                onClose={() => navigateTo('chat', 'left')} 
+                showSuccess={bookingSuccess}
+                onClose={() => {
+                  setBookingSuccess(false);
+                  navigateTo('chat', 'left');
+                }} 
                 onSuccess={() => {
+                  setBookingSuccess(true);
+                  // After 3 seconds, go back to chat and add message
                   setTimeout(() => {
-                    setMessages(prev => [...prev, {
-                      id: Date.now().toString(),
-                      role: 'bot',
-                      content: '✅ Termin je uspešno rezerviran! Potrditev ste prejeli na email. Vam lahko še kako pomagam?',
-                      timestamp: new Date()
-                    }]);
-                  }, 300);
+                    setBookingSuccess(false);
+                    navigateTo('chat', 'left');
+                    setTimeout(() => {
+                      setMessages(prev => [...prev, {
+                        id: Date.now().toString(),
+                        role: 'bot',
+                        content: '✅ Termin je uspešno rezerviran! Potrditev ste prejeli na email. Vam lahko še kako pomagam?',
+                        timestamp: new Date()
+                      }]);
+                    }, 300);
+                  }, 3000);
                 }}
               />
               {WIDGET_CONFIG.showFooter && (
