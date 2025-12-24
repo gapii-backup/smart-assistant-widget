@@ -1508,100 +1508,193 @@ const WIDGET_STYLES = `
   .bm-products-carousel {
     position: relative;
     width: 100%;
+    padding: 8px 0;
   }
 
-  .bm-products {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 8px 4px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--bm-border) transparent;
-  }
-
-  .bm-products::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .bm-products::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .bm-products::-webkit-scrollbar-thumb {
-    background: var(--bm-border);
-    border-radius: 4px;
-  }
-
-  .bm-product-card {
-    flex-shrink: 0;
-    width: 160px;
+  /* Arrow buttons */
+  .bm-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-70%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     background: var(--bm-bg);
     border: 1px solid var(--bm-border);
-    border-radius: 12px;
-    overflow: hidden;
+    color: var(--bm-text);
     cursor: pointer;
-    transition: all 0.2s ease;
-    scroll-snap-align: start;
-    text-decoration: none;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .bm-product-card:hover {
+  .bm-carousel-arrow:hover:not(.bm-carousel-arrow-disabled) {
+    background: var(--bm-primary);
     border-color: var(--bm-primary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: white;
   }
 
-  .bm-product-image {
+  .bm-carousel-arrow-left {
+    left: -8px;
+  }
+
+  .bm-carousel-arrow-right {
+    right: -8px;
+  }
+
+  .bm-carousel-arrow-disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  /* Product card wrapper for animations */
+  .bm-product-card-wrapper {
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .bm-carousel-animate-right {
+    animation: slideOutLeft 0.15s ease-out forwards, slideInRight 0.15s ease-out 0.15s forwards;
+  }
+
+  .bm-carousel-animate-left {
+    animation: slideOutRight 0.15s ease-out forwards, slideInLeft 0.15s ease-out 0.15s forwards;
+  }
+
+  @keyframes slideOutLeft {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-20px); }
+  }
+
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes slideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+  }
+
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Large product card - single view */
+  .bm-product-card-large {
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+  }
+
+  .bm-product-card-large:hover {
+    border-color: var(--bm-primary);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .bm-product-image-large {
     width: 100%;
-    height: 100px;
+    height: 160px;
     overflow: hidden;
     background: var(--bm-bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .bm-product-image img {
+  .bm-product-image-large img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: var(--bm-bg-secondary);
     transition: transform 0.3s ease;
   }
 
-  .bm-product-card:hover .bm-product-image img {
-    transform: scale(1.05);
+  .bm-product-card-large:hover .bm-product-image-large img {
+    transform: scale(1.03);
   }
 
-  .bm-product-info {
-    padding: 10px;
-    flex: 1;
+  .bm-product-info-large {
+    padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
   }
 
-  .bm-product-info h5 {
+  .bm-product-info-large h5 {
     color: var(--bm-text);
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
+  }
+
+  .bm-product-desc-large {
+    color: var(--bm-text-muted);
+    font-size: 13px;
+    margin: 0;
+    line-height: 1.5;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  .bm-product-desc {
-    color: var(--bm-text-muted);
-    font-size: 11px;
-    margin: 0;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  .bm-product-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    padding: 10px 16px;
+    background: var(--bm-primary);
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    justify-content: center;
+  }
+
+  .bm-product-btn:hover {
+    background: var(--bm-primary-hover);
+    transform: translateY(-1px);
+  }
+
+  /* Dots indicator */
+  .bm-carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .bm-carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bm-border);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+
+  .bm-carousel-dot:hover {
+    background: var(--bm-text-muted);
+  }
+
+  .bm-carousel-dot-active {
+    background: var(--bm-primary);
+    width: 20px;
+    border-radius: 4px;
   }
 
   /* Modal */
@@ -2468,6 +2561,129 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showS
   );
 };
 
+// ============================================================================
+// PRODUCT CAROUSEL COMPONENT
+// ============================================================================
+
+interface Product {
+  ime_izdelka: string;
+  kratek_opis?: string;
+  url: string;
+  image_url?: string;
+}
+
+const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [direction, setDirection] = useState<'left' | 'right'>('right');
+
+  const goToNext = () => {
+    if (isAnimating || currentIndex >= products.length - 1) return;
+    setDirection('right');
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex(prev => prev + 1);
+      setIsAnimating(false);
+    }, 300);
+  };
+
+  const goToPrev = () => {
+    if (isAnimating || currentIndex <= 0) return;
+    setDirection('left');
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex(prev => prev - 1);
+      setIsAnimating(false);
+    }, 300);
+  };
+
+  const product = products[currentIndex];
+  if (!product) return null;
+
+  return (
+    <div className="bm-products-carousel" style={{ marginTop: '12px' }}>
+      {/* Navigation arrows */}
+      {products.length > 1 && (
+        <>
+          <button
+            className={`bm-carousel-arrow bm-carousel-arrow-left ${currentIndex === 0 ? 'bm-carousel-arrow-disabled' : ''}`}
+            onClick={goToPrev}
+            disabled={currentIndex === 0}
+            aria-label="Prejšnji produkt"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button
+            className={`bm-carousel-arrow bm-carousel-arrow-right ${currentIndex === products.length - 1 ? 'bm-carousel-arrow-disabled' : ''}`}
+            onClick={goToNext}
+            disabled={currentIndex === products.length - 1}
+            aria-label="Naslednji produkt"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </>
+      )}
+
+      {/* Product card */}
+      <div 
+        className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
+      >
+        <div className="bm-product-card-large">
+          {product.image_url && (
+            <div className="bm-product-image-large">
+              <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
+            </div>
+          )}
+          <div className="bm-product-info-large">
+            <h5>{product.ime_izdelka}</h5>
+            {product.kratek_opis && (
+              <p className="bm-product-desc-large">{product.kratek_opis}</p>
+            )}
+            <a
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bm-product-btn"
+            >
+              Poglej več
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="7" y1="17" x2="17" y2="7"></line>
+                <polyline points="7 7 17 7 17 17"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Dots indicator */}
+      {products.length > 1 && (
+        <div className="bm-carousel-dots">
+          {products.map((_, i) => (
+            <button
+              key={i}
+              className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
+              onClick={() => {
+                if (isAnimating) return;
+                setDirection(i > currentIndex ? 'right' : 'left');
+                setIsAnimating(true);
+                setTimeout(() => {
+                  setCurrentIndex(i);
+                  setIsAnimating(false);
+                }, 300);
+              }}
+              aria-label={`Produkt ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const MessageContent: React.FC<{
   content: string;
   onContactClick: () => void;
@@ -2684,7 +2900,7 @@ const MessageContent: React.FC<{
     remaining = after || '';
   }
 
-  // Product cards
+  // Product cards - render ProductCarousel component
   const productMatch = remaining.match(/\[PRODUCT_CARDS\](.*?)\[\/PRODUCT_CARDS\]/s);
   if (productMatch) {
     const [before] = remaining.split('[PRODUCT_CARDS]');
@@ -2694,33 +2910,7 @@ const MessageContent: React.FC<{
     
     try {
       const products = JSON.parse(productMatch[1].trim());
-      parts.push(
-        <div key={key++} className="bm-products-carousel" style={{ marginTop: '12px' }}>
-          <div className="bm-products">
-            {products.map((product: any, i: number) => (
-              <a
-                key={i}
-                href={product.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bm-product-card"
-              >
-                {product.image_url && (
-                  <div className="bm-product-image">
-                    <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
-                  </div>
-                )}
-                <div className="bm-product-info">
-                  <h5>{product.ime_izdelka}</h5>
-                  {product.kratek_opis && (
-                    <p className="bm-product-desc">{product.kratek_opis}</p>
-                  )}
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      );
+      parts.push(<ProductCarousel key={key++} products={products} />);
     } catch (e) {
       console.error('Product cards parse error:', e);
     }
