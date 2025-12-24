@@ -681,6 +681,8 @@ const WIDGET_STYLES = `
     min-height: 24px;
     max-height: 72px;
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .bm-message-input-wrapper textarea::placeholder {
@@ -688,12 +690,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-message-input-wrapper textarea::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  .bm-message-input-wrapper textarea::-webkit-scrollbar-thumb {
-    background: var(--bm-border);
-    border-radius: 2px;
+    display: none;
   }
 
   .bm-send-btn-home {
