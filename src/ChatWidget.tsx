@@ -2336,9 +2336,14 @@ const MessageContent: React.FC<{
   submittedNewsletterIds: Set<string>;
 }> = ({ content, onContactClick, onBookingClick, sessionId, messageId, onNewsletterSuccess, submittedNewsletterIds }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const isValidEmail = newsletterEmail.includes('@');
 
   const handleNewsletterSubmit = async () => {
+    if (!isValidEmail) {
+      setAttemptedSubmit(true);
+      return;
+    }
     try {
       await fetch(WIDGET_CONFIG.leadWebhookUrl, {
         method: 'POST',
@@ -2521,10 +2526,13 @@ const MessageContent: React.FC<{
               type="email"
               placeholder="Vaš email"
               value={newsletterEmail}
-              onChange={e => setNewsletterEmail(e.target.value)}
-              className={newsletterEmail && !isValidEmail ? 'bm-input-error' : ''}
+              onChange={e => {
+                setNewsletterEmail(e.target.value);
+                setAttemptedSubmit(false);
+              }}
+              className={attemptedSubmit && !isValidEmail ? 'bm-input-error' : ''}
             />
-            <button onClick={handleNewsletterSubmit} disabled={!isValidEmail}>Prijava</button>
+            <button onClick={handleNewsletterSubmit}>Prijava</button>
           </>
         )}
       </div>
