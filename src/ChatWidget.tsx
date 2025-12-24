@@ -883,6 +883,8 @@ const WIDGET_STYLES = `
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease;
     margin-top: 8px;
+    position: relative;
+    overflow: hidden;
   }
 
   .bm-submit-btn:hover {
@@ -896,6 +898,55 @@ const WIDGET_STYLES = `
   .bm-submit-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  .bm-submit-btn.bm-sending {
+    animation: bm-pulse-btn 1s ease-in-out infinite;
+  }
+
+  @keyframes bm-pulse-btn {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+  }
+
+  .bm-submit-btn .bm-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: bm-spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes bm-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .bm-success-animation {
+    animation: bm-success-bounce 0.5s ease-out;
+  }
+
+  @keyframes bm-success-bounce {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   /* Messages */
@@ -2107,7 +2158,7 @@ const ContactForm: React.FC<{
     <div className="bm-contact-view">
       <div className="bm-contact-content">
         {success ? (
-          <div className="bm-empty">
+          <div className="bm-empty bm-success-animation">
             <Icons.Mail />
             <h4>Sporočilo poslano!</h4>
             <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
@@ -2215,8 +2266,8 @@ const ContactForm: React.FC<{
         </div>
         {!success && (
           <div className="bm-contact-footer">
-            <button type="submit" form="bm-contact-form" className="bm-submit-btn" disabled={loading}>
-              {loading ? 'Pošiljam...' : 'Pošlji sporočilo'}
+            <button type="submit" form="bm-contact-form" className={`bm-submit-btn ${loading ? 'bm-sending' : ''}`} disabled={loading}>
+              {loading ? <><span className="bm-spinner"></span>Pošiljam...</> : 'Pošlji sporočilo'}
             </button>
           </div>
         )}
