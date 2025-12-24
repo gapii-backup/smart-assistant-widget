@@ -178,8 +178,7 @@ const WIDGET_STYLES = `
   .bm-trigger-edge {
     position: fixed;
     ${WIDGET_CONFIG.position}: 0;
-    top: 50%;
-    transform: translateY(-50%) ${WIDGET_CONFIG.position === 'right' ? 'translateX(0)' : 'translateX(0)'};
+    bottom: 24px;
     background: var(--bm-primary);
     border: none;
     cursor: pointer;
@@ -197,7 +196,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-trigger-edge:hover {
-    ${WIDGET_CONFIG.position === 'right' ? 'transform: translateY(-50%) translateX(-4px);' : 'transform: translateY(-50%) translateX(4px);'}
+    ${WIDGET_CONFIG.position === 'right' ? 'transform: translateX(-4px);' : 'transform: translateX(4px);'}
     box-shadow: -6px 0 28px rgba(59, 130, 246, 0.4);
   }
 
