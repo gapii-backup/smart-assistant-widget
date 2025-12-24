@@ -12,6 +12,7 @@ const WIDGET_CONFIG = {
   
   // Colors
   primaryColor: '#3B82F6',
+  homeBackgroundColor: '#0a1628', // Temno modra za home stran
   
   // Branding  
   botName: 'AI Asistent',
@@ -79,6 +80,7 @@ const WIDGET_STYLES = `
     --bm-primary-hover: ${adjustColor(WIDGET_CONFIG.primaryColor, -10)};
     --bm-bg: ${WIDGET_CONFIG.mode === 'dark' ? '#0f0f0f' : '#ffffff'};
     --bm-bg-secondary: ${WIDGET_CONFIG.mode === 'dark' ? '#1a1a1a' : '#f5f5f5'};
+    --bm-bg-home: ${WIDGET_CONFIG.homeBackgroundColor};
     --bm-text: ${WIDGET_CONFIG.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
     --bm-text-muted: ${WIDGET_CONFIG.mode === 'dark' ? '#888888' : '#666666'};
     --bm-border: ${WIDGET_CONFIG.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
@@ -309,7 +311,7 @@ const WIDGET_STYLES = `
 
   /* Header - Home */
   .bm-header-home {
-    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, var(--bm-bg) 100%);
+    background: var(--bm-bg-home);
     padding: 16px 20px 32px;
     text-align: center;
     flex-shrink: 0;
@@ -568,6 +570,7 @@ const WIDGET_STYLES = `
   /* Quick Questions */
   .bm-quick-section {
     padding: 0 20px 16px;
+    background: var(--bm-bg-home);
   }
 
 
@@ -593,10 +596,10 @@ const WIDGET_STYLES = `
     justify-content: space-between;
     width: 100%;
     padding: 14px 16px;
-    background: var(--bm-bg-secondary);
-    border: 1px solid var(--bm-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: var(--bm-text);
+    color: white;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -605,7 +608,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-quick-btn:hover {
-    background: ${WIDGET_CONFIG.mode === 'dark' ? '#252525' : '#eaeaea'};
+    background: rgba(255, 255, 255, 0.1);
     border-color: var(--bm-primary);
   }
 
@@ -632,7 +635,7 @@ const WIDGET_STYLES = `
   .bm-bottom-section {
     margin-top: auto;
     flex-shrink: 0;
-    background: var(--bm-bg);
+    background: var(--bm-bg-home);
   }
 
   /* Input Stack */
@@ -646,10 +649,10 @@ const WIDGET_STYLES = `
   .bm-input-full {
     width: 100%;
     padding: 14px 16px;
-    background: var(--bm-bg-secondary);
-    border: 1px solid var(--bm-border);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    color: var(--bm-text);
+    color: white;
     font-size: 14px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
@@ -661,42 +664,42 @@ const WIDGET_STYLES = `
   }
 
   .bm-input-full::placeholder {
-    color: var(--bm-text-muted);
+    color: rgba(255, 255, 255, 0.5);
   }
 
   /* Message Input Area */
   .bm-message-input-area {
     padding: 8px 20px 8px;
-    background: var(--bm-bg);
+    background: var(--bm-bg-home);
   }
 
   .bm-message-input-wrapper {
     display: flex;
     align-items: center;
-    background: var(--bm-bg-secondary);
-    border: 2px solid var(--bm-border);
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
     padding: 6px 6px 6px 20px;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   .bm-message-input-wrapper:focus-within {
     border-color: var(--bm-primary);
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
-    background: var(--bm-bg);
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .bm-message-input-wrapper.has-text {
     border-color: var(--bm-primary);
-    background: var(--bm-bg);
+    background: rgba(255, 255, 255, 0.12);
   }
 
   .bm-message-input-wrapper textarea {
     flex: 1;
     background: transparent;
     border: none;
-    color: var(--bm-text);
+    color: white;
     font-size: 15px;
     padding: 10px 0;
     outline: none;
@@ -711,7 +714,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-message-input-wrapper textarea::placeholder {
-    color: var(--bm-text-muted);
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .bm-message-input-wrapper textarea::-webkit-scrollbar {
