@@ -1480,6 +1480,7 @@ const WIDGET_STYLES = `
   .bm-contact-content {
     flex: 1;
     padding: 24px;
+    padding-bottom: 12px;
     overflow-y: auto;
   }
 
@@ -1488,6 +1489,16 @@ const WIDGET_STYLES = `
     font-size: 18px;
     font-weight: 600;
     margin: 0 0 20px 0;
+  }
+
+  .bm-contact-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--bm-border);
+    background: var(--bm-bg);
+  }
+
+  .bm-contact-footer .bm-submit-btn {
+    margin: 0;
   }
 
   .bm-modal-header {
@@ -2056,7 +2067,7 @@ const ContactForm: React.FC<{
             <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
           </div>
         ) : (
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit} noValidate id="bm-contact-form">
               <div className="bm-form-group">
                 <label>Ime in priimek</label>
                 <input
@@ -2151,12 +2162,16 @@ const ContactForm: React.FC<{
                 />
                 {errors.message && <div className="bm-error-message">{errors.message}</div>}
               </div>
-              <button type="submit" className="bm-submit-btn" disabled={loading}>
-                {loading ? 'Pošiljam...' : 'Pošlji sporočilo'}
-              </button>
             </form>
           )}
         </div>
+        {!success && (
+          <div className="bm-contact-footer">
+            <button type="submit" form="bm-contact-form" className="bm-submit-btn" disabled={loading}>
+              {loading ? 'Pošiljam...' : 'Pošlji sporočilo'}
+            </button>
+          </div>
+        )}
         {WIDGET_CONFIG.showFooter && (
           <div className="bm-footer">
             <span>⚡Powered by </span>
