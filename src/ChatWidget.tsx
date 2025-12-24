@@ -2115,6 +2115,16 @@ const ChatWidget: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
+  // Scroll to bottom when chat view opens or widget opens
+  useEffect(() => {
+    if (isOpen && view === 'chat') {
+      // Use setTimeout to ensure DOM is rendered
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+      }, 50);
+    }
+  }, [isOpen, view]);
+
   // Rotate typing messages
   useEffect(() => {
     if (isTyping) {
