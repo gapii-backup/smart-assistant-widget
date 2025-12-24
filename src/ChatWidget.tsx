@@ -904,8 +904,25 @@ const WIDGET_STYLES = `
     border: 1px solid var(--bm-border);
     border-radius: 12px;
     color: var(--bm-text);
-    font-size: 14px;
+    font-size: 16px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    /* Prevent zoom on iOS */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent zoom on all input elements on mobile */
+  @media (max-width: 480px) {
+    .bm-input,
+    .bm-message-input,
+    .bm-phone-number,
+    textarea,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"] {
+      font-size: 16px !important;
+      -webkit-text-size-adjust: 100%;
+      transform: scale(1);
+    }
   }
 
   .bm-input:focus {
@@ -3642,6 +3659,37 @@ const ChatWidget: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isOpen, welcomeDismissed, isHealthy]);
+
+  // Lock body scroll when widget is open on mobile
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 480;
+    
+    if (isOpen && isMobile) {
+      // Store current scroll position
+      const scrollY = window.scrollY;
+      
+      // Lock the body
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+      
+      return () => {
+        // Unlock the body
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.overflow = '';
+        document.body.style.touchAction = '';
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   // Scroll to bottom
   useEffect(() => {
