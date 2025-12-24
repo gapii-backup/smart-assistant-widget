@@ -2518,7 +2518,7 @@ const ChatWidget: React.FC = () => {
                       onClick={handleStartConversation}
                       disabled={!initialMessage.trim()}
                     >
-                      <Icons.Send />
+                      <Icons.ArrowUp />
                     </button>
                   </div>
                 </div>
