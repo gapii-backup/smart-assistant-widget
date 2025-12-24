@@ -245,7 +245,7 @@ const WIDGET_STYLES = `
   /* Welcome Bubble */
   .bm-welcome-bubble {
     position: absolute;
-    bottom: 72px;
+    bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '120px' : '72px'};
     ${WIDGET_CONFIG.position}: 0;
     background: var(--bm-primary);
     border: none;
