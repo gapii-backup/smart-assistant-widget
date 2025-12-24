@@ -813,8 +813,8 @@ const WIDGET_STYLES = `
 
   .bm-textarea {
     min-height: 100px;
-    max-height: 200px;
-    resize: vertical;
+    max-height: 100px;
+    resize: none;
   }
 
   .bm-email-domains {
@@ -2100,10 +2100,6 @@ const ContactForm: React.FC<{
           </div>
         ) : (
             <form onSubmit={handleSubmit} noValidate id="bm-contact-form">
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', color: 'var(--bm-text)', fontSize: '14px', marginBottom: '16px', lineHeight: 1.5 }}>
-                <span style={{ flexShrink: 0, marginTop: '2px', width: '16px', height: '16px' }}><Icons.Info /></span>
-                <span>Izpolnite spodnji obrazec in naša ekipa vas bo kontaktirala v najkrajšem možnem času.</span>
-              </div>
               <div className="bm-form-group">
                 <label>Ime in priimek</label>
                 <input
