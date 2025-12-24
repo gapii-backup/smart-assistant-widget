@@ -2329,7 +2329,8 @@ const MessageContent: React.FC<{
   onContactClick: () => void;
   onBookingClick: () => void;
   sessionId?: string;
-}> = ({ content, onContactClick, onBookingClick, sessionId }) => {
+  onNewsletterSuccess?: () => void;
+}> = ({ content, onContactClick, onBookingClick, sessionId, onNewsletterSuccess }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
@@ -2346,6 +2347,7 @@ const MessageContent: React.FC<{
         })
       });
       setNewsletterSubmitted(true);
+      onNewsletterSuccess?.();
     } catch (error) {
       console.error('Newsletter error:', error);
     }
@@ -2513,7 +2515,6 @@ const MessageContent: React.FC<{
         {newsletterSubmitted ? (
           <div className="bm-newsletter-success">
             <span className="bm-newsletter-check">✓</span>
-            <span>Super! Zdaj boste med prvimi izvedeli za vse novosti.</span>
           </div>
         ) : (
           <>
@@ -3152,6 +3153,16 @@ const ChatWidget: React.FC = () => {
                             onContactClick={() => navigateTo('contact', 'right')}
                             onBookingClick={() => setModal('booking')}
                             sessionId={currentSessionId}
+                            onNewsletterSuccess={() => {
+                              setTimeout(() => {
+                                setMessages(prev => [...prev, {
+                                  id: Date.now().toString(),
+                                  role: 'bot',
+                                  content: 'Hvala! Zdaj boste med prvimi izvedeli za vse novosti. 😊',
+                                  timestamp: new Date()
+                                }]);
+                              }, 500);
+                            }}
                           />
                         </div>
                         <div className="bm-timestamp">{formatTime(msg.timestamp)}</div>
