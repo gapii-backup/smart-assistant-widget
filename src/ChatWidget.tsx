@@ -2513,7 +2513,7 @@ const MessageContent: React.FC<{
               value={newsletterEmail}
               onChange={e => setNewsletterEmail(e.target.value)}
             />
-            <button onClick={handleNewsletterSubmit}>Prijava</button>
+            <button onClick={handleNewsletterSubmit} disabled={!newsletterEmail.trim()}>Prijava</button>
           </>
         )}
       </div>
