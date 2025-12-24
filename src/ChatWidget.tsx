@@ -2525,7 +2525,13 @@ const ChatWidget: React.FC = () => {
           {view === 'chat' && (
             <div className={`bm-view-enter-${viewDirection}`}>
               <div className="bm-header-chat">
-                <button className="bm-back-btn" onClick={() => navigateTo('home', 'right')}>
+                <button className="bm-back-btn" onClick={() => {
+                  // Save current session and start fresh for next conversation
+                  saveCurrentSession();
+                  setCurrentSessionId(generateSessionId());
+                  setMessages([]);
+                  navigateTo('home', 'right');
+                }}>
                   <Icons.Back />
                 </button>
                 <Avatar small />
