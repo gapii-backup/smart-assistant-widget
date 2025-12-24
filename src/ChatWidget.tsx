@@ -1714,6 +1714,7 @@ const ContactForm: React.FC<{
 }> = ({ onClose, chatHistory }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -1729,6 +1730,7 @@ const ContactForm: React.FC<{
         body: JSON.stringify({
           name,
           email,
+          phone: phone || undefined,
           message,
           chatHistory: chatHistory.map(m => ({
             role: m.role,
@@ -1763,6 +1765,7 @@ const ContactForm: React.FC<{
                 <input
                   type="text"
                   className="bm-input"
+                  placeholder="Vaše ime"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
@@ -1773,15 +1776,27 @@ const ContactForm: React.FC<{
                 <input
                   type="email"
                   className="bm-input"
+                  placeholder="vas.email@primer.si"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="bm-form-group">
+                <label>Telefon <span style={{ opacity: 0.5, fontWeight: 400 }}>(opcijsko)</span></label>
+                <input
+                  type="tel"
+                  className="bm-input"
+                  placeholder="+386 XX XXX XXX"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                />
+              </div>
+              <div className="bm-form-group">
                 <label>Sporočilo</label>
                 <textarea
                   className="bm-input bm-textarea"
+                  placeholder="Kako vam lahko pomagamo?"
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   required
@@ -1793,6 +1808,13 @@ const ContactForm: React.FC<{
             </form>
           )}
         </div>
+        {WIDGET_CONFIG.showFooter && (
+          <div className="bm-footer">
+            <span>⚡Powered by </span>
+            <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
+            <span>⚡</span>
+          </div>
+        )}
       </div>
   );
 };
@@ -2699,9 +2721,7 @@ const ChatWidget: React.FC = () => {
                 <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
                   <h3 style={{ fontSize: '18px' }}>Kontaktiraj nas</h3>
                 </div>
-                <button className="bm-close-btn" onClick={handleClose}>
-                  <Icons.Close />
-                </button>
+                <div style={{ width: '32px' }}></div>
               </div>
               <ContactForm 
                 onClose={() => navigateTo('chat', 'left')} 
