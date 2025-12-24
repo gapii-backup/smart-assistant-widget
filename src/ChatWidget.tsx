@@ -970,8 +970,21 @@ const WIDGET_STYLES = `
     font-family: inherit;
     line-height: 1.4;
     min-height: 44px;
-    max-height: 120px;
+    max-height: 64px;
     overflow-y: auto;
+  }
+
+  .bm-chat-input::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .bm-chat-input::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .bm-chat-input::-webkit-scrollbar-thumb {
+    background: var(--bm-border);
+    border-radius: 2px;
   }
 
   .bm-chat-input:focus {
@@ -2607,7 +2620,7 @@ const ChatWidget: React.FC = () => {
                     setInputValue(e.target.value);
                     // Auto-resize textarea
                     e.target.style.height = 'auto';
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                    e.target.style.height = Math.min(e.target.scrollHeight, 64) + 'px';
                   }}
                   onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
