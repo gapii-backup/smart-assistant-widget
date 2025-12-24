@@ -2596,10 +2596,12 @@ const MessageContent: React.FC<{
     const [before, after] = remaining.split('[BOOKING]');
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
-      <button key={key++} className="bm-action-btn" onClick={onBookingClick}>
-        <Icons.Calendar />
-        Rezerviraj termin
-      </button>
+      <div key={key++} style={{ marginTop: '8px' }}>
+        <button className="bm-action-btn" onClick={onBookingClick}>
+          <Icons.Calendar />
+          Rezerviraj termin
+        </button>
+      </div>
     );
     remaining = after || '';
   }
@@ -2609,7 +2611,7 @@ const MessageContent: React.FC<{
     const [before, after] = remaining.split('[NEWSLETTER]');
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
-      <div key={key++} className="bm-newsletter">
+      <div key={key++} className="bm-newsletter" style={{ marginTop: '8px' }}>
         {submittedNewsletterIds.has(messageId) ? null : (
           <>
             <input
