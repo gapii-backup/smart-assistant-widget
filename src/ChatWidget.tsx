@@ -1615,7 +1615,7 @@ const WIDGET_STYLES = `
     gap: 8px;
     margin-top: 10px;
     overflow: hidden;
-    max-height: 60px;
+    max-height: none;
     opacity: 1;
     transition: max-height 0.3s ease-out, opacity 0.2s ease-out, margin 0.3s ease-out;
   }
@@ -1624,6 +1624,48 @@ const WIDGET_STYLES = `
     max-height: 0;
     opacity: 0;
     margin-top: 0;
+  }
+
+  .bm-newsletter-form {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .bm-newsletter-form input {
+    flex: 1;
+    padding: 10px 14px;
+    background: var(--bm-bg);
+    border: 1px solid var(--bm-border);
+    border-radius: 8px;
+    color: var(--bm-text);
+    font-size: 13px;
+  }
+
+  .bm-newsletter-form input:focus {
+    outline: none;
+    border-color: var(--bm-primary);
+  }
+
+  .bm-newsletter-form input.bm-input-error {
+    border-color: #ef4444;
+  }
+
+  .bm-newsletter-form button {
+    padding: 10px 16px;
+    background: var(--bm-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .bm-newsletter-form button:hover {
+    background: var(--bm-primary-hover);
   }
 
   /* Product Cards Carousel */
@@ -2273,6 +2315,31 @@ const WIDGET_STYLES = `
     .bm-textarea {
       min-height: 80px;
       max-height: 80px;
+    }
+
+    /* Hide email error message on mobile */
+    .bm-email-error.bm-hide-on-mobile {
+      display: none;
+    }
+
+    /* Newsletter form mobile layout */
+    .bm-newsletter {
+      max-height: none;
+    }
+
+    .bm-newsletter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .bm-newsletter-form input {
+      width: 100%;
+    }
+
+    .bm-newsletter-form button {
+      width: 100%;
     }
 
     .bm-message-input-area {
@@ -3429,7 +3496,7 @@ const MessageContent: React.FC<{
     parts.push(
       <div key={key++} className="bm-newsletter" style={{ marginTop: '8px' }}>
         {submittedNewsletterIds.has(messageId) ? null : (
-          <>
+          <div className="bm-newsletter-form">
             <input
               type="email"
               placeholder="Vaš email"
@@ -3441,7 +3508,7 @@ const MessageContent: React.FC<{
               className={attemptedSubmit && !isValidEmail ? 'bm-input-error' : ''}
             />
             <button onClick={handleNewsletterSubmit}>Prijava</button>
-          </>
+          </div>
         )}
       </div>
     );
@@ -4103,7 +4170,7 @@ const ChatWidget: React.FC = () => {
               {/* Bottom Section - Email + Message Input (fixed together) */}
               <div className="bm-bottom-section">
                 {/* Input Stack - Email */}
-                {WIDGET_CONFIG.showEmailField && (
+              {WIDGET_CONFIG.showEmailField && (
                   <div className="bm-input-stack">
                     <input
                       type="email"
@@ -4112,7 +4179,7 @@ const ChatWidget: React.FC = () => {
                       value={userEmail}
                       onChange={e => handleEmailChange(e.target.value)}
                     />
-                    {emailError && <div className="bm-email-error">{emailError}</div>}
+                    {emailError && <div className="bm-email-error bm-hide-on-mobile">{emailError}</div>}
                   </div>
                 )}
 
