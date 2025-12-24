@@ -392,6 +392,39 @@ const WIDGET_STYLES = `
     position: absolute;
     top: 16px;
     right: 16px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .bm-close-btn-home {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .bm-close-btn-home:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .bm-close-btn-home svg {
+    width: 18px;
+    height: 18px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Show close button on mobile */
+  @media (max-width: 480px) {
+    .bm-close-btn-home {
+      display: flex;
+    }
   }
 
   .bm-history-btn {
@@ -2082,11 +2115,18 @@ const WIDGET_STYLES = `
     }
   }
 
-  /* Small phones (iPhone SE - 375px width) */
-  @media (max-width: 390px) {
+  /* Phones - Fullscreen mode (max-width: 480px) */
+  @media (max-width: 480px) {
     .bm-widget-container {
-      bottom: 12px;
-      ${WIDGET_CONFIG.position}: 12px;
+      bottom: 16px;
+      ${WIDGET_CONFIG.position}: 16px;
+    }
+
+    .bm-widget-container.widget-open {
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      padding: 0;
     }
 
     .bm-trigger {
@@ -2099,13 +2139,22 @@ const WIDGET_STYLES = `
       height: 24px;
     }
 
+    /* Hide trigger when widget is open on mobile */
+    .bm-widget-container.widget-open .bm-trigger,
+    .bm-widget-container.widget-open .bm-trigger-edge {
+      display: none !important;
+    }
+
     .bm-widget {
-      width: calc(100vw - 24px);
-      height: calc(100vh - 100px);
-      max-height: 580px;
-      bottom: 64px;
-      ${WIDGET_CONFIG.position}: 0;
-      border-radius: 16px;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      max-height: none !important;
+      border-radius: 0 !important;
     }
 
     .bm-welcome-bubble {
@@ -2119,185 +2168,112 @@ const WIDGET_STYLES = `
     }
 
     .bm-header-home {
-      padding: 12px 16px 24px;
-    }
-
-    .bm-header-home h2 {
-      font-size: 22px;
-    }
-
-    .bm-monitor-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 12px;
-    }
-
-    .bm-monitor-icon svg {
-      width: 26px;
-      height: 26px;
-    }
-
-    .bm-quick-section {
-      padding: 0 14px 12px;
-    }
-
-    .bm-quick-btn {
-      padding: 12px 14px;
-      font-size: 13px;
-    }
-
-    .bm-input-stack {
-      padding: 0 14px 6px;
-    }
-
-    .bm-input-full {
-      padding: 12px 14px;
-      font-size: 13px;
-    }
-
-    .bm-message-input-area {
-      padding: 6px 14px 6px;
-    }
-
-    .bm-message-input-wrapper {
-      padding: 4px 4px 4px 14px;
-    }
-
-    .bm-message-input-wrapper textarea {
-      font-size: 14px;
-      padding: 8px 0;
-    }
-
-    .bm-send-btn-home {
-      width: 40px;
-      height: 40px;
-    }
-
-    .bm-send-btn-home svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .bm-header-chat {
-      padding: 12px 14px;
-    }
-
-    .bm-content {
-      padding: 14px;
-    }
-
-    .bm-bubble {
-      padding: 10px 14px;
-      font-size: 13px;
-    }
-
-    .bm-input-area {
-      padding: 12px 14px;
-    }
-
-    .bm-chat-input {
-      padding: 10px 14px;
-      font-size: 13px;
-      min-height: 40px;
-    }
-
-    .bm-send-btn {
-      width: 40px;
-      height: 40px;
-    }
-
-    .bm-send-btn svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .bm-footer {
-      flex: 0 0 36px !important;
-      height: 36px !important;
-      min-height: 36px !important;
-      max-height: 36px !important;
-    }
-
-    .bm-footer span,
-    .bm-footer a {
-      font-size: 10px;
-    }
-  }
-
-  /* Medium phones (iPhone 14, Samsung Galaxy - 391px to 430px) */
-  @media (min-width: 391px) and (max-width: 430px) {
-    .bm-widget-container {
-      bottom: 16px;
-      ${WIDGET_CONFIG.position}: 16px;
-    }
-
-    .bm-trigger {
-      width: 56px;
-      height: 56px;
-    }
-
-    .bm-widget {
-      width: calc(100vw - 32px);
-      height: calc(100vh - 110px);
-      max-height: 640px;
-      bottom: 68px;
-      ${WIDGET_CONFIG.position}: 0;
-      border-radius: 16px;
-    }
-
-    .bm-welcome-bubble {
-      ${WIDGET_CONFIG.position}: 0;
-      max-width: calc(100vw - 90px);
-    }
-
-    .bm-header-home {
-      padding: 14px 18px 28px;
+      padding: 16px 16px 24px;
+      padding-top: calc(16px + env(safe-area-inset-top, 0px));
     }
 
     .bm-header-home h2 {
       font-size: 24px;
     }
 
+    .bm-monitor-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+    }
+
+    .bm-monitor-icon svg {
+      width: 28px;
+      height: 28px;
+    }
+
     .bm-quick-section {
-      padding: 0 16px 14px;
+      padding: 0 16px 12px;
+    }
+
+    .bm-quick-btn {
+      padding: 14px 16px;
+      font-size: 14px;
     }
 
     .bm-input-stack {
       padding: 0 16px 6px;
     }
 
+    .bm-input-full {
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+
     .bm-message-input-area {
-      padding: 6px 16px 6px;
+      padding: 8px 16px;
+    }
+
+    .bm-message-input-wrapper {
+      padding: 6px 6px 6px 16px;
+    }
+
+    .bm-message-input-wrapper textarea {
+      font-size: 15px;
+      padding: 10px 0;
+    }
+
+    .bm-send-btn-home {
+      width: 44px;
+      height: 44px;
+    }
+
+    .bm-send-btn-home svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .bm-header-chat {
+      padding: 14px 16px;
+      padding-top: calc(14px + env(safe-area-inset-top, 0px));
     }
 
     .bm-content {
       padding: 16px;
     }
 
+    .bm-bubble {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
     .bm-input-area {
       padding: 14px 16px;
-    }
-  }
-
-  /* Large phones (iPhone 14 Pro Max, Samsung S20 Ultra - 431px to 480px) */
-  @media (min-width: 431px) and (max-width: 480px) {
-    .bm-widget-container {
-      bottom: 20px;
-      ${WIDGET_CONFIG.position}: 20px;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     }
 
-    .bm-widget {
-      width: calc(100vw - 40px);
-      height: calc(100vh - 120px);
-      max-height: 700px;
-      bottom: 72px;
-      ${WIDGET_CONFIG.position}: 0;
-      border-radius: 16px;
+    .bm-chat-input {
+      padding: 12px 16px;
+      font-size: 14px;
+      min-height: 44px;
     }
 
-    .bm-welcome-bubble {
-      ${WIDGET_CONFIG.position}: 0;
-      max-width: calc(100vw - 100px);
+    .bm-send-btn {
+      width: 44px;
+      height: 44px;
+    }
+
+    .bm-send-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .bm-footer {
+      flex: 0 0 40px !important;
+      height: 40px !important;
+      min-height: 40px !important;
+      max-height: 40px !important;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 11px;
     }
   }
 
@@ -3848,7 +3824,7 @@ const ChatWidget: React.FC = () => {
   }
 
   return (
-    <div className="bm-widget-container">
+    <div className={`bm-widget-container ${isOpen ? 'widget-open' : ''}`}>
       {/* Welcome Bubble */}
       {showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
@@ -3902,6 +3878,13 @@ const ChatWidget: React.FC = () => {
                     title="Zgodovina"
                   >
                     <Icons.History />
+                  </button>
+                  <button 
+                    className="bm-close-btn-home"
+                    onClick={handleClose}
+                    title="Zapri"
+                  >
+                    <Icons.Close />
                   </button>
                 </div>
                 <div className="bm-monitor-icon">
