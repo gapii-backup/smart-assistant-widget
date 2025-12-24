@@ -966,6 +966,12 @@ const WIDGET_STYLES = `
     color: var(--bm-text);
     font-size: 14px;
     transition: border-color 0.2s ease;
+    resize: none;
+    font-family: inherit;
+    line-height: 1.4;
+    min-height: 44px;
+    max-height: 120px;
+    overflow-y: auto;
   }
 
   .bm-chat-input:focus {
@@ -2593,12 +2599,16 @@ const ChatWidget: React.FC = () => {
                 </div>
               </div>
               <div className="bm-input-area">
-                <input
-                  type="text"
+                <textarea
                   className="bm-chat-input"
                   placeholder={WIDGET_CONFIG.messagePlaceholder}
                   value={inputValue}
-                  onChange={e => setInputValue(e.target.value)}
+                  onChange={e => {
+                    setInputValue(e.target.value);
+                    // Auto-resize textarea
+                    e.target.style.height = 'auto';
+                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                  }}
                   onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
@@ -2606,6 +2616,7 @@ const ChatWidget: React.FC = () => {
                     }
                   }}
                   disabled={isTyping}
+                  rows={1}
                 />
                 <button 
                   className="bm-send-btn"
