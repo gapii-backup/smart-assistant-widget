@@ -2304,7 +2304,8 @@ const MessageContent: React.FC<{
   content: string;
   onContactClick: () => void;
   onBookingClick: () => void;
-}> = ({ content, onContactClick, onBookingClick }) => {
+  sessionId?: string;
+}> = ({ content, onContactClick, onBookingClick, sessionId }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
@@ -2314,6 +2315,7 @@ const MessageContent: React.FC<{
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          sessionId: sessionId,
           email: newsletterEmail,
           type: 'newsletter',
           tableName: WIDGET_CONFIG.tableName
@@ -3122,6 +3124,7 @@ const ChatWidget: React.FC = () => {
                             content={msg.content}
                             onContactClick={() => navigateTo('contact', 'right')}
                             onBookingClick={() => setModal('booking')}
+                            sessionId={currentSessionId}
                           />
                         </div>
                         <div className="bm-timestamp">{formatTime(msg.timestamp)}</div>
