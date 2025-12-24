@@ -816,6 +816,31 @@ const WIDGET_STYLES = `
     resize: vertical;
   }
 
+  .bm-input-error {
+    border-color: #ef4444 !important;
+  }
+
+  .bm-input-error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+  }
+
+  .bm-error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .bm-error-message::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: #ef4444;
+    border-radius: 50%;
+  }
+
   .bm-submit-btn {
     width: 100%;
     height: 48px;
@@ -1833,51 +1858,101 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   );
 };
 
-// Country codes data
+// Country codes data with max phone digits (without country code)
 const COUNTRY_CODES = [
-  { code: '+386', country: 'Slovenija', flag: '🇸🇮' },
-  { code: '+385', country: 'Hrvaška', flag: '🇭🇷' },
-  { code: '+43', country: 'Avstrija', flag: '🇦🇹' },
-  { code: '+39', country: 'Italija', flag: '🇮🇹' },
-  { code: '+36', country: 'Madžarska', flag: '🇭🇺' },
-  { code: '+49', country: 'Nemčija', flag: '🇩🇪' },
-  { code: '+44', country: 'Velika Britanija', flag: '🇬🇧' },
-  { code: '+33', country: 'Francija', flag: '🇫🇷' },
-  { code: '+34', country: 'Španija', flag: '🇪🇸' },
-  { code: '+31', country: 'Nizozemska', flag: '🇳🇱' },
-  { code: '+32', country: 'Belgija', flag: '🇧🇪' },
-  { code: '+41', country: 'Švica', flag: '🇨🇭' },
-  { code: '+48', country: 'Poljska', flag: '🇵🇱' },
-  { code: '+420', country: 'Češka', flag: '🇨🇿' },
-  { code: '+421', country: 'Slovaška', flag: '🇸🇰' },
-  { code: '+40', country: 'Romunija', flag: '🇷🇴' },
-  { code: '+359', country: 'Bolgarija', flag: '🇧🇬' },
-  { code: '+30', country: 'Grčija', flag: '🇬🇷' },
-  { code: '+381', country: 'Srbija', flag: '🇷🇸' },
-  { code: '+387', country: 'Bosna in Hercegovina', flag: '🇧🇦' },
-  { code: '+382', country: 'Črna gora', flag: '🇲🇪' },
-  { code: '+389', country: 'Severna Makedonija', flag: '🇲🇰' },
-  { code: '+355', country: 'Albanija', flag: '🇦🇱' },
-  { code: '+1', country: 'ZDA / Kanada', flag: '🇺🇸' },
-  { code: '+7', country: 'Rusija', flag: '🇷🇺' },
-  { code: '+380', country: 'Ukrajina', flag: '🇺🇦' },
-  { code: '+90', country: 'Turčija', flag: '🇹🇷' },
-  { code: '+61', country: 'Avstralija', flag: '🇦🇺' },
-  { code: '+86', country: 'Kitajska', flag: '🇨🇳' },
-  { code: '+81', country: 'Japonska', flag: '🇯🇵' },
-  { code: '+82', country: 'Južna Koreja', flag: '🇰🇷' },
-  { code: '+91', country: 'Indija', flag: '🇮🇳' },
-  { code: '+55', country: 'Brazilija', flag: '🇧🇷' },
-  { code: '+52', country: 'Mehika', flag: '🇲🇽' },
+  // Balkanske države
+  { code: '+386', country: 'Slovenija', flag: '🇸🇮', maxDigits: 8 },
+  { code: '+385', country: 'Hrvaška', flag: '🇭🇷', maxDigits: 9 },
+  { code: '+381', country: 'Srbija', flag: '🇷🇸', maxDigits: 9 },
+  { code: '+387', country: 'Bosna in Hercegovina', flag: '🇧🇦', maxDigits: 8 },
+  { code: '+382', country: 'Črna gora', flag: '🇲🇪', maxDigits: 8 },
+  { code: '+389', country: 'Severna Makedonija', flag: '🇲🇰', maxDigits: 8 },
+  { code: '+383', country: 'Kosovo', flag: '🇽🇰', maxDigits: 8 },
+  { code: '+355', country: 'Albanija', flag: '🇦🇱', maxDigits: 9 },
+  // Srednja Evropa
+  { code: '+43', country: 'Avstrija', flag: '🇦🇹', maxDigits: 10 },
+  { code: '+39', country: 'Italija', flag: '🇮🇹', maxDigits: 10 },
+  { code: '+36', country: 'Madžarska', flag: '🇭🇺', maxDigits: 9 },
+  { code: '+49', country: 'Nemčija', flag: '🇩🇪', maxDigits: 11 },
+  { code: '+41', country: 'Švica', flag: '🇨🇭', maxDigits: 9 },
+  { code: '+420', country: 'Češka', flag: '🇨🇿', maxDigits: 9 },
+  { code: '+421', country: 'Slovaška', flag: '🇸🇰', maxDigits: 9 },
+  { code: '+48', country: 'Poljska', flag: '🇵🇱', maxDigits: 9 },
+  { code: '+40', country: 'Romunija', flag: '🇷🇴', maxDigits: 9 },
+  { code: '+359', country: 'Bolgarija', flag: '🇧🇬', maxDigits: 9 },
+  // Zahodna Evropa
+  { code: '+44', country: 'Velika Britanija', flag: '🇬🇧', maxDigits: 10 },
+  { code: '+33', country: 'Francija', flag: '🇫🇷', maxDigits: 9 },
+  { code: '+34', country: 'Španija', flag: '🇪🇸', maxDigits: 9 },
+  { code: '+351', country: 'Portugalska', flag: '🇵🇹', maxDigits: 9 },
+  { code: '+31', country: 'Nizozemska', flag: '🇳🇱', maxDigits: 9 },
+  { code: '+32', country: 'Belgija', flag: '🇧🇪', maxDigits: 9 },
+  { code: '+352', country: 'Luksemburg', flag: '🇱🇺', maxDigits: 9 },
+  { code: '+353', country: 'Irska', flag: '🇮🇪', maxDigits: 9 },
+  // Skandinavija
+  { code: '+45', country: 'Danska', flag: '🇩🇰', maxDigits: 8 },
+  { code: '+46', country: 'Švedska', flag: '🇸🇪', maxDigits: 9 },
+  { code: '+47', country: 'Norveška', flag: '🇳🇴', maxDigits: 8 },
+  { code: '+358', country: 'Finska', flag: '🇫🇮', maxDigits: 10 },
+  { code: '+354', country: 'Islandija', flag: '🇮🇸', maxDigits: 7 },
+  // Vzhodna Evropa
+  { code: '+30', country: 'Grčija', flag: '🇬🇷', maxDigits: 10 },
+  { code: '+90', country: 'Turčija', flag: '🇹🇷', maxDigits: 10 },
+  { code: '+380', country: 'Ukrajina', flag: '🇺🇦', maxDigits: 9 },
+  { code: '+7', country: 'Rusija', flag: '🇷🇺', maxDigits: 10 },
+  { code: '+370', country: 'Litva', flag: '🇱🇹', maxDigits: 8 },
+  { code: '+371', country: 'Latvija', flag: '🇱🇻', maxDigits: 8 },
+  { code: '+372', country: 'Estonija', flag: '🇪🇪', maxDigits: 8 },
+  { code: '+375', country: 'Belorusija', flag: '🇧🇾', maxDigits: 9 },
+  { code: '+373', country: 'Moldavija', flag: '🇲🇩', maxDigits: 8 },
+  // Severna Amerika
+  { code: '+1', country: 'ZDA / Kanada', flag: '🇺🇸', maxDigits: 10 },
+  { code: '+52', country: 'Mehika', flag: '🇲🇽', maxDigits: 10 },
+  // Južna Amerika
+  { code: '+55', country: 'Brazilija', flag: '🇧🇷', maxDigits: 11 },
+  { code: '+54', country: 'Argentina', flag: '🇦🇷', maxDigits: 10 },
+  { code: '+56', country: 'Čile', flag: '🇨🇱', maxDigits: 9 },
+  { code: '+57', country: 'Kolumbija', flag: '🇨🇴', maxDigits: 10 },
+  // Azija
+  { code: '+86', country: 'Kitajska', flag: '🇨🇳', maxDigits: 11 },
+  { code: '+81', country: 'Japonska', flag: '🇯🇵', maxDigits: 10 },
+  { code: '+82', country: 'Južna Koreja', flag: '🇰🇷', maxDigits: 10 },
+  { code: '+91', country: 'Indija', flag: '🇮🇳', maxDigits: 10 },
+  { code: '+66', country: 'Tajska', flag: '🇹🇭', maxDigits: 9 },
+  { code: '+84', country: 'Vietnam', flag: '🇻🇳', maxDigits: 9 },
+  { code: '+62', country: 'Indonezija', flag: '🇮🇩', maxDigits: 11 },
+  { code: '+60', country: 'Malezija', flag: '🇲🇾', maxDigits: 9 },
+  { code: '+63', country: 'Filipini', flag: '🇵🇭', maxDigits: 10 },
+  { code: '+65', country: 'Singapur', flag: '🇸🇬', maxDigits: 8 },
+  { code: '+971', country: 'ZAE', flag: '🇦🇪', maxDigits: 9 },
+  { code: '+972', country: 'Izrael', flag: '🇮🇱', maxDigits: 9 },
+  { code: '+966', country: 'Saudova Arabija', flag: '🇸🇦', maxDigits: 9 },
+  // Oceanija
+  { code: '+61', country: 'Avstralija', flag: '🇦🇺', maxDigits: 9 },
+  { code: '+64', country: 'Nova Zelandija', flag: '🇳🇿', maxDigits: 9 },
+  // Afrika
+  { code: '+27', country: 'Južna Afrika', flag: '🇿🇦', maxDigits: 9 },
+  { code: '+20', country: 'Egipt', flag: '🇪🇬', maxDigits: 10 },
+  { code: '+212', country: 'Maroko', flag: '🇲🇦', maxDigits: 9 },
+  { code: '+234', country: 'Nigerija', flag: '🇳🇬', maxDigits: 10 },
+  { code: '+254', country: 'Kenija', flag: '🇰🇪', maxDigits: 9 },
 ];
 
-// Format phone number with spaces
-const formatPhoneNumber = (value: string): string => {
-  const digits = value.replace(/\D/g, '');
+// Format phone number with spaces based on country
+const formatPhoneNumber = (value: string, maxDigits: number): string => {
+  // Remove leading zero and non-digits
+  let digits = value.replace(/\D/g, '');
+  if (digits.startsWith('0')) {
+    digits = digits.slice(1);
+  }
+  // Limit to max digits
+  digits = digits.slice(0, maxDigits);
+  
+  // Format based on length
   if (digits.length <= 2) return digits;
   if (digits.length <= 5) return `${digits.slice(0, 2)} ${digits.slice(2)}`;
   if (digits.length <= 8) return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
-  return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8, 11)}`.trim();
+  return `${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5, 8)} ${digits.slice(8)}`.trim();
 };
 
 const ContactForm: React.FC<{
@@ -1893,6 +1968,7 @@ const ContactForm: React.FC<{
   const [success, setSuccess] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
 
   const filteredCountries = COUNTRY_CODES.filter(c => 
     c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
@@ -1902,12 +1978,38 @@ const ContactForm: React.FC<{
   const selectedCountry = COUNTRY_CODES.find(c => c.code === countryCode) || COUNTRY_CODES[0];
 
   const handlePhoneChange = (value: string) => {
-    const formatted = formatPhoneNumber(value);
+    const formatted = formatPhoneNumber(value, selectedCountry.maxDigits);
     setPhone(formatted);
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: { name?: string; email?: string; message?: string } = {};
+    
+    if (!name.trim()) {
+      newErrors.name = 'Prosimo, vnesite ime in priimek';
+    }
+    
+    if (!email.trim()) {
+      newErrors.email = 'Prosimo, vnesite email naslov';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      newErrors.email = 'Prosimo, vnesite veljaven email naslov';
+    }
+    
+    if (!message.trim()) {
+      newErrors.message = 'Prosimo, vnesite sporočilo';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
     setLoading(true);
 
     const fullPhone = phone ? `${countryCode} ${phone}` : undefined;
@@ -1948,28 +2050,34 @@ const ContactForm: React.FC<{
             <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
           </div>
         ) : (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <div className="bm-form-group">
                 <label>Ime in priimek</label>
                 <input
                   type="text"
-                  className="bm-input"
+                  className={`bm-input ${errors.name ? 'bm-input-error' : ''}`}
                   placeholder="Vaše ime in priimek"
                   value={name}
-                  onChange={e => setName(e.target.value)}
-                  required
+                  onChange={e => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors(prev => ({ ...prev, name: undefined }));
+                  }}
                 />
+                {errors.name && <div className="bm-error-message">{errors.name}</div>}
               </div>
               <div className="bm-form-group">
                 <label>Email</label>
                 <input
                   type="email"
-                  className="bm-input"
+                  className={`bm-input ${errors.email ? 'bm-input-error' : ''}`}
                   placeholder="vas.email@primer.si"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
+                  onChange={e => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
+                  }}
                 />
+                {errors.email && <div className="bm-error-message">{errors.email}</div>}
               </div>
               <div className="bm-form-group">
                 <label>Telefon <span style={{ opacity: 0.5, fontWeight: 400 }}>(opcijsko)</span></label>
@@ -2027,12 +2135,15 @@ const ContactForm: React.FC<{
               <div className="bm-form-group">
                 <label>Sporočilo</label>
                 <textarea
-                  className="bm-input bm-textarea"
+                  className={`bm-input bm-textarea ${errors.message ? 'bm-input-error' : ''}`}
                   placeholder="Kako vam lahko pomagamo?"
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  required
+                  onChange={e => {
+                    setMessage(e.target.value);
+                    if (errors.message) setErrors(prev => ({ ...prev, message: undefined }));
+                  }}
                 />
+                {errors.message && <div className="bm-error-message">{errors.message}</div>}
               </div>
               <button type="submit" className="bm-submit-btn" disabled={loading}>
                 {loading ? 'Pošiljam...' : 'Pošlji sporočilo'}
