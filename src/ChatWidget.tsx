@@ -2093,6 +2093,9 @@ const ContactForm: React.FC<{
           </div>
         ) : (
             <form onSubmit={handleSubmit} noValidate id="bm-contact-form">
+              <p style={{ color: 'var(--bm-text-muted)', fontSize: '14px', marginBottom: '16px', lineHeight: 1.5 }}>
+                Izpolnite spodnji obrazec in naša ekipa vas bo kontaktirala v najkrajšem možnem času.
+              </p>
               <div className="bm-form-group">
                 <label>Ime in priimek</label>
                 <input
@@ -2122,23 +2125,6 @@ const ContactForm: React.FC<{
                   }}
                 />
                 {errors.email && <div className="bm-error-message">{errors.email}</div>}
-                {email && !email.includes('@') && (
-                  <div className="bm-email-domains">
-                    {['@gmail.com', '@outlook.com', '@icloud.com', '@yahoo.com', '@hotmail.com'].map(domain => (
-                      <button
-                        key={domain}
-                        type="button"
-                        className="bm-email-domain-btn"
-                        onClick={() => {
-                          setEmail(email + domain);
-                          if (errors.email) setErrors(prev => ({ ...prev, email: undefined }));
-                        }}
-                      >
-                        {domain}
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
               <div className="bm-form-group">
                 <label>Telefon <span style={{ opacity: 0.5, fontWeight: 400 }}>(opcijsko)</span></label>
