@@ -760,27 +760,16 @@ const WIDGET_STYLES = `
   }
 
   .bm-content::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
   }
 
   .bm-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    background: transparent;
   }
 
   .bm-content::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--bm-primary), rgba(59, 130, 246, 0.6));
-    border-radius: 10px;
-    transition: background 0.3s ease;
-  }
-
-  .bm-content::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, var(--bm-primary), rgba(59, 130, 246, 0.8));
-  }
-
-  .bm-content {
-    scrollbar-width: thin;
-    scrollbar-color: var(--bm-primary) rgba(255, 255, 255, 0.05);
+    background: var(--bm-border);
+    border-radius: 3px;
   }
 
   /* Form */
