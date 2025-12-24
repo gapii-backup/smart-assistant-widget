@@ -1550,39 +1550,22 @@ const WIDGET_STYLES = `
     cursor: not-allowed;
   }
 
-  /* Product card wrapper for animations */
-  .bm-product-card-wrapper {
-    transition: all 0.3s ease;
-    opacity: 1;
-    transform: translateX(0);
+  /* 3D Stack Carousel */
+  .bm-carousel-3d {
+    perspective: 1000px;
   }
 
-  .bm-carousel-animate-right {
-    animation: slideOutLeft 0.15s ease-out forwards, slideInRight 0.15s ease-out 0.15s forwards;
+  .bm-carousel-stack {
+    position: relative;
+    min-height: 320px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
   }
 
-  .bm-carousel-animate-left {
-    animation: slideOutRight 0.15s ease-out forwards, slideInLeft 0.15s ease-out 0.15s forwards;
-  }
-
-  @keyframes slideOutLeft {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(-20px); }
-  }
-
-  @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-  @keyframes slideOutRight {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(20px); }
-  }
-
-  @keyframes slideInLeft {
-    from { opacity: 0; transform: translateX(-20px); }
-    to { opacity: 1; transform: translateX(0); }
+  .bm-product-card-stacked {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
   }
 
   /* Large product card - single view */
@@ -2674,7 +2657,6 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   
@@ -2685,24 +2667,22 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
 
   const goToNext = useCallback(() => {
     if (isAnimating || currentIndex >= products.length - 1) return;
-    setDirection('right');
     setIsAnimating(true);
     setSwipeOffset(0);
     setTimeout(() => {
       setCurrentIndex(prev => prev + 1);
       setIsAnimating(false);
-    }, 300);
+    }, 400);
   }, [isAnimating, currentIndex, products.length]);
 
   const goToPrev = useCallback(() => {
     if (isAnimating || currentIndex <= 0) return;
-    setDirection('left');
     setIsAnimating(true);
     setSwipeOffset(0);
     setTimeout(() => {
       setCurrentIndex(prev => prev - 1);
       setIsAnimating(false);
-    }, 300);
+    }, 400);
   }, [isAnimating, currentIndex]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -2717,12 +2697,10 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     const currentX = e.targetTouches[0].clientX;
     let offset = currentX - touchStartX.current;
     
-    // Limit offset and add resistance at edges
     if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
-      offset = offset * 0.3; // Add resistance at boundaries
+      offset = offset * 0.3;
     }
     
-    // Clamp offset
     offset = Math.max(-maxSwipeOffset, Math.min(maxSwipeOffset, offset));
     setSwipeOffset(offset);
   };
@@ -2737,33 +2715,73 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
       goToPrev();
     } else {
-      // Snap back with animation
       setSwipeOffset(0);
     }
     
     touchStartX.current = null;
   };
 
-  const product = products[currentIndex];
-  if (!product) return null;
-
-  // Calculate transform style for swipe feedback
-  const cardStyle: React.CSSProperties = isSwiping && !isAnimating
-    ? {
-        transform: `translateX(${swipeOffset}px) rotate(${swipeOffset * 0.02}deg)`,
-        opacity: 1 - Math.abs(swipeOffset) * 0.002,
-        transition: 'none'
-      }
-    : swipeOffset !== 0 && !isAnimating
-    ? {
-        transform: 'translateX(0)',
-        transition: 'transform 0.3s ease, opacity 0.3s ease'
-      }
-    : {};
+  // Calculate card position and style for stacked 3D effect
+  const getCardStyle = (index: number): React.CSSProperties => {
+    const diff = index - currentIndex;
+    const absOffset = Math.abs(diff);
+    
+    // Base values
+    const scale = Math.max(0.85, 1 - absOffset * 0.08);
+    const translateY = absOffset * 8;
+    const zIndex = products.length - absOffset;
+    const opacity = Math.max(0.4, 1 - absOffset * 0.3);
+    
+    // Swipe interaction adjustments
+    let translateX = diff * 20;
+    let rotateY = diff * -5;
+    
+    if (isSwiping && index === currentIndex) {
+      translateX += swipeOffset;
+      rotateY += swipeOffset * 0.1;
+    }
+    
+    // Animation state
+    const isMovingForward = isAnimating && diff === 1;
+    const isMovingBack = isAnimating && diff === -1;
+    const isCurrentMovingOut = isAnimating && diff === 0;
+    
+    if (isCurrentMovingOut) {
+      return {
+        transform: `translateX(${swipeOffset < 0 ? -60 : 60}px) translateY(8px) scale(0.9) perspective(1000px) rotateY(${swipeOffset < 0 ? 10 : -10}deg)`,
+        opacity: 0.6,
+        zIndex: products.length - 1,
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: 'absolute' as const,
+        width: '100%',
+      };
+    }
+    
+    if (isMovingForward || isMovingBack) {
+      return {
+        transform: `translateX(0) translateY(0) scale(1) perspective(1000px) rotateY(0deg)`,
+        opacity: 1,
+        zIndex: products.length,
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: 'absolute' as const,
+        width: '100%',
+      };
+    }
+    
+    return {
+      transform: `translateX(${translateX}px) translateY(${translateY}px) scale(${scale}) perspective(1000px) rotateY(${rotateY}deg)`,
+      opacity,
+      zIndex,
+      transition: isSwiping ? 'none' : 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+      position: 'absolute' as const,
+      width: '100%',
+      pointerEvents: index === currentIndex ? 'auto' as const : 'none' as const,
+    };
+  };
 
   return (
     <div 
-      className="bm-products-carousel" 
+      className="bm-products-carousel bm-carousel-3d" 
       style={{ marginTop: '12px' }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -2795,12 +2813,23 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
         </>
       )}
 
-      {/* Product card */}
-      <div 
-        className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
-        style={cardStyle}
-      >
-        <ProductCard key={currentIndex} product={product} />
+      {/* Stacked product cards */}
+      <div className="bm-carousel-stack">
+        {products.map((product, index) => {
+          // Only render visible cards (current and adjacent)
+          const diff = Math.abs(index - currentIndex);
+          if (diff > 2) return null;
+          
+          return (
+            <div 
+              key={index}
+              className="bm-product-card-stacked"
+              style={getCardStyle(index)}
+            >
+              <ProductCard product={product} />
+            </div>
+          );
+        })}
       </div>
 
       {/* Dots indicator */}
@@ -2811,13 +2840,12 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
               key={i}
               className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
               onClick={() => {
-                if (isAnimating) return;
-                setDirection(i > currentIndex ? 'right' : 'left');
+                if (isAnimating || i === currentIndex) return;
                 setIsAnimating(true);
                 setTimeout(() => {
                   setCurrentIndex(i);
                   setIsAnimating(false);
-                }, 300);
+                }, 400);
               }}
               aria-label={`Produkt ${i + 1}`}
             />
