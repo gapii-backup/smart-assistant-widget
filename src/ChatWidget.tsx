@@ -1601,19 +1601,24 @@ const WIDGET_STYLES = `
 
   .bm-product-image-large {
     width: 100%;
-    height: 160px;
+    aspect-ratio: 1 / 1;
+    max-height: 200px;
     overflow: hidden;
     background: var(--bm-bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
+    margin: 8px;
+    margin-bottom: 0;
+    width: calc(100% - 16px);
   }
 
   .bm-product-image-large img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    background: var(--bm-bg-secondary);
+    padding: 12px;
     transition: transform 0.3s ease;
   }
 
@@ -1636,15 +1641,47 @@ const WIDGET_STYLES = `
     line-height: 1.3;
   }
 
+  .bm-product-desc-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   .bm-product-desc-large {
     color: var(--bm-text-muted);
     font-size: 13px;
     margin: 0;
     line-height: 1.5;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .bm-product-desc-expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  .bm-show-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: var(--bm-primary);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 4px 0;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+  }
+
+  .bm-show-more-btn:hover {
+    opacity: 0.8;
   }
 
   .bm-product-btn {
@@ -2572,6 +2609,75 @@ interface Product {
   image_url?: string;
 }
 
+const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  useEffect(() => {
+    if (descRef.current) {
+      setIsTruncated(descRef.current.scrollHeight > descRef.current.clientHeight);
+    }
+  }, [product.kratek_opis]);
+
+  return (
+    <div className="bm-product-card-large">
+      {product.image_url && (
+        <div className="bm-product-image-large">
+          <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
+        </div>
+      )}
+      <div className="bm-product-info-large">
+        <h5>{product.ime_izdelka}</h5>
+        {product.kratek_opis && (
+          <div className="bm-product-desc-wrapper">
+            <p 
+              ref={descRef}
+              className={`bm-product-desc-large ${isExpanded ? 'bm-product-desc-expanded' : ''}`}
+            >
+              {product.kratek_opis}
+            </p>
+            {isTruncated && !isExpanded && (
+              <button 
+                className="bm-show-more-btn"
+                onClick={() => setIsExpanded(true)}
+              >
+                Prikaži več
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </button>
+            )}
+            {isExpanded && (
+              <button 
+                className="bm-show-more-btn"
+                onClick={() => setIsExpanded(false)}
+              >
+                Prikaži manj
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
+        <a
+          href={product.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bm-product-btn"
+        >
+          Poglej več
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  );
+};
+
 const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -2632,31 +2738,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       <div 
         className={`bm-product-card-wrapper ${isAnimating ? `bm-carousel-animate-${direction}` : ''}`}
       >
-        <div className="bm-product-card-large">
-          {product.image_url && (
-            <div className="bm-product-image-large">
-              <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
-            </div>
-          )}
-          <div className="bm-product-info-large">
-            <h5>{product.ime_izdelka}</h5>
-            {product.kratek_opis && (
-              <p className="bm-product-desc-large">{product.kratek_opis}</p>
-            )}
-            <a
-              href={product.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bm-product-btn"
-            >
-              Poglej več
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="7" y1="17" x2="17" y2="7"></line>
-                <polyline points="7 7 17 7 17 17"></polyline>
-              </svg>
-            </a>
-          </div>
-        </div>
+        <ProductCard key={currentIndex} product={product} />
       </div>
 
       {/* Dots indicator */}
