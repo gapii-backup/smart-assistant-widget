@@ -1514,12 +1514,11 @@ const WIDGET_STYLES = `
 
   .bm-carousel-track {
     display: flex;
-    width: 300%;
     transition: transform 0.3s ease;
   }
 
   .bm-carousel-slide {
-    width: 33.333%;
+    width: 100%;
     flex-shrink: 0;
   }
 
@@ -2748,18 +2747,18 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       <div 
         className="bm-carousel-track"
         style={{
-          transform: `translateX(calc(-50% + ${trackOffset}px))`,
+          transform: `translateX(calc(-100% + ${trackOffset}px))`,
           transition: isSwiping ? 'none' : 'transform 0.3s ease'
         }}
       >
         <div className="bm-carousel-slide">
-          <ProductCard key={getPrevIndex(currentIndex)} product={prevProduct} />
+          <ProductCard key={`prev-${getPrevIndex(currentIndex)}`} product={prevProduct} />
         </div>
         <div className="bm-carousel-slide">
-          <ProductCard key={currentIndex} product={product} />
+          <ProductCard key={`current-${currentIndex}`} product={product} />
         </div>
         <div className="bm-carousel-slide">
-          <ProductCard key={getNextIndex(currentIndex)} product={nextProduct} />
+          <ProductCard key={`next-${getNextIndex(currentIndex)}`} product={nextProduct} />
         </div>
       </div>
 
