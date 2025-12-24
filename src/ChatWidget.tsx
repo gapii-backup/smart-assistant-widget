@@ -2138,11 +2138,9 @@ const ContactForm: React.FC<{
           email,
           phone: fullPhone,
           message,
-          chatHistory: chatHistory.map(m => ({
-            role: m.role,
-            content: m.content,
-            timestamp: m.timestamp
-          })),
+          chatHistory: chatHistory.map(m => 
+            `${m.role === 'user' ? '👤 User' : '🤖 Bot'}: ${m.content}`
+          ).join('\n\n'),
           tableName: WIDGET_CONFIG.tableName
         })
       });
