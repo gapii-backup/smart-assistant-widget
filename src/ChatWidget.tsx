@@ -2627,10 +2627,6 @@ const ChatWidget: React.FC = () => {
 
   const handleEmailChange = (value: string) => {
     setUserEmail(value);
-    // Save email to localStorage if valid
-    if (value && validateEmail(value)) {
-      localStorage.setItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`, value);
-    }
     // Clear error when user is typing
     if (emailError) setEmailError('');
   };
@@ -2933,8 +2929,17 @@ const ChatWidget: React.FC = () => {
       setCurrentSessionId(sessionId);
     }
     
-    // Send lead data
-    if (userName || userEmail) {
+    // Save email to localStorage if valid
+    if (userEmail && validateEmail(userEmail)) {
+      localStorage.setItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`, userEmail);
+    }
+    
+    // Get saved email for webhook (use current or saved)
+    const savedEmail = localStorage.getItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`);
+    const emailToSend = userEmail || savedEmail;
+    
+    // Send lead data (always if we have saved email)
+    if (userName || emailToSend) {
       try {
         await fetch(WIDGET_CONFIG.leadWebhookUrl, {
           method: 'POST',
@@ -2942,7 +2947,7 @@ const ChatWidget: React.FC = () => {
           body: JSON.stringify({
             sessionId: sessionId,
             name: userName,
-            email: userEmail,
+            email: emailToSend,
             tableName: WIDGET_CONFIG.tableName
           })
         });
@@ -2970,8 +2975,17 @@ const ChatWidget: React.FC = () => {
       setCurrentSessionId(sessionId);
     }
     
-    // Send lead data if available
-    if (userName || userEmail) {
+    // Save email to localStorage if valid
+    if (userEmail && validateEmail(userEmail)) {
+      localStorage.setItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`, userEmail);
+    }
+    
+    // Get saved email for webhook (use current or saved)
+    const savedEmail = localStorage.getItem(`bm_saved_email_${WIDGET_CONFIG.tableName}`);
+    const emailToSend = userEmail || savedEmail;
+    
+    // Send lead data (always if we have saved email)
+    if (userName || emailToSend) {
       try {
         await fetch(WIDGET_CONFIG.leadWebhookUrl, {
           method: 'POST',
@@ -2979,7 +2993,7 @@ const ChatWidget: React.FC = () => {
           body: JSON.stringify({
             sessionId: sessionId,
             name: userName,
-            email: userEmail,
+            email: emailToSend,
             tableName: WIDGET_CONFIG.tableName
           })
         });
