@@ -2862,6 +2862,12 @@ const ChatWidget: React.FC = () => {
     }
     setEmailError('');
     
+    // Generate session ID if needed
+    const sessionId = currentSessionId || generateSessionId();
+    if (!currentSessionId) {
+      setCurrentSessionId(sessionId);
+    }
+    
     // Send lead data
     if (userName || userEmail) {
       try {
@@ -2869,6 +2875,7 @@ const ChatWidget: React.FC = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            sessionId: sessionId,
             name: userName,
             email: userEmail,
             tableName: WIDGET_CONFIG.tableName
@@ -2877,10 +2884,6 @@ const ChatWidget: React.FC = () => {
       } catch (error) {
         console.error('Lead webhook error:', error);
       }
-    }
-
-    if (!currentSessionId) {
-      setCurrentSessionId(generateSessionId());
     }
     
     navigateTo('chat', 'left');
@@ -2896,6 +2899,12 @@ const ChatWidget: React.FC = () => {
     }
     setEmailError('');
     
+    // Generate session ID if needed
+    const sessionId = currentSessionId || generateSessionId();
+    if (!currentSessionId) {
+      setCurrentSessionId(sessionId);
+    }
+    
     // Send lead data if available
     if (userName || userEmail) {
       try {
@@ -2903,6 +2912,7 @@ const ChatWidget: React.FC = () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            sessionId: sessionId,
             name: userName,
             email: userEmail,
             tableName: WIDGET_CONFIG.tableName
@@ -2911,10 +2921,6 @@ const ChatWidget: React.FC = () => {
       } catch (error) {
         console.error('Lead webhook error:', error);
       }
-    }
-
-    if (!currentSessionId) {
-      setCurrentSessionId(generateSessionId());
     }
     
     navigateTo('chat', 'left');
