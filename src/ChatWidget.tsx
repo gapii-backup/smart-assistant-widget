@@ -2598,7 +2598,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     <div className="bm-product-card-large">
       {product.image_url && (
         <div className="bm-product-image-large">
-          <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} />
+          <img src={product.image_url} alt={product.ime_izdelka || 'Produkt'} loading="lazy" />
         </div>
       )}
       <div className="bm-product-info-large">
@@ -2656,23 +2656,39 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const autoplayRef = useRef<NodeJS.Timeout | null>(null);
   
   // Swipe gesture state
   const touchStartX = useRef<number | null>(null);
   const minSwipeDistance = 50;
 
+  // Infinite loop navigation
   const goToNext = useCallback(() => {
-    if (currentIndex >= products.length - 1) return;
-    setCurrentIndex(prev => prev + 1);
+    setCurrentIndex(prev => (prev + 1) % products.length);
     setSwipeOffset(0);
-  }, [currentIndex, products.length]);
+  }, [products.length]);
 
   const goToPrev = useCallback(() => {
-    if (currentIndex <= 0) return;
-    setCurrentIndex(prev => prev - 1);
+    setCurrentIndex(prev => (prev - 1 + products.length) % products.length);
     setSwipeOffset(0);
-  }, [currentIndex]);
+  }, [products.length]);
+
+  // Autoplay - 8 seconds
+  useEffect(() => {
+    if (products.length <= 1 || isPaused || isSwiping) return;
+    
+    autoplayRef.current = setInterval(() => {
+      goToNext();
+    }, 8000);
+
+    return () => {
+      if (autoplayRef.current) {
+        clearInterval(autoplayRef.current);
+      }
+    };
+  }, [goToNext, products.length, isPaused, isSwiping]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -2683,13 +2699,7 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     if (!touchStartX.current) return;
     
     const currentX = e.targetTouches[0].clientX;
-    let offset = currentX - touchStartX.current;
-    
-    // Add resistance at edges
-    if ((offset > 0 && currentIndex === 0) || (offset < 0 && currentIndex === products.length - 1)) {
-      offset = offset * 0.3;
-    }
-    
+    const offset = currentX - touchStartX.current;
     setSwipeOffset(offset);
   };
 
@@ -2698,9 +2708,9 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
     
     setIsSwiping(false);
     
-    if (swipeOffset < -minSwipeDistance && currentIndex < products.length - 1) {
+    if (swipeOffset < -minSwipeDistance) {
       goToNext();
-    } else if (swipeOffset > minSwipeDistance && currentIndex > 0) {
+    } else if (swipeOffset > minSwipeDistance) {
       goToPrev();
     } else {
       setSwipeOffset(0);
@@ -2732,14 +2742,15 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
     >
       {/* Navigation arrows */}
       {products.length > 1 && (
         <>
           <button
-            className={`bm-carousel-arrow bm-carousel-arrow-left ${currentIndex === 0 ? 'bm-carousel-arrow-disabled' : ''}`}
+            className="bm-carousel-arrow bm-carousel-arrow-left"
             onClick={goToPrev}
-            disabled={currentIndex === 0}
             aria-label="Prejšnji produkt"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -2747,9 +2758,8 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
             </svg>
           </button>
           <button
-            className={`bm-carousel-arrow bm-carousel-arrow-right ${currentIndex === products.length - 1 ? 'bm-carousel-arrow-disabled' : ''}`}
+            className="bm-carousel-arrow bm-carousel-arrow-right"
             onClick={goToNext}
-            disabled={currentIndex === products.length - 1}
             aria-label="Naslednji produkt"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
