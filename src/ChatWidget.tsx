@@ -813,7 +813,9 @@ const WIDGET_STYLES = `
 
   .bm-textarea {
     min-height: 100px;
-    resize: vertical;
+    max-height: 150px;
+    resize: none;
+    overflow-y: auto;
   }
 
   .bm-input-error {
