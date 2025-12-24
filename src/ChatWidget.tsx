@@ -1263,8 +1263,15 @@ const WIDGET_STYLES = `
     height: 16px;
   }
 
+  .bm-history-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--bm-border);
+    background: var(--bm-bg);
+    flex-shrink: 0;
+  }
+
   .bm-new-chat-btn {
-    margin-top: 16px;
+    margin-top: 0;
   }
 
   /* Action Buttons */
@@ -2669,6 +2676,14 @@ const ChatWidget: React.FC = () => {
                     })}
                   </div>
                 )}
+              </div>
+              <div className="bm-history-footer">
+                <button 
+                  className="bm-submit-btn bm-new-chat-btn"
+                  onClick={startNewSession}
+                >
+                  Nov pogovor
+                </button>
               </div>
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
