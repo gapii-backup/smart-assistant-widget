@@ -1907,35 +1907,6 @@ const COUNTRY_CODES = [
   { code: '+373', country: 'Moldavija', flag: '🇲🇩', maxDigits: 8 },
   // Severna Amerika
   { code: '+1', country: 'ZDA / Kanada', flag: '🇺🇸', maxDigits: 10 },
-  { code: '+52', country: 'Mehika', flag: '🇲🇽', maxDigits: 10 },
-  // Južna Amerika
-  { code: '+55', country: 'Brazilija', flag: '🇧🇷', maxDigits: 11 },
-  { code: '+54', country: 'Argentina', flag: '🇦🇷', maxDigits: 10 },
-  { code: '+56', country: 'Čile', flag: '🇨🇱', maxDigits: 9 },
-  { code: '+57', country: 'Kolumbija', flag: '🇨🇴', maxDigits: 10 },
-  // Azija
-  { code: '+86', country: 'Kitajska', flag: '🇨🇳', maxDigits: 11 },
-  { code: '+81', country: 'Japonska', flag: '🇯🇵', maxDigits: 10 },
-  { code: '+82', country: 'Južna Koreja', flag: '🇰🇷', maxDigits: 10 },
-  { code: '+91', country: 'Indija', flag: '🇮🇳', maxDigits: 10 },
-  { code: '+66', country: 'Tajska', flag: '🇹🇭', maxDigits: 9 },
-  { code: '+84', country: 'Vietnam', flag: '🇻🇳', maxDigits: 9 },
-  { code: '+62', country: 'Indonezija', flag: '🇮🇩', maxDigits: 11 },
-  { code: '+60', country: 'Malezija', flag: '🇲🇾', maxDigits: 9 },
-  { code: '+63', country: 'Filipini', flag: '🇵🇭', maxDigits: 10 },
-  { code: '+65', country: 'Singapur', flag: '🇸🇬', maxDigits: 8 },
-  { code: '+971', country: 'ZAE', flag: '🇦🇪', maxDigits: 9 },
-  { code: '+972', country: 'Izrael', flag: '🇮🇱', maxDigits: 9 },
-  { code: '+966', country: 'Saudova Arabija', flag: '🇸🇦', maxDigits: 9 },
-  // Oceanija
-  { code: '+61', country: 'Avstralija', flag: '🇦🇺', maxDigits: 9 },
-  { code: '+64', country: 'Nova Zelandija', flag: '🇳🇿', maxDigits: 9 },
-  // Afrika
-  { code: '+27', country: 'Južna Afrika', flag: '🇿🇦', maxDigits: 9 },
-  { code: '+20', country: 'Egipt', flag: '🇪🇬', maxDigits: 10 },
-  { code: '+212', country: 'Maroko', flag: '🇲🇦', maxDigits: 9 },
-  { code: '+234', country: 'Nigerija', flag: '🇳🇬', maxDigits: 10 },
-  { code: '+254', country: 'Kenija', flag: '🇰🇪', maxDigits: 9 },
 ];
 
 // Format phone number with spaces based on country
@@ -1969,6 +1940,24 @@ const ContactForm: React.FC<{
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
   const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({});
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowCountryDropdown(false);
+        setCountrySearch('');
+      }
+    };
+
+    if (showCountryDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showCountryDropdown]);
 
   const filteredCountries = COUNTRY_CODES.filter(c => 
     c.country.toLowerCase().includes(countrySearch.toLowerCase()) ||
@@ -2082,7 +2071,7 @@ const ContactForm: React.FC<{
               <div className="bm-form-group">
                 <label>Telefon <span style={{ opacity: 0.5, fontWeight: 400 }}>(opcijsko)</span></label>
                 <div className="bm-phone-input-wrapper">
-                  <div className="bm-country-selector">
+                  <div className="bm-country-selector" ref={dropdownRef}>
                     <button 
                       type="button"
                       className="bm-country-btn"
