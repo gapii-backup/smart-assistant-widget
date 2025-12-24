@@ -1511,13 +1511,10 @@ const WIDGET_STYLES = `
     padding: 8px 0;
   }
 
-  /* Arrow buttons */
+  /* Arrow buttons - positioned in dots row */
   .bm-carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-70%);
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     background: var(--bm-bg);
     border: 1px solid var(--bm-border);
@@ -1527,22 +1524,14 @@ const WIDGET_STYLES = `
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    z-index: 10;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
   }
 
   .bm-carousel-arrow:hover:not(.bm-carousel-arrow-disabled) {
     background: var(--bm-primary);
     border-color: var(--bm-primary);
     color: white;
-  }
-
-  .bm-carousel-arrow-left {
-    left: -8px;
-  }
-
-  .bm-carousel-arrow-right {
-    right: -8px;
   }
 
   .bm-carousel-arrow-disabled {
@@ -1680,12 +1669,20 @@ const WIDGET_STYLES = `
     transform: translateY(-1px);
   }
 
+  /* Navigation row - arrows + dots together */
+  .bm-carousel-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
   /* Dots indicator */
   .bm-carousel-dots {
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-top: 12px;
   }
 
   .bm-carousel-dot {
@@ -2746,30 +2743,6 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Navigation arrows */}
-      {products.length > 1 && (
-        <>
-          <button
-            className="bm-carousel-arrow bm-carousel-arrow-left"
-            onClick={goToPrev}
-            aria-label="Prejšnji produkt"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-          <button
-            className="bm-carousel-arrow bm-carousel-arrow-right"
-            onClick={goToNext}
-            aria-label="Naslednji produkt"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-        </>
-      )}
-
       {/* Carousel track with all cards */}
       <div 
         className={`bm-carousel-track ${isSwiping ? 'bm-swiping' : ''}`}
@@ -2782,17 +2755,39 @@ const ProductCarousel: React.FC<{ products: Product[] }> = ({ products }) => {
         ))}
       </div>
 
-      {/* Dots indicator */}
+      {/* Navigation row: arrows + dots */}
       {products.length > 1 && (
-        <div className="bm-carousel-dots">
-          {products.map((_, i) => (
-            <button
-              key={i}
-              className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
-              onClick={() => setCurrentIndex(i)}
-              aria-label={`Produkt ${i + 1}`}
-            />
-          ))}
+        <div className="bm-carousel-nav-row">
+          <button
+            className="bm-carousel-arrow"
+            onClick={goToPrev}
+            aria-label="Prejšnji produkt"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          <div className="bm-carousel-dots">
+            {products.map((_, i) => (
+              <button
+                key={i}
+                className={`bm-carousel-dot ${i === currentIndex ? 'bm-carousel-dot-active' : ''}`}
+                onClick={() => setCurrentIndex(i)}
+                aria-label={`Produkt ${i + 1}`}
+              />
+            ))}
+          </div>
+          
+          <button
+            className="bm-carousel-arrow"
+            onClick={goToNext}
+            aria-label="Naslednji produkt"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
         </div>
       )}
     </div>
