@@ -2054,7 +2054,8 @@ const formatPhoneNumber = (value: string, trunk: string, maxDigits: number): str
 const ContactForm: React.FC<{
   onClose: () => void;
   chatHistory: Message[];
-}> = ({ onClose, chatHistory }) => {
+  onSuccess?: () => void;
+}> = ({ onClose, chatHistory, onSuccess }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [countryCode, setCountryCode] = useState('+386');
@@ -2146,6 +2147,7 @@ const ContactForm: React.FC<{
         })
       });
       setSuccess(true);
+      onSuccess?.();
       setTimeout(onClose, 2000);
     } catch (error) {
       console.error('Contact form error:', error);
@@ -2158,7 +2160,7 @@ const ContactForm: React.FC<{
     <div className="bm-contact-view">
       <div className="bm-contact-content">
         {success ? (
-          <div className="bm-empty bm-success-animation">
+          <div className="bm-empty bm-success-animation" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
             <Icons.Mail />
             <h4>Sporočilo poslano!</h4>
             <p>Hvala za vaše sporočilo. Odgovorili vam bomo v najkrajšem možnem času.</p>
@@ -2559,6 +2561,7 @@ const ChatWidget: React.FC = () => {
   const [view, setView] = useState<View>('home');
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
   const [modal, setModal] = useState<ModalType>(null);
+  const [contactSuccess, setContactSuccess] = useState(false);
 
   // Custom setView with direction
   const navigateTo = (newView: View, direction: 'left' | 'right') => {
@@ -3178,17 +3181,23 @@ const ChatWidget: React.FC = () => {
           {view === 'contact' && (
             <div className={`bm-view-enter-${viewDirection}`}>
               <div className="bm-header-chat">
-                <button className="bm-back-btn" onClick={() => navigateTo('chat', 'left')}>
-                  <Icons.Back />
-                </button>
+                {!contactSuccess && (
+                  <button className="bm-back-btn" onClick={() => navigateTo('chat', 'left')}>
+                    <Icons.Back />
+                  </button>
+                )}
                 <div className="bm-header-info" style={{ textAlign: 'center', flex: 1 }}>
-                  <h3 style={{ fontSize: '18px' }}>Kontaktiraj nas</h3>
+                  <h3 style={{ fontSize: '18px' }}>{contactSuccess ? 'Sporočilo poslano!' : 'Kontaktiraj nas'}</h3>
                 </div>
-                <div style={{ width: '32px' }}></div>
+                {!contactSuccess && <div style={{ width: '32px' }}></div>}
               </div>
               <ContactForm 
-                onClose={() => navigateTo('chat', 'left')} 
+                onClose={() => {
+                  setContactSuccess(false);
+                  navigateTo('chat', 'left');
+                }} 
                 chatHistory={messages}
+                onSuccess={() => setContactSuccess(true)}
               />
             </div>
           )}
