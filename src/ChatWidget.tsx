@@ -1480,26 +1480,20 @@ const WIDGET_STYLES = `
     background: var(--bm-primary-hover);
   }
 
-  .bm-newsletter-success {
+  .bm-newsletter {
     display: flex;
-    align-items: center;
     gap: 8px;
-    color: var(--bm-primary);
-    font-size: 13px;
-    animation: bm-success-bounce 0.4s ease-out;
+    margin-top: 10px;
+    overflow: hidden;
+    max-height: 60px;
+    opacity: 1;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out, margin 0.3s ease-out;
   }
 
-  .bm-newsletter-check {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    background: var(--bm-primary);
-    color: white;
-    border-radius: 50%;
-    font-size: 11px;
-    font-weight: bold;
+  .bm-newsletter:empty {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
   }
 
   /* Product Cards */
@@ -2512,11 +2506,7 @@ const MessageContent: React.FC<{
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
       <div key={key++} className="bm-newsletter">
-        {newsletterSubmitted ? (
-          <div className="bm-newsletter-success">
-            <span className="bm-newsletter-check">✓</span>
-          </div>
-        ) : (
+        {newsletterSubmitted ? null : (
           <>
             <input
               type="email"
