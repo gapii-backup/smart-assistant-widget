@@ -21,11 +21,15 @@ const WIDGET_CONFIG = {
   
   // Branding  
   botName: 'AI Asistent',
-  botAvatar: '',
+  botAvatar: '', // URL do slike - če je prazno, uporabi botIcon
+  
+  // Bot icon - SVG path (24x24 viewBox) - prikazuje se na home, v headerju in pri sporočilih
+  // Najdi ikone na: https://lucide.dev/icons ali https://heroicons.com
+  botIcon: 'M3 11h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11zm9-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2v4M8 16h0M16 16h0', // robot
+  botIconBackground: '#3B82F6', // barva ozadja ikone bota
   
   // Trigger icon - SVG path (24x24 viewBox)
   // Privzeta chat ikona je spodaj. Zamenjaj z drugim SVG path-om!
-  // Najdi ikone na: https://lucide.dev/icons ali https://heroicons.com
   triggerIcon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', // chat bubble
   
   // Texts
@@ -489,13 +493,12 @@ const WIDGET_STYLES = `
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'rgba(255, 255, 255, 0.2)' : 'var(--bm-primary)'};
+    background: ${WIDGET_CONFIG.botIconBackground};
     margin: 16px auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: ${WIDGET_CONFIG.headerStyle === 'solid' ? '0 4px 16px rgba(0, 0, 0, 0.1)' : `0 8px 24px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)}`};
-    backdrop-filter: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'blur(8px)' : 'none'};
+    box-shadow: 0 8px 24px ${hexToRgba(WIDGET_CONFIG.botIconBackground, 0.4)};
   }
 
   .bm-monitor-icon svg {
@@ -634,12 +637,12 @@ const WIDGET_STYLES = `
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: white;
+    background: ${WIDGET_CONFIG.botIconBackground};
     margin: 0 auto 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px ${hexToRgba(WIDGET_CONFIG.botIconBackground, 0.3)};
     overflow: hidden;
   }
 
@@ -652,44 +655,44 @@ const WIDGET_STYLES = `
   .bm-avatar svg {
     width: 32px;
     height: 32px;
-    color: var(--bm-primary);
+    color: white;
   }
 
   .bm-avatar-small {
     width: 28px;
     height: 28px;
     min-width: 28px;
-    border-radius: 50%;
-    background: white;
+    border-radius: 8px;
+    background: ${WIDGET_CONFIG.botIconBackground};
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     margin-bottom: 22px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px ${hexToRgba(WIDGET_CONFIG.botIconBackground, 0.3)};
   }
 
   .bm-avatar-small svg {
-    color: var(--bm-primary);
+    color: white;
   }
 
   .bm-avatar-header {
     width: 36px;
     height: 36px;
     min-width: 36px;
-    border-radius: 50%;
-    background: white;
+    border-radius: 10px;
+    background: ${WIDGET_CONFIG.botIconBackground};
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px ${hexToRgba(WIDGET_CONFIG.botIconBackground, 0.3)};
   }
 
   .bm-avatar-header svg {
     width: 20px;
     height: 20px;
-    color: var(--bm-primary);
+    color: white;
   }
 
   .bm-avatar-small img {
@@ -2802,7 +2805,9 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   
   return (
     <div className={className}>
-      <Icons.Bot />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d={WIDGET_CONFIG.botIcon} />
+      </svg>
     </div>
   );
 };
@@ -4352,7 +4357,9 @@ const ChatWidget: React.FC = () => {
                   </button>
                 </div>
                 <div className="bm-monitor-icon">
-                  <Icons.Bot />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={WIDGET_CONFIG.botIcon} />
+                  </svg>
                 </div>
                 <h2>
                   <span>{WIDGET_CONFIG.homeTitle}</span>
@@ -4456,7 +4463,9 @@ const ChatWidget: React.FC = () => {
                   <Icons.Back />
                 </button>
                 <div className="bm-avatar-header">
-                  <Icons.Bot />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={WIDGET_CONFIG.botIcon} />
+                  </svg>
                 </div>
                 <div className="bm-header-info">
                   <h3>{WIDGET_CONFIG.botName}</h3>
