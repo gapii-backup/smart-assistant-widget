@@ -2480,6 +2480,7 @@ const WIDGET_STYLES = `
     .bm-contact-content {
       padding: 16px 20px;
       padding-bottom: 4px;
+      overflow-y: hidden;
     }
 
     .bm-form-group {
