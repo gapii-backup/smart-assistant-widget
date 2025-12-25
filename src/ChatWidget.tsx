@@ -54,7 +54,7 @@ const WIDGET_CONFIG = {
   ],
   
   // Fields
-  showEmailField: false,
+  showEmailField: true,
   
   // Webhooks  
   webhookUrl: 'https://hub.botmotion.ai/webhook/051e33f1-1f96-4722-af95-a28f2f3afd01/chat',
