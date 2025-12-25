@@ -106,14 +106,14 @@ const WIDGET_STYLES = `
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
     transition: all 0.2s ease;
     position: relative;
   }
 
   .bm-trigger:hover {
     transform: scale(1.08);
-    box-shadow: 0 6px 28px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 6px 28px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.5)};
   }
 
   .bm-trigger svg {
@@ -188,7 +188,7 @@ const WIDGET_STYLES = `
     gap: 8px;
     padding: 12px 10px;
     border-radius: ${WIDGET_CONFIG.position === 'right' ? '8px 0 0 8px' : '0 8px 8px 0'};
-    box-shadow: -4px 0 20px rgba(59, 130, 246, 0.3);
+    box-shadow: -4px 0 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.3)};
     transition: all 0.2s ease;
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -197,7 +197,7 @@ const WIDGET_STYLES = `
 
   .bm-trigger-edge:hover {
     ${WIDGET_CONFIG.position === 'right' ? 'transform: translateX(-4px);' : 'transform: translateX(4px);'}
-    box-shadow: -6px 0 28px rgba(59, 130, 246, 0.4);
+    box-shadow: -6px 0 28px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
   }
 
   .bm-trigger-edge svg {
@@ -251,7 +251,7 @@ const WIDGET_STYLES = `
     border: none;
     border-radius: 20px;
     padding: 14px 20px;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
     max-width: 500px;
     width: max-content;
     cursor: pointer;
@@ -460,7 +460,7 @@ const WIDGET_STYLES = `
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 24px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
   }
 
   .bm-monitor-icon svg {
@@ -762,7 +762,7 @@ const WIDGET_STYLES = `
   .bm-input-full:focus {
     outline: none;
     border-color: var(--bm-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 3px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.15)};
   }
 
   .bm-input-full::placeholder {
@@ -788,7 +788,7 @@ const WIDGET_STYLES = `
 
   .bm-message-input-wrapper:focus-within {
     border-color: var(--bm-primary);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 4px 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.25)};
     background: var(--bm-bg);
   }
 
@@ -835,13 +835,13 @@ const WIDGET_STYLES = `
     justify-content: center;
     transition: all 0.2s ease;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 2px 8px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
   }
 
   .bm-send-btn-home:hover {
     background: var(--bm-primary-hover);
     transform: scale(1.08);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 4px 16px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.5)};
   }
 
   .bm-send-btn-home:disabled {
@@ -928,7 +928,7 @@ const WIDGET_STYLES = `
   .bm-input:focus {
     outline: none;
     border-color: var(--bm-primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 0 3px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.15)};
   }
 
   .bm-input::placeholder {
@@ -1028,10 +1028,10 @@ const WIDGET_STYLES = `
 
   @keyframes bm-pulse-btn {
     0%, 100% {
-      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 0 0 ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
     }
     50% {
-      box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+      box-shadow: 0 0 0 10px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0)};
     }
   }
 
@@ -1379,7 +1379,7 @@ const WIDGET_STYLES = `
 
   .bm-footer a:hover {
     color: ${WIDGET_CONFIG.mode === 'dark' ? adjustColor(WIDGET_CONFIG.primaryColor, 30) : adjustColor(WIDGET_CONFIG.primaryColor, -20)};
-    text-shadow: ${WIDGET_CONFIG.mode === 'dark' ? '0 0 8px rgba(59, 130, 246, 0.5)' : 'none'};
+    text-shadow: ${WIDGET_CONFIG.mode === 'dark' ? `0 0 8px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.5)}` : 'none'};
   }
 
   .bm-footer a:hover::after {
@@ -2593,6 +2593,14 @@ function adjustColor(hex: string, percent: number): string {
   const G = Math.max(Math.min((num >> 8 & 0x00FF) + amt, 255), 0);
   const B = Math.max(Math.min((num & 0x0000FF) + amt, 255), 0);
   return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const R = (num >> 16) & 255;
+  const G = (num >> 8) & 255;
+  const B = num & 255;
+  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
 }
 
 function formatTime(date: Date): string {
