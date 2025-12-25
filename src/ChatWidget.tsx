@@ -3715,8 +3715,26 @@ const ChatWidget: React.FC = () => {
   const [typingMessage, setTypingMessage] = useState('');
   
   // Session state
-  const [currentSessionId, setCurrentSessionId] = useState<string>('');
+  const [currentSessionId, setCurrentSessionIdState] = useState<string>(() => {
+    // Restore session ID on desktop
+    if (typeof window !== 'undefined' && window.innerWidth > 768) {
+      return localStorage.getItem('bm-current-session-id') || '';
+    }
+    return '';
+  });
   const [sessions, setSessions] = useState<Session[]>([]);
+  
+  // Wrapper to persist currentSessionId on desktop
+  const setCurrentSessionId = (value: string) => {
+    setCurrentSessionIdState(value);
+    if (typeof window !== 'undefined' && window.innerWidth > 768) {
+      if (value) {
+        localStorage.setItem('bm-current-session-id', value);
+      } else {
+        localStorage.removeItem('bm-current-session-id');
+      }
+    }
+  };
   
   // Health check
   const [isHealthy, setIsHealthy] = useState(true);
@@ -3806,20 +3824,38 @@ const ChatWidget: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Load sessions from localStorage
+  // Load sessions from localStorage and restore current session if on desktop
   useEffect(() => {
     const saved = localStorage.getItem(`bm_sessions_${WIDGET_CONFIG.tableName}`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setSessions(parsed.map((s: any) => ({
+        const loadedSessions = parsed.map((s: any) => ({
           ...s,
           createdAt: new Date(s.createdAt),
           messages: s.messages.map((m: any) => ({
             ...m,
             timestamp: new Date(m.timestamp)
           }))
-        })));
+        }));
+        setSessions(loadedSessions);
+        
+        // On desktop, restore the current session's messages if we have a saved session ID
+        if (typeof window !== 'undefined' && window.innerWidth > 768) {
+          const savedSessionId = localStorage.getItem('bm-current-session-id');
+          const savedView = localStorage.getItem('bm-widget-view');
+          
+          if (savedSessionId && savedView === 'chat') {
+            const session = loadedSessions.find((s: Session) => s.id === savedSessionId);
+            if (session) {
+              setMessages(session.messages);
+            } else {
+              // Session not found, reset to home
+              setView('home');
+              setCurrentSessionId('');
+            }
+          }
+        }
       } catch (e) {
         console.error('Failed to parse sessions:', e);
       }
