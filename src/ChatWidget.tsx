@@ -43,7 +43,6 @@ const WIDGET_CONFIG = {
   // Texts
   homeTitle: 'Pozdravljeni!',
   homeSubtitleLine2: 'Kako vam lahko pomagam?',
-  homeSubtitle: '',
   welcomeMessage: '👋 Pozdravljeni! Kako vam lahko pomagam?',
   messagePlaceholder: 'Napišite vprašanje...',
   
