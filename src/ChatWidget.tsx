@@ -466,12 +466,13 @@ const WIDGET_STYLES = `
     width: 64px;
     height: 64px;
     border-radius: 16px;
-    background: var(--bm-primary);
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'rgba(255, 255, 255, 0.2)' : 'var(--bm-primary)'};
     margin: 16px auto 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 24px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
+    box-shadow: ${WIDGET_CONFIG.headerStyle === 'solid' ? '0 4px 16px rgba(0, 0, 0, 0.1)' : `0 8px 24px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)}`};
+    backdrop-filter: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'blur(8px)' : 'none'};
   }
 
   .bm-monitor-icon svg {
@@ -481,15 +482,27 @@ const WIDGET_STYLES = `
   }
 
   .bm-header-home h2 {
-    color: ${WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f'};
-    font-size: 26px;
-    font-weight: 700;
+    color: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'white' : (WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f')};
+    font-size: 28px;
+    font-weight: 800;
     margin: 0;
-    line-height: 1.3;
+    line-height: 1.25;
+    text-shadow: ${WIDGET_CONFIG.headerStyle === 'solid' ? '0 2px 4px rgba(0, 0, 0, 0.15)' : 'none'};
+    letter-spacing: -0.5px;
   }
 
   .bm-header-home h2 span {
     display: block;
+  }
+
+  .bm-header-home h2 span:first-child {
+    font-size: 32px;
+    margin-bottom: 4px;
+  }
+
+  .bm-header-home h2 span:last-child {
+    font-weight: 600;
+    opacity: 0.95;
   }
 
   /* Header - Chat */
