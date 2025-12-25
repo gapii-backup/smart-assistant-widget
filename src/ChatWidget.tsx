@@ -4782,6 +4782,43 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
 // CONFIG FETCHING
 // ============================================================================
 
+// Map snake_case API response to camelCase config
+function mapApiConfig(apiConfig: Record<string, any>): Partial<WidgetConfig> {
+  const keyMap: Record<string, keyof WidgetConfig> = {
+    primary_color: 'primaryColor',
+    trigger_style: 'triggerStyle',
+    edge_trigger_text: 'edgeTriggerText',
+    bot_name: 'botName',
+    bot_avatar: 'botAvatar',
+    webhook_url: 'webhookUrl',
+    lead_webhook_url: 'leadWebhookUrl',
+    support_webhook_url: 'supportWebhookUrl',
+    support_enabled: 'supportEnabled',
+    booking_enabled: 'bookingEnabled',
+    booking_url: 'bookingUrl',
+    footer_prefix: 'footerPrefix',
+    footer_link_text: 'footerLinkText',
+    footer_link_url: 'footerLinkUrl',
+    footer_suffix: 'footerSuffix',
+    table_name: 'tableName',
+    home_title: 'homeTitle',
+    home_subtitle_line2: 'homeSubtitleLine2',
+    welcome_message: 'welcomeMessage',
+    show_bubble: 'showBubble',
+    quick_questions: 'quickQuestions',
+    show_email_field: 'showEmailField',
+  };
+  
+  const mapped: Partial<WidgetConfig> = {};
+  
+  for (const [apiKey, value] of Object.entries(apiConfig)) {
+    const camelKey = keyMap[apiKey] || apiKey;
+    (mapped as any)[camelKey] = value;
+  }
+  
+  return mapped;
+}
+
 async function fetchWidgetConfig(): Promise<WidgetConfig> {
   const scriptTag = document.currentScript || document.querySelector('script[data-key]');
   const apiKey = scriptTag?.getAttribute('data-key');
@@ -4794,8 +4831,9 @@ async function fetchWidgetConfig(): Promise<WidgetConfig> {
   try {
     const response = await fetch(`https://hub.botmotion.ai/webhook/widget-config?key=${apiKey}`);
     if (!response.ok) throw new Error('Config not found');
-    const config = await response.json();
-    return { ...DEFAULT_CONFIG, ...config };
+    const apiConfig = await response.json();
+    const mappedConfig = mapApiConfig(apiConfig);
+    return { ...DEFAULT_CONFIG, ...mappedConfig };
   } catch (error) {
     console.error('BotMotion: Failed to fetch config', error);
     return DEFAULT_CONFIG;
