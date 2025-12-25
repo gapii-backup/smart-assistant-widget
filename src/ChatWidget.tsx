@@ -681,9 +681,12 @@ const WIDGET_STYLES = `
   }
 
   .bm-avatar-small svg {
-    width: 16px;
-    height: 16px;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px;
+    min-height: 16px;
     color: ${WIDGET_CONFIG.botIconColor};
+    flex-shrink: 0;
   }
 
   .bm-avatar-header {
