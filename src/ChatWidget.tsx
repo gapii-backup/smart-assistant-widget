@@ -5,7 +5,7 @@ import { createRoot } from 'react-dom/client';
 // CONFIGURATION
 // ============================================================================
 
-const WIDGET_CONFIG = {
+const DEFAULT_CONFIG = {
   // Display
   mode: 'dark' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
@@ -79,11 +79,38 @@ const WIDGET_CONFIG = {
   tableName: 'x001_botmotion'
 };
 
+// Type for config
+type WidgetConfig = typeof DEFAULT_CONFIG;
+
+// Alias for backward compatibility in styles (uses DEFAULT_CONFIG values)
+const WIDGET_CONFIG = DEFAULT_CONFIG;
+
+// ============================================================================
+// UTILITIES (needed before styles)
+// ============================================================================
+
+function adjustColor(hex: string, percent: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.max(Math.min((num >> 16) + amt, 255), 0);
+  const G = Math.max(Math.min((num >> 8 & 0x00FF) + amt, 255), 0);
+  const B = Math.max(Math.min((num & 0x0000FF) + amt, 255), 0);
+  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const R = (num >> 16) & 255;
+  const G = (num >> 8) & 255;
+  const B = num & 255;
+  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
+}
+
 // ============================================================================
 // STYLES
 // ============================================================================
 
-const WIDGET_STYLES = `
+const getWidgetStyles = (config: WidgetConfig) => `
   .bm-widget-container * {
     box-sizing: border-box;
     margin: 0;
@@ -92,17 +119,17 @@ const WIDGET_STYLES = `
   }
 
   .bm-widget-container {
-    --bm-primary: ${WIDGET_CONFIG.primaryColor};
-    --bm-primary-hover: ${adjustColor(WIDGET_CONFIG.primaryColor, -10)};
-    --bm-bg: ${WIDGET_CONFIG.mode === 'dark' ? '#0f0f0f' : '#ffffff'};
-    --bm-bg-secondary: ${WIDGET_CONFIG.mode === 'dark' ? '#1a1a1a' : '#f5f5f5'};
-    --bm-text: ${WIDGET_CONFIG.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
-    --bm-text-muted: ${WIDGET_CONFIG.mode === 'dark' ? '#888888' : '#666666'};
-    --bm-border: ${WIDGET_CONFIG.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
+    --bm-primary: ${config.primaryColor};
+    --bm-primary-hover: ${adjustColor(config.primaryColor, -10)};
+    --bm-bg: ${config.mode === 'dark' ? '#0f0f0f' : '#ffffff'};
+    --bm-bg-secondary: ${config.mode === 'dark' ? '#1a1a1a' : '#f5f5f5'};
+    --bm-text: ${config.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
+    --bm-text-muted: ${config.mode === 'dark' ? '#888888' : '#666666'};
+    --bm-border: ${config.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
     --bm-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     position: fixed;
-    bottom: ${WIDGET_CONFIG.verticalOffset}px;
-    ${WIDGET_CONFIG.position}: 24px;
+    bottom: ${config.verticalOffset}px;
+    ${config.position}: 24px;
     z-index: 999999;
     font-size: 14px;
     line-height: 1.5;
@@ -119,14 +146,14 @@ const WIDGET_STYLES = `
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
+    box-shadow: 0 4px 20px ${hexToRgba(config.primaryColor, 0.4)};
     transition: all 0.2s ease;
     position: relative;
   }
 
   .bm-trigger:hover {
     transform: scale(1.08);
-    box-shadow: 0 6px 28px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.5)};
+    box-shadow: 0 6px 28px ${hexToRgba(config.primaryColor, 0.5)};
   }
 
   .bm-trigger svg {
@@ -197,8 +224,8 @@ const WIDGET_STYLES = `
   /* Edge Trigger Style */
   .bm-trigger-edge {
     position: fixed;
-    ${WIDGET_CONFIG.position}: 0;
-    bottom: ${WIDGET_CONFIG.verticalOffset}px;
+    ${config.position}: 0;
+    bottom: ${config.verticalOffset}px;
     background: var(--bm-primary);
     border: none;
     cursor: pointer;
@@ -207,8 +234,8 @@ const WIDGET_STYLES = `
     justify-content: center;
     gap: 8px;
     padding: 12px 10px;
-    border-radius: ${WIDGET_CONFIG.position === 'right' ? '8px 0 0 8px' : '0 8px 8px 0'};
-    box-shadow: -4px 0 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.3)};
+    border-radius: ${config.position === 'right' ? '8px 0 0 8px' : '0 8px 8px 0'};
+    box-shadow: -4px 0 20px ${hexToRgba(config.primaryColor, 0.3)};
     transition: all 0.2s ease;
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -216,15 +243,15 @@ const WIDGET_STYLES = `
   }
 
   .bm-trigger-edge:hover {
-    ${WIDGET_CONFIG.position === 'right' ? 'transform: translateX(-4px);' : 'transform: translateX(4px);'}
-    box-shadow: -6px 0 28px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.4)};
+    ${config.position === 'right' ? 'transform: translateX(-4px);' : 'transform: translateX(4px);'}
+    box-shadow: -6px 0 28px ${hexToRgba(config.primaryColor, 0.4)};
   }
 
   .bm-trigger-edge svg {
     width: 20px;
     height: 20px;
     color: white;
-    transform: rotate(${WIDGET_CONFIG.position === 'right' ? '0deg' : '180deg'});
+    transform: rotate(${config.position === 'right' ? '0deg' : '180deg'});
   }
 
   .bm-trigger-edge img {
@@ -244,7 +271,7 @@ const WIDGET_STYLES = `
   .bm-trigger-edge .bm-edge-dot {
     position: absolute;
     top: 8px;
-    ${WIDGET_CONFIG.position === 'right' ? 'left: -5px;' : 'right: -5px;'}
+    ${config.position === 'right' ? 'left: -5px;' : 'right: -5px;'}
     width: 12px;
     height: 12px;
     background: #22c55e;
@@ -2653,25 +2680,8 @@ const WIDGET_STYLES = `
 `;
 
 // ============================================================================
-// UTILITIES
+// MORE UTILITIES
 // ============================================================================
-
-function adjustColor(hex: string, percent: number): string {
-  const num = parseInt(hex.replace('#', ''), 16);
-  const amt = Math.round(2.55 * percent);
-  const R = Math.max(Math.min((num >> 16) + amt, 255), 0);
-  const G = Math.max(Math.min((num >> 8 & 0x00FF) + amt, 255), 0);
-  const B = Math.max(Math.min((num & 0x0000FF) + amt, 255), 0);
-  return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
-}
-
-function hexToRgba(hex: string, alpha: number): string {
-  const num = parseInt(hex.replace('#', ''), 16);
-  const R = (num >> 16) & 255;
-  const G = (num >> 8) & 255;
-  const B = num & 255;
-  return `rgba(${R}, ${G}, ${B}, ${alpha})`;
-}
 
 function formatTime(date: Date): string {
   return date.toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' });
@@ -3703,7 +3713,7 @@ const MessageContent: React.FC<{
 // MAIN WIDGET
 // ============================================================================
 
-const ChatWidget: React.FC = () => {
+const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONFIG }) => {
   const [isOpen, setIsOpenState] = useState(() => {
     // Only restore open state on desktop (> 768px)
     if (typeof window !== 'undefined' && window.innerWidth > 768) {
@@ -4744,24 +4754,53 @@ const ChatWidget: React.FC = () => {
 };
 
 // ============================================================================
+// CONFIG FETCHING
+// ============================================================================
+
+async function fetchWidgetConfig(): Promise<WidgetConfig> {
+  const scriptTag = document.currentScript || document.querySelector('script[data-key]');
+  const apiKey = scriptTag?.getAttribute('data-key');
+  
+  if (!apiKey) {
+    console.log('BotMotion: No API key found, using default config');
+    return DEFAULT_CONFIG;
+  }
+  
+  try {
+    const response = await fetch(`https://hub.botmotion.ai/webhook/widget-config?key=${apiKey}`);
+    if (!response.ok) throw new Error('Config not found');
+    const config = await response.json();
+    return { ...DEFAULT_CONFIG, ...config };
+  } catch (error) {
+    console.error('BotMotion: Failed to fetch config', error);
+    return DEFAULT_CONFIG;
+  }
+}
+
+// ============================================================================
 // AUTO-INIT
 // ============================================================================
 
-function injectStyles() {
+function injectStyles(config: WidgetConfig) {
   const existing = document.getElementById('bm-widget-styles') as HTMLStyleElement | null;
   if (existing) {
     // Always refresh styles so published/embedded versions can't get stuck with old CSS.
-    existing.textContent = WIDGET_STYLES;
+    existing.textContent = getWidgetStyles(config);
     return;
   }
   const style = document.createElement('style');
   style.id = 'bm-widget-styles';
-  style.textContent = WIDGET_STYLES;
+  style.textContent = getWidgetStyles(config);
   document.head.appendChild(style);
 }
 
-function initWidget() {
-  injectStyles();
+async function initWidget() {
+  const config = await fetchWidgetConfig();
+  
+  // Store config globally for components
+  (window as any).__BM_CONFIG = config;
+  
+  injectStyles(config);
   
   let container = document.getElementById('bm-chat-widget');
   if (!container) {
@@ -4771,7 +4810,7 @@ function initWidget() {
   }
   
   const root = createRoot(container);
-  root.render(<ChatWidget />);
+  root.render(<ChatWidget config={config} />);
 }
 
 // Auto-init when DOM is ready
@@ -4782,4 +4821,5 @@ if (document.readyState === 'loading') {
 }
 
 export default ChatWidget;
-export { WIDGET_CONFIG, initWidget };
+export { DEFAULT_CONFIG, initWidget, fetchWidgetConfig };
+export type { WidgetConfig };
