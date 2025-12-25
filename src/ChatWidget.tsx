@@ -16,7 +16,7 @@ const WIDGET_CONFIG = {
   
   // Colors
   primaryColor: '#EF4444',
-  headerStyle: 'gradient' as 'gradient' | 'solid', // 'gradient' = fades to background, 'solid' = full primary color
+  headerStyle: 'solid' as 'gradient' | 'solid', // 'gradient' = fades to background, 'solid' = full primary color
   
   // Branding  
   botName: 'AI Asistent',
