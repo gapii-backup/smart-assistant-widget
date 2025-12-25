@@ -2300,7 +2300,7 @@ const WIDGET_STYLES = `
       ${WIDGET_CONFIG.position}: 0;
       max-width: calc(100vw - 80px);
       padding: 10px 14px;
-      bottom: 80px;
+      bottom: 60px;
     }
 
     .bm-welcome-bubble p {
