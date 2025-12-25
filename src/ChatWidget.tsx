@@ -2208,6 +2208,30 @@ const WIDGET_STYLES = `
       height: 24px;
     }
 
+    /* Reduce ripple intensity on mobile */
+    .bm-trigger-dot::before,
+    .bm-trigger-dot::after {
+      background: rgba(255, 255, 255, 0.3);
+      animation: bm-ripple-mobile 2.5s ease-out infinite;
+    }
+
+    .bm-trigger-dot::after {
+      animation-delay: 1.25s;
+    }
+
+    @keyframes bm-ripple-mobile {
+      0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.6;
+      }
+      100% {
+        width: 200%;
+        height: 200%;
+        opacity: 0;
+      }
+    }
+
     /* Hide trigger when widget is open on mobile */
     .bm-widget-container.widget-open .bm-trigger,
     .bm-widget-container.widget-open .bm-trigger-edge {
