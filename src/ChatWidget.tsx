@@ -518,7 +518,7 @@ const WIDGET_STYLES = `
   .bm-header-home h2 {
     color: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'white' : (WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f')};
     font-size: 28px;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
     line-height: 1.25;
     text-shadow: ${WIDGET_CONFIG.headerStyle === 'solid' ? '0 2px 4px rgba(0, 0, 0, 0.15)' : 'none'};
