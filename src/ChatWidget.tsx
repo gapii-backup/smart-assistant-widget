@@ -57,8 +57,10 @@ const WIDGET_CONFIG = {
   
   // Footer
   showFooter: true,
-  poweredByName: 'BotMotion',
-  poweredByUrl: 'https://botmotion.ai',
+  footerPrefix: '⚡ Powered by ',
+  footerLinkText: 'BotMotion.ai Slovenia',
+  footerLinkUrl: 'https://botmotion.ai',
+  footerSuffix: ' ⚡',
   
   // Identification
   tableName: 'x001_botmotion',
@@ -3111,9 +3113,9 @@ const ContactForm: React.FC<{
         )}
         {WIDGET_CONFIG.showFooter && (
           <div className="bm-footer">
-            <span>⚡Powered by </span>
-            <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
-            <span>⚡</span>
+            <span>{WIDGET_CONFIG.footerPrefix}</span>
+            <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+            <span>{WIDGET_CONFIG.footerSuffix}</span>
           </div>
         )}
       </div>
@@ -4432,9 +4434,9 @@ const ChatWidget: React.FC = () => {
               {/* Footer */}
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <span>⚡Powered by </span>
-                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
-                  <span>⚡</span>
+                  <span>{WIDGET_CONFIG.footerPrefix}</span>
+                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                  <span>{WIDGET_CONFIG.footerSuffix}</span>
                 </div>
               )}
             </div>
@@ -4556,9 +4558,9 @@ const ChatWidget: React.FC = () => {
               </div>
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <span>⚡Powered by </span>
-                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
-                  <span>⚡</span>
+                  <span>{WIDGET_CONFIG.footerPrefix}</span>
+                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                  <span>{WIDGET_CONFIG.footerSuffix}</span>
                 </div>
               )}
             </div>
@@ -4659,9 +4661,9 @@ const ChatWidget: React.FC = () => {
               </div>
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <span>⚡Powered by </span>
-                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
-                  <span>⚡</span>
+                  <span>{WIDGET_CONFIG.footerPrefix}</span>
+                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                  <span>{WIDGET_CONFIG.footerSuffix}</span>
                 </div>
               )}
             </div>
@@ -4705,9 +4707,9 @@ const ChatWidget: React.FC = () => {
               />
               {WIDGET_CONFIG.showFooter && (
                 <div className="bm-footer">
-                  <span>⚡Powered by </span>
-                  <a href="https://botmotion.ai" target="_blank" rel="noopener noreferrer">BotMotion.ai Slovenia</a>
-                  <span>⚡</span>
+                  <span>{WIDGET_CONFIG.footerPrefix}</span>
+                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                  <span>{WIDGET_CONFIG.footerSuffix}</span>
                 </div>
               )}
             </div>
