@@ -3653,7 +3653,8 @@ const ChatWidget: React.FC = () => {
     // Only restore view on desktop (> 768px)
     if (typeof window !== 'undefined' && window.innerWidth > 768) {
       const saved = localStorage.getItem('bm-widget-view');
-      if (saved && ['home', 'chat', 'history', 'contact', 'booking'].includes(saved)) {
+      // Only restore 'home', 'chat', and 'history' - contact/booking should reset to home
+      if (saved && ['home', 'chat', 'history'].includes(saved)) {
         return saved as View;
       }
     }
