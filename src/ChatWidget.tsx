@@ -681,6 +681,8 @@ const WIDGET_STYLES = `
   }
 
   .bm-avatar-small svg {
+    width: 16px;
+    height: 16px;
     color: ${WIDGET_CONFIG.botIconColor};
   }
 
