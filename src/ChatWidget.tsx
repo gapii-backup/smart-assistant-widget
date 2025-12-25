@@ -714,11 +714,6 @@ const WIDGET_STYLES = `
     object-fit: cover;
   }
 
-  .bm-avatar-small svg {
-    width: 14px;
-    height: 14px;
-    color: var(--bm-primary);
-  }
 
   .bm-header h2 {
     color: white;
