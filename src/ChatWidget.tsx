@@ -4223,17 +4223,20 @@ const ChatWidget: React.FC = () => {
       {showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
           <p>{WIDGET_CONFIG.welcomeMessage}</p>
-          <button 
-            className="bm-welcome-close" 
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowWelcome(false);
-              setWelcomeDismissed(true);
-              sessionStorage.setItem('bm-welcome-dismissed', 'true');
-            }}
-          >
-            <Icons.Close />
-          </button>
+          {/* Hide close button on mobile - bubble click opens widget directly */}
+          {window.innerWidth > 480 && (
+            <button 
+              className="bm-welcome-close" 
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowWelcome(false);
+                setWelcomeDismissed(true);
+                sessionStorage.setItem('bm-welcome-dismissed', 'true');
+              }}
+            >
+              <Icons.Close />
+            </button>
+          )}
         </div>
       )}
 
