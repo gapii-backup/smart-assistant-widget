@@ -750,6 +750,7 @@ const WIDGET_STYLES = `
     flex-direction: column;
     gap: 8px;
     padding: 0 20px 8px;
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'transparent'};
   }
 
   .bm-input-full {
@@ -776,7 +777,7 @@ const WIDGET_STYLES = `
   /* Message Input Area */
   .bm-message-input-area {
     padding: 8px 20px 8px;
-    background: var(--bm-bg);
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'var(--bm-bg)'};
   }
 
   .bm-message-input-wrapper {
@@ -1330,8 +1331,8 @@ const WIDGET_STYLES = `
   .bm-footer {
     padding: 0 10px !important;
     margin: 0 !important;
-    border-top: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'none' : '1px solid var(--bm-border)'};
-    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'var(--bm-bg)'};
+    border-top: 1px solid var(--bm-border);
+    background: var(--bm-bg);
 
     display: flex;
     align-items: center;
