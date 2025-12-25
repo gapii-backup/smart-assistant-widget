@@ -313,7 +313,7 @@ const WIDGET_STYLES = `
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
     height: 716px;
-    background: var(--bm-bg);
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'var(--bm-bg)'};
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -676,6 +676,7 @@ const WIDGET_STYLES = `
   /* Quick Questions */
   .bm-quick-section {
     padding: 0 20px 16px;
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'transparent'};
   }
 
 
@@ -740,7 +741,7 @@ const WIDGET_STYLES = `
   .bm-bottom-section {
     margin-top: auto;
     flex-shrink: 0;
-    background: var(--bm-bg);
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'var(--bm-bg)'};
   }
 
   /* Input Stack */
@@ -1329,8 +1330,8 @@ const WIDGET_STYLES = `
   .bm-footer {
     padding: 0 10px !important;
     margin: 0 !important;
-    border-top: 1px solid var(--bm-border);
-    background: var(--bm-bg);
+    border-top: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'none' : '1px solid var(--bm-border)'};
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'var(--bm-bg)'};
 
     display: flex;
     align-items: center;
