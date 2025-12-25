@@ -3626,7 +3626,25 @@ const MessageContent: React.FC<{
 // ============================================================================
 
 const ChatWidget: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpenState] = useState(() => {
+    // Only restore open state on desktop (> 768px)
+    if (typeof window !== 'undefined' && window.innerWidth > 768) {
+      return localStorage.getItem('bm-widget-open') === 'true';
+    }
+    return false;
+  });
+  
+  // Wrapper to persist state on desktop
+  const setIsOpen = (value: boolean | ((prev: boolean) => boolean)) => {
+    setIsOpenState(prev => {
+      const newValue = typeof value === 'function' ? value(prev) : value;
+      // Only persist on desktop
+      if (typeof window !== 'undefined' && window.innerWidth > 768) {
+        localStorage.setItem('bm-widget-open', String(newValue));
+      }
+      return newValue;
+    });
+  };
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomeDismissed, setWelcomeDismissed] = useState(() => {
     return sessionStorage.getItem('bm-welcome-dismissed') === 'true';
