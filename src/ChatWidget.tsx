@@ -2446,6 +2446,47 @@ const WIDGET_STYLES = `
     }
   }
 
+  /* Specific fix for 1366x768 resolution */
+  @media (min-width: 1360px) and (max-width: 1370px) and (min-height: 760px) and (max-height: 775px) {
+    .bm-footer {
+      flex: 0 0 36px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      padding: 8px 16px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 11px;
+    }
+
+    .bm-quick-section {
+      padding-bottom: 8px;
+    }
+
+    .bm-quick-btn {
+      padding: 10px 14px;
+    }
+
+    .bm-header-home {
+      padding: 16px 20px 20px;
+    }
+
+    .bm-textarea {
+      min-height: 90px;
+      max-height: 90px;
+    }
+
+    .bm-contact-content {
+      padding: 16px 20px;
+      padding-bottom: 4px;
+    }
+
+    .bm-form-group {
+      margin-bottom: 12px;
+    }
+  }
+
   /* Very small height devices (landscape phones) */
   @media (max-height: 600px) {
     .bm-widget {
