@@ -8,7 +8,7 @@ import { createRoot } from 'react-dom/client';
 const WIDGET_CONFIG = {
   // Display
   mode: 'dark' as 'light' | 'dark',
-  position: 'right' as 'left' | 'right',
+  position: 'left' as 'left' | 'right',
   triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
   
   // Edge trigger settings (only used when triggerStyle is 'edge')
@@ -38,7 +38,6 @@ const WIDGET_CONFIG = {
   ],
   
   // Fields
-  showNameField: false,
   showEmailField: true,
   
   // Webhooks  
