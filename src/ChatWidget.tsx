@@ -7,7 +7,7 @@ import { createRoot } from 'react-dom/client';
 
 const WIDGET_CONFIG = {
   // Display
-  mode: 'dark' as 'light' | 'dark',
+  mode: 'light' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
   triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
   
