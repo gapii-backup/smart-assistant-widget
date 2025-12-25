@@ -44,7 +44,6 @@ const WIDGET_CONFIG = {
   homeTitle: 'Pozdravljeni!',
   homeSubtitleLine2: 'Kako vam lahko pomagam?',
   welcomeMessage: '👋 Pozdravljeni! Kako vam lahko pomagam?',
-  messagePlaceholder: 'Napišite vprašanje...',
   
   // Quick questions
   quickQuestions: [
@@ -77,14 +76,7 @@ const WIDGET_CONFIG = {
   footerSuffix: ' ⚡',
   
   // Identification
-  tableName: 'x001_botmotion',
-  
-  // Typing messages
-  typingMessages: [
-    'Preverjam podatke...',
-    'Analiziram vprašanje...',
-    'Iščem najboljši odgovor...'
-  ]
+  tableName: 'x001_botmotion'
 };
 
 // ============================================================================
@@ -4026,11 +4018,12 @@ const ChatWidget: React.FC = () => {
   }, [isOpen, view]);
 
   // Rotate typing messages
+  const typingMessages = ['Preverjam podatke...', 'Analiziram vprašanje...', 'Iščem najboljši odgovor...'];
   useEffect(() => {
     if (isTyping) {
       const interval = setInterval(() => {
-        typingMessageIndex.current = (typingMessageIndex.current + 1) % WIDGET_CONFIG.typingMessages.length;
-        setTypingMessage(WIDGET_CONFIG.typingMessages[typingMessageIndex.current]);
+        typingMessageIndex.current = (typingMessageIndex.current + 1) % typingMessages.length;
+        setTypingMessage(typingMessages[typingMessageIndex.current]);
       }, 2000);
       return () => clearInterval(interval);
     }
@@ -4174,7 +4167,7 @@ const ChatWidget: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
-    setTypingMessage(WIDGET_CONFIG.typingMessages[0]);
+    setTypingMessage('Preverjam podatke...');
 
     const botMessageId = (Date.now() + 1).toString();
 
@@ -4436,7 +4429,7 @@ const ChatWidget: React.FC = () => {
                 <div className="bm-message-input-area">
                   <div className={`bm-message-input-wrapper ${initialMessage.trim() ? 'has-text' : ''}`}>
                     <textarea
-                      placeholder={WIDGET_CONFIG.messagePlaceholder}
+                      placeholder="Napišite vprašanje..."
                       value={initialMessage}
                       onChange={e => {
                         setInitialMessage(e.target.value);
@@ -4560,7 +4553,7 @@ const ChatWidget: React.FC = () => {
                 <textarea
                   id="bm-chat-textarea"
                   className="bm-chat-input"
-                  placeholder={WIDGET_CONFIG.messagePlaceholder}
+                  placeholder="Napišite vprašanje..."
                   value={inputValue}
                   onChange={e => {
                     setInputValue(e.target.value);
