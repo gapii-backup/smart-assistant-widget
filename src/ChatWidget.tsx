@@ -670,7 +670,7 @@ const WIDGET_STYLES = `
     width: 28px;
     height: 28px;
     min-width: 28px;
-    border-radius: 8px;
+    border-radius: 50%;
     background: ${WIDGET_CONFIG.botIconBackground};
     display: flex;
     align-items: center;
