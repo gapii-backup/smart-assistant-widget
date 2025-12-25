@@ -4318,9 +4318,6 @@ const ChatWidget: React.FC = () => {
           className={`bm-trigger-edge ${isOpen ? 'open' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
-          {WIDGET_CONFIG.triggerIcon && (
-            <img src={WIDGET_CONFIG.triggerIcon} alt="Chat" />
-          )}
           <span>{WIDGET_CONFIG.edgeTriggerText}</span>
         </button>
       )}
