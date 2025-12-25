@@ -7,7 +7,7 @@ import { createRoot } from 'react-dom/client';
 
 const WIDGET_CONFIG = {
   // Display
-  mode: 'light' as 'light' | 'dark',
+  mode: 'dark' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
   triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
   
@@ -15,8 +15,8 @@ const WIDGET_CONFIG = {
   edgeTriggerText: 'Klikni me',
   
   // Colors
-  primaryColor: '#EF4444',
-  headerStyle: 'solid' as 'gradient' | 'solid', // 'gradient' = fades to background, 'solid' = full primary color
+  primaryColor: '#3B82F6',
+  headerStyle: 'gradient' as 'gradient' | 'solid', // 'gradient' = fades to background, 'solid' = full primary color
   
   // Branding  
   botName: 'AI Asistent',
