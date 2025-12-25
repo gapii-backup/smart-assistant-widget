@@ -4830,6 +4830,33 @@ function mapApiConfig(apiConfig: Record<string, any>): Partial<WidgetConfig> {
 }
 
 async function fetchWidgetConfig(): Promise<WidgetConfig> {
+  // Preview mode - use URL parameters or window config
+  if ((window as any).__BM_USE_PREVIEW_CONFIG || new URLSearchParams(window.location.search).has('preview')) {
+    const params = new URLSearchParams(window.location.search);
+    const previewConfig: Partial<WidgetConfig> = {};
+    
+    if (params.has('color')) previewConfig.primaryColor = params.get('color')!;
+    if (params.has('name')) previewConfig.botName = params.get('name')!;
+    if (params.has('message')) previewConfig.welcomeMessage = params.get('message')!;
+    if (params.has('title')) previewConfig.homeTitle = params.get('title')!;
+    if (params.has('subtitle')) previewConfig.homeSubtitleLine2 = params.get('subtitle')!;
+    if (params.has('position')) previewConfig.position = params.get('position') as 'left' | 'right';
+    if (params.has('mode')) previewConfig.mode = params.get('mode') as 'light' | 'dark';
+    if (params.has('questions')) {
+      try {
+        previewConfig.quickQuestions = JSON.parse(decodeURIComponent(params.get('questions')!));
+      } catch (e) {}
+    }
+    if (params.has('booking')) previewConfig.bookingUrl = params.get('booking')!;
+    if (params.has('bubble')) previewConfig.showBubble = params.get('bubble') !== 'false';
+    
+    // Also merge any window config (for postMessage updates)
+    const windowConfig = (window as any).__BM_PREVIEW_CONFIG || {};
+    
+    console.log('BotMotion: Using preview config');
+    return { ...DEFAULT_CONFIG, ...windowConfig, ...previewConfig };
+  }
+  
   const scriptTag = document.currentScript || document.querySelector('script[data-key]');
   const apiKey = scriptTag?.getAttribute('data-key');
   
