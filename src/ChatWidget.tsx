@@ -45,8 +45,11 @@ const WIDGET_CONFIG = {
   // Webhooks  
   webhookUrl: 'https://hub.botmotion.ai/webhook/051e33f1-1f96-4722-af95-a28f2f3afd01/chat',
   leadWebhookUrl: 'https://hub.botmotion.ai/webhook/lead',
-  supportWebhookUrl: 'https://hub.botmotion.ai/webhook/support',
   healthCheckUrl: 'https://hub.botmotion.ai/webhook/health-check',
+  
+  // Support/Contact
+  supportEnabled: true,
+  supportWebhookUrl: 'https://hub.botmotion.ai/webhook/support',
   
   // Booking
   bookingEnabled: true,
@@ -3591,7 +3594,7 @@ const MessageContent: React.FC<{
   };
 
   // Contact form
-  if (remaining.includes('[CONTACT_FORM]')) {
+  if (remaining.includes('[CONTACT_FORM]') && WIDGET_CONFIG.supportEnabled) {
     const [before, after] = remaining.split('[CONTACT_FORM]');
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
