@@ -3649,9 +3649,26 @@ const ChatWidget: React.FC = () => {
   const [welcomeDismissed, setWelcomeDismissed] = useState(() => {
     return sessionStorage.getItem('bm-welcome-dismissed') === 'true';
   });
-  const [view, setView] = useState<View>('home');
+  const [view, setViewState] = useState<View>(() => {
+    // Only restore view on desktop (> 768px)
+    if (typeof window !== 'undefined' && window.innerWidth > 768) {
+      const saved = localStorage.getItem('bm-widget-view');
+      if (saved && ['home', 'chat', 'history', 'contact', 'booking'].includes(saved)) {
+        return saved as View;
+      }
+    }
+    return 'home';
+  });
   const [viewDirection, setViewDirection] = useState<'left' | 'right' | 'none'>('none');
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  
+  // Wrapper to persist view on desktop
+  const setView = (newView: View) => {
+    setViewState(newView);
+    if (typeof window !== 'undefined' && window.innerWidth > 768) {
+      localStorage.setItem('bm-widget-view', newView);
+    }
+  };
   
   const [contactSuccess, setContactSuccess] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
