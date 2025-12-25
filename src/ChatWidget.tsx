@@ -515,6 +515,13 @@ const WIDGET_STYLES = `
     color: ${WIDGET_CONFIG.botIconColor};
   }
 
+  .bm-monitor-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
   .bm-header-home h2 {
     color: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'white' : (WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f')};
     font-size: 28px;
@@ -706,6 +713,12 @@ const WIDGET_STYLES = `
     width: 20px;
     height: 20px;
     color: ${WIDGET_CONFIG.botIconColor};
+  }
+
+  .bm-avatar-header img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .bm-avatar-small img {
@@ -4365,9 +4378,13 @@ const ChatWidget: React.FC = () => {
                   </button>
                 </div>
                 <div className="bm-monitor-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
-                  </svg>
+                  {WIDGET_CONFIG.botAvatar ? (
+                    <img src={WIDGET_CONFIG.botAvatar} alt={WIDGET_CONFIG.botName} />
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
+                    </svg>
+                  )}
                 </div>
                 <h2>
                   <span>{WIDGET_CONFIG.homeTitle}</span>
@@ -4471,9 +4488,13 @@ const ChatWidget: React.FC = () => {
                   <Icons.Back />
                 </button>
                 <div className="bm-avatar-header">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
-                  </svg>
+                  {WIDGET_CONFIG.botAvatar ? (
+                    <img src={WIDGET_CONFIG.botAvatar} alt={WIDGET_CONFIG.botName} />
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
+                    </svg>
+                  )}
                 </div>
                 <div className="bm-header-info">
                   <h3>{WIDGET_CONFIG.botName}</h3>
