@@ -22,6 +22,7 @@ const WIDGET_CONFIG = {
   // Branding  
   botName: 'AI Asistent',
   botAvatar: '',
+  triggerIcon: '', // empty = default chat icon, or URL to custom image
   
   // Texts
   homeTitle: 'Pozdravljeni!',
@@ -124,6 +125,13 @@ const WIDGET_STYLES = `
     transition: transform 0.2s ease;
   }
 
+  .bm-trigger img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
   .bm-trigger.open svg {
     transform: rotate(90deg);
   }
@@ -206,6 +214,13 @@ const WIDGET_STYLES = `
     height: 20px;
     color: white;
     transform: rotate(${WIDGET_CONFIG.position === 'right' ? '0deg' : '180deg'});
+  }
+
+  .bm-trigger-edge img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 
   .bm-trigger-edge span {
@@ -4286,7 +4301,13 @@ const ChatWidget: React.FC = () => {
           className={`bm-trigger ${isOpen ? 'open' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
-          {isOpen ? <Icons.Close /> : <Icons.Chat />}
+          {isOpen ? (
+            <Icons.Close />
+          ) : WIDGET_CONFIG.triggerIcon ? (
+            <img src={WIDGET_CONFIG.triggerIcon} alt="Chat" />
+          ) : (
+            <Icons.Chat />
+          )}
           <span className="bm-trigger-dot"></span>
         </button>
       )}
@@ -4297,6 +4318,9 @@ const ChatWidget: React.FC = () => {
           className={`bm-trigger-edge ${isOpen ? 'open' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
+          {WIDGET_CONFIG.triggerIcon && (
+            <img src={WIDGET_CONFIG.triggerIcon} alt="Chat" />
+          )}
           <span>{WIDGET_CONFIG.edgeTriggerText}</span>
         </button>
       )}
