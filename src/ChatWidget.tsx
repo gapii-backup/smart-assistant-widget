@@ -483,7 +483,7 @@ const WIDGET_STYLES = `
   .bm-header-home h2 {
     color: ${WIDGET_CONFIG.mode === 'dark' ? 'white' : '#0f0f0f'};
     font-size: 26px;
-    font-weight: 600;
+    font-weight: 700;
     margin: 0;
     line-height: 1.3;
   }
@@ -685,8 +685,10 @@ const WIDGET_STYLES = `
   .bm-quick-section {
     padding: 0 20px 16px;
     background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'transparent'};
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-
 
   .bm-quick-label {
     font-size: 11px;
@@ -696,12 +698,16 @@ const WIDGET_STYLES = `
     letter-spacing: 1.5px;
     margin-bottom: 12px;
     text-align: center;
+    background: var(--bm-bg);
+    padding: 8px 16px;
+    border-radius: 20px;
   }
 
   .bm-quick-questions {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
   }
 
   .bm-quick-btn {
@@ -791,12 +797,12 @@ const WIDGET_STYLES = `
   .bm-message-input-wrapper {
     display: flex;
     align-items: center;
-    background: var(--bm-bg-secondary);
-    border: 2px solid var(--bm-border);
+    background: var(--bm-bg);
+    border: 2px solid var(--bm-primary);
     border-radius: 24px;
     padding: 6px 6px 6px 20px;
     transition: all 0.25s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.25)};
   }
 
   .bm-message-input-wrapper:focus-within {
@@ -829,7 +835,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-message-input-wrapper textarea::placeholder {
-    color: var(--bm-text-muted);
+    color: ${WIDGET_CONFIG.mode === 'dark' ? '#666666' : '#555555'};
   }
 
   .bm-message-input-wrapper textarea::-webkit-scrollbar {
