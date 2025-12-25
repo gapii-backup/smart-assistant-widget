@@ -21,7 +21,7 @@ const WIDGET_CONFIG = {
   
   // Branding  
   botName: 'AI Asistent',
-  botAvatar: 'https://www.citypng.com/public/uploads/preview/red-youtube-logo-symbol-701751694792489qxkccchok1.png', // URL do slike - če je prazno, uporabi botIcon
+  botAvatar: 'https://static.vecteezy.com/system/resources/thumbnails/018/930/572/small/youtube-logo-youtube-icon-transparent-free-png.png', // URL do slike - če je prazno, uporabi botIcon
   
   // Bot icon - SVG path (24x24 viewBox) - prikazuje se na home, v headerju in pri sporočilih
   // Najdi ikone na: https://lucide.dev/icons ali https://heroicons.com
