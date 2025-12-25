@@ -25,7 +25,14 @@ const WIDGET_CONFIG = {
   
   // Bot icon - SVG path (24x24 viewBox) - prikazuje se na home, v headerju in pri sporočilih
   // Najdi ikone na: https://lucide.dev/icons ali https://heroicons.com
-  botIcon: 'M3 11h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11zm9-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2v4M8 16h0M16 16h0', // robot
+  // Uporabi array SVG path-ov za kompleksne ikone
+  botIcon: [
+    'M3 11h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11z',
+    'M12 5a2 2 0 1 0 0-4 2 2 0 0 0 0 4z',
+    'M12 7v4',
+    'M8 16h0',
+    'M16 16h0'
+  ], // robot
   botIconBackground: '#3B82F6', // barva ozadja ikone bota
   botIconColor: '#ffffff', // barva ikone bota
   
@@ -2807,7 +2814,7 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   return (
     <div className={className}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d={WIDGET_CONFIG.botIcon} />
+        {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
       </svg>
     </div>
   );
@@ -4359,7 +4366,7 @@ const ChatWidget: React.FC = () => {
                 </div>
                 <div className="bm-monitor-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={WIDGET_CONFIG.botIcon} />
+                    {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
                   </svg>
                 </div>
                 <h2>
@@ -4465,7 +4472,7 @@ const ChatWidget: React.FC = () => {
                 </button>
                 <div className="bm-avatar-header">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={WIDGET_CONFIG.botIcon} />
+                    {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
                   </svg>
                 </div>
                 <div className="bm-header-info">
