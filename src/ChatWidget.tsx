@@ -45,6 +45,9 @@ const DEFAULT_CONFIG = {
   homeSubtitleLine2: 'Kako vam lahko pomagam?',
   welcomeMessage: '👋 Pozdravljeni! Kako vam lahko pomagam?',
   
+  // Bubble
+  showBubble: true, // Show/hide welcome bubble on all devices
+  
   // Quick questions
   quickQuestions: [
     'Cena storitev?',
@@ -3971,13 +3974,13 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     }
   }, [sessions]);
 
-  // Show welcome bubble after delay
+  // Show welcome bubble after delay (only if showBubble is enabled)
   useEffect(() => {
-    if (!isOpen && !welcomeDismissed && isHealthy) {
+    if (config.showBubble && !isOpen && !welcomeDismissed && isHealthy) {
       const timer = setTimeout(() => setShowWelcome(true), 1000);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, welcomeDismissed, isHealthy]);
+  }, [isOpen, welcomeDismissed, isHealthy, config.showBubble]);
 
   // Lock body scroll and disable zoom when widget is open on mobile
   useEffect(() => {
@@ -4319,8 +4322,8 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
         className={`bm-widget-container ${isOpen ? 'widget-open' : ''} ${keyboardHeight > 0 ? 'keyboard-open' : ''}`}
         style={{ '--keyboard-height': `${keyboardHeight}px` } as React.CSSProperties}
       >
-      {/* Welcome Bubble */}
-      {showWelcome && !isOpen && (
+      {/* Welcome Bubble - only shown when showBubble is enabled */}
+      {config.showBubble && showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
           <p>{config.welcomeMessage}</p>
           {/* Hide close button on mobile - bubble click opens widget directly */}
