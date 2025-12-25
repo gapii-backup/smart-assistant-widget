@@ -3152,13 +3152,15 @@ const ContactForm: React.FC<{
             </button>
           </div>
         )}
-        <div className="bm-footer">
-          <span>{config.footerPrefix}</span>
-          {config.footerLinkText && config.footerLinkUrl && (
-            <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-          )}
-          {config.footerSuffix && <span>{config.footerSuffix}</span>}
-        </div>
+        {(config.footerPrefix.trim() || (config.footerLinkText.trim() && config.footerLinkUrl.trim()) || config.footerSuffix.trim()) ? (
+          <div className="bm-footer">
+            {config.footerPrefix.trim() && <span>{config.footerPrefix}</span>}
+            {config.footerLinkText.trim() && config.footerLinkUrl.trim() && (
+              <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+            )}
+            {config.footerSuffix.trim() && <span>{config.footerSuffix}</span>}
+          </div>
+        ) : null}
       </div>
   );
 };
@@ -4483,13 +4485,15 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               </div>
 
               {/* Footer */}
-              <div className="bm-footer">
-                <span>{config.footerPrefix}</span>
-                {config.footerLinkText && config.footerLinkUrl && (
-                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                )}
-                {config.footerSuffix && <span>{config.footerSuffix}</span>}
-              </div>
+              {(config.footerPrefix.trim() || (config.footerLinkText.trim() && config.footerLinkUrl.trim()) || config.footerSuffix.trim()) ? (
+                <div className="bm-footer">
+                  {config.footerPrefix.trim() && <span>{config.footerPrefix}</span>}
+                  {config.footerLinkText.trim() && config.footerLinkUrl.trim() && (
+                    <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                  )}
+                  {config.footerSuffix.trim() && <span>{config.footerSuffix}</span>}
+                </div>
+              ) : null}
             </div>
           )}
 
@@ -4613,13 +4617,15 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   <Icons.Send />
                 </button>
               </div>
-              <div className="bm-footer">
-                <span>{config.footerPrefix}</span>
-                {config.footerLinkText && config.footerLinkUrl && (
-                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                )}
-                {config.footerSuffix && <span>{config.footerSuffix}</span>}
-              </div>
+              {(config.footerPrefix.trim() || (config.footerLinkText.trim() && config.footerLinkUrl.trim()) || config.footerSuffix.trim()) ? (
+                <div className="bm-footer">
+                  {config.footerPrefix.trim() && <span>{config.footerPrefix}</span>}
+                  {config.footerLinkText.trim() && config.footerLinkUrl.trim() && (
+                    <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                  )}
+                  {config.footerSuffix.trim() && <span>{config.footerSuffix}</span>}
+                </div>
+              ) : null}
             </div>
           )}
 
@@ -4716,13 +4722,15 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   Nov pogovor
                 </button>
               </div>
-              <div className="bm-footer">
-                <span>{config.footerPrefix}</span>
-                {config.footerLinkText && config.footerLinkUrl && (
-                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                )}
-                {config.footerSuffix && <span>{config.footerSuffix}</span>}
-              </div>
+              {(config.footerPrefix.trim() || (config.footerLinkText.trim() && config.footerLinkUrl.trim()) || config.footerSuffix.trim()) ? (
+                <div className="bm-footer">
+                  {config.footerPrefix.trim() && <span>{config.footerPrefix}</span>}
+                  {config.footerLinkText.trim() && config.footerLinkUrl.trim() && (
+                    <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                  )}
+                  {config.footerSuffix.trim() && <span>{config.footerSuffix}</span>}
+                </div>
+              ) : null}
             </div>
           )}
 
@@ -4762,13 +4770,15 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   }, 3000);
                 }}
               />
-              <div className="bm-footer">
-                <span>{config.footerPrefix}</span>
-                {config.footerLinkText && config.footerLinkUrl && (
-                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                )}
-                {config.footerSuffix && <span>{config.footerSuffix}</span>}
-              </div>
+              {(config.footerPrefix.trim() || (config.footerLinkText.trim() && config.footerLinkUrl.trim()) || config.footerSuffix.trim()) ? (
+                <div className="bm-footer">
+                  {config.footerPrefix.trim() && <span>{config.footerPrefix}</span>}
+                  {config.footerLinkText.trim() && config.footerLinkUrl.trim() && (
+                    <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                  )}
+                  {config.footerSuffix.trim() && <span>{config.footerSuffix}</span>}
+                </div>
+              ) : null}
             </div>
           )}
         </div>
@@ -4833,7 +4843,20 @@ async function fetchWidgetConfig(): Promise<WidgetConfig> {
     if (!response.ok) throw new Error('Config not found');
     const apiConfig = await response.json();
     const mappedConfig = mapApiConfig(apiConfig);
-    return { ...DEFAULT_CONFIG, ...mappedConfig };
+    const mergedConfig: WidgetConfig = { ...DEFAULT_CONFIG, ...mappedConfig };
+
+    // Normalize footer fields: treat null/undefined/"EMPTY" as empty string
+    const normalize = (v: unknown) => {
+      const s = typeof v === 'string' ? v.trim() : '';
+      return !s || s.toLowerCase() === 'empty' ? '' : s;
+    };
+
+    mergedConfig.footerPrefix = normalize(mergedConfig.footerPrefix);
+    mergedConfig.footerLinkText = normalize(mergedConfig.footerLinkText);
+    mergedConfig.footerLinkUrl = normalize(mergedConfig.footerLinkUrl);
+    mergedConfig.footerSuffix = normalize(mergedConfig.footerSuffix);
+
+    return mergedConfig;
   } catch (error) {
     console.error('BotMotion: Failed to fetch config', error);
     return DEFAULT_CONFIG;
