@@ -22,7 +22,11 @@ const WIDGET_CONFIG = {
   // Branding  
   botName: 'AI Asistent',
   botAvatar: '',
-  triggerIcon: '', // empty = default chat icon, or URL to custom image
+  
+  // Trigger icon - SVG path (24x24 viewBox)
+  // Privzeta chat ikona je spodaj. Zamenjaj z drugim SVG path-om!
+  // Najdi ikone na: https://lucide.dev/icons ali https://heroicons.com
+  triggerIcon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', // chat bubble
   
   // Texts
   homeTitle: 'Pozdravljeni!',
@@ -56,7 +60,6 @@ const WIDGET_CONFIG = {
   bookingUrl: 'https://cal.botmotion.ai/admin/demo-klic',
   
   // Footer
-  showFooter: true,
   footerPrefix: '⚡ Powered by ',
   footerLinkText: 'BotMotion.ai Slovenia',
   footerLinkUrl: 'https://botmotion.ai',
@@ -3111,13 +3114,11 @@ const ContactForm: React.FC<{
             </button>
           </div>
         )}
-        {WIDGET_CONFIG.showFooter && (
-          <div className="bm-footer">
-            <span>{WIDGET_CONFIG.footerPrefix}</span>
-            <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-            <span>{WIDGET_CONFIG.footerSuffix}</span>
-          </div>
-        )}
+        <div className="bm-footer">
+          <span>{WIDGET_CONFIG.footerPrefix}</span>
+          <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+          <span>{WIDGET_CONFIG.footerSuffix}</span>
+        </div>
       </div>
   );
 };
@@ -4308,10 +4309,10 @@ const ChatWidget: React.FC = () => {
         >
           {isOpen ? (
             <Icons.Close />
-          ) : WIDGET_CONFIG.triggerIcon ? (
-            <img src={WIDGET_CONFIG.triggerIcon} alt="Chat" />
           ) : (
-            <Icons.Chat />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d={WIDGET_CONFIG.triggerIcon} />
+            </svg>
           )}
           <span className="bm-trigger-dot"></span>
         </button>
@@ -4432,13 +4433,11 @@ const ChatWidget: React.FC = () => {
               </div>
 
               {/* Footer */}
-              {WIDGET_CONFIG.showFooter && (
-                <div className="bm-footer">
-                  <span>{WIDGET_CONFIG.footerPrefix}</span>
-                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                  <span>{WIDGET_CONFIG.footerSuffix}</span>
-                </div>
-              )}
+              <div className="bm-footer">
+                <span>{WIDGET_CONFIG.footerPrefix}</span>
+                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                <span>{WIDGET_CONFIG.footerSuffix}</span>
+              </div>
             </div>
           )}
 
@@ -4556,13 +4555,11 @@ const ChatWidget: React.FC = () => {
                   <Icons.Send />
                 </button>
               </div>
-              {WIDGET_CONFIG.showFooter && (
-                <div className="bm-footer">
-                  <span>{WIDGET_CONFIG.footerPrefix}</span>
-                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                  <span>{WIDGET_CONFIG.footerSuffix}</span>
-                </div>
-              )}
+              <div className="bm-footer">
+                <span>{WIDGET_CONFIG.footerPrefix}</span>
+                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                <span>{WIDGET_CONFIG.footerSuffix}</span>
+              </div>
             </div>
           )}
 
@@ -4659,13 +4656,11 @@ const ChatWidget: React.FC = () => {
                   Nov pogovor
                 </button>
               </div>
-              {WIDGET_CONFIG.showFooter && (
-                <div className="bm-footer">
-                  <span>{WIDGET_CONFIG.footerPrefix}</span>
-                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                  <span>{WIDGET_CONFIG.footerSuffix}</span>
-                </div>
-              )}
+              <div className="bm-footer">
+                <span>{WIDGET_CONFIG.footerPrefix}</span>
+                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                <span>{WIDGET_CONFIG.footerSuffix}</span>
+              </div>
             </div>
           )}
 
@@ -4705,13 +4700,11 @@ const ChatWidget: React.FC = () => {
                   }, 3000);
                 }}
               />
-              {WIDGET_CONFIG.showFooter && (
-                <div className="bm-footer">
-                  <span>{WIDGET_CONFIG.footerPrefix}</span>
-                  <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                  <span>{WIDGET_CONFIG.footerSuffix}</span>
-                </div>
-              )}
+              <div className="bm-footer">
+                <span>{WIDGET_CONFIG.footerPrefix}</span>
+                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
+                <span>{WIDGET_CONFIG.footerSuffix}</span>
+              </div>
             </div>
           )}
         </div>
