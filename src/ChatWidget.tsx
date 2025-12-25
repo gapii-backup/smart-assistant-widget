@@ -1898,10 +1898,13 @@ const WIDGET_STYLES = `
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .bm-contact-content {
-    flex: 1;
+    flex: 1 1 0;
+    min-height: 0;
     padding: 20px 24px;
     padding-bottom: 8px;
     overflow-y: auto;
