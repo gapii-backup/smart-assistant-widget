@@ -33,8 +33,8 @@ const WIDGET_CONFIG = {
     'M8 16h0',
     'M16 16h0'
   ], // robot
-  botIconBackground: '#3B82F6', // barva ozadja ikone bota
-  botIconColor: '#ffffff', // barva ikone bota
+  botIconBackground: '#ffffff', // barva ozadja ikone bota
+  botIconColor: '#EF4444', // barva ikone bota (rdeča)
   
   // Trigger icon - SVG path (24x24 viewBox)
   // Privzeta chat ikona je spodaj. Zamenjaj z drugim SVG path-om!
