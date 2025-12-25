@@ -16,6 +16,7 @@ const WIDGET_CONFIG = {
   
   // Colors
   primaryColor: '#EF4444',
+  headerStyle: 'solid' as 'gradient' | 'solid', // 'gradient' = fades to background, 'solid' = full primary color
   
   // Branding  
   botName: 'AI Asistent',
@@ -381,7 +382,9 @@ const WIDGET_STYLES = `
 
   /* Header - Home */
   .bm-header-home {
-    background: linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 50%, var(--bm-bg) 100%);
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' 
+      ? `var(--bm-primary)` 
+      : `linear-gradient(180deg, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 0%, ${adjustColor(WIDGET_CONFIG.primaryColor, -30)} 50%, var(--bm-bg) 100%)`};
     padding: 16px 20px 32px;
     text-align: center;
     flex-shrink: 0;
