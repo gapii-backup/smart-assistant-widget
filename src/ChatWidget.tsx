@@ -313,7 +313,7 @@ const WIDGET_STYLES = `
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
     height: 716px;
-    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'var(--bm-bg)'};
+    background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -378,6 +378,14 @@ const WIDGET_STYLES = `
     flex-direction: column;
     flex: 1;
     min-height: 0;
+  }
+
+  /* Home View Wrapper */
+  .bm-home-view {
+    background: ${WIDGET_CONFIG.headerStyle === 'solid' ? 'var(--bm-primary)' : 'transparent'};
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   /* Header - Home */
@@ -4278,7 +4286,7 @@ const ChatWidget: React.FC = () => {
       {isOpen && (
         <div className="bm-widget">
           {view === 'home' && (
-            <div className={`bm-view-enter-${viewDirection}`}>
+            <div className={`bm-view-enter-${viewDirection} bm-home-view`}>
               {/* Header with gradient */}
               <div className="bm-header-home">
                 <div className="bm-header-home-actions">
