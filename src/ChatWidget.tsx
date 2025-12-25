@@ -15,7 +15,7 @@ const WIDGET_CONFIG = {
   edgeTriggerText: 'Klikni me',
   
   // Colors
-  primaryColor: '#3B82F6',
+  primaryColor: '#EF4444',
   
   // Branding  
   botName: 'AI Asistent',
