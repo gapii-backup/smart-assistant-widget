@@ -2473,8 +2473,8 @@ const WIDGET_STYLES = `
     }
 
     .bm-textarea {
-      min-height: 90px;
-      max-height: 90px;
+      min-height: 80px;
+      max-height: 80px;
     }
 
     .bm-contact-content {
