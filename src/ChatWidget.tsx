@@ -1911,6 +1911,12 @@ const WIDGET_STYLES = `
     display: flex;
     flex-direction: column;
     align-items: center;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .bm-contact-content::-webkit-scrollbar {
+    display: none;
   }
 
   .bm-contact-content form {
