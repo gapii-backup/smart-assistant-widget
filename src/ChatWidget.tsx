@@ -39,6 +39,7 @@ const WIDGET_CONFIG = {
   // Trigger icon - SVG path (24x24 viewBox)
   // Privzeta chat ikona je spodaj. Zamenjaj z drugim SVG path-om!
   triggerIcon: 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z', // chat bubble
+  triggerIconColor: '#ffffff', // barva trigger ikone
   
   // Texts
   homeTitle: 'Pozdravljeni!',
@@ -141,7 +142,7 @@ const WIDGET_STYLES = `
   .bm-trigger svg {
     width: 28px;
     height: 28px;
-    color: white;
+    color: ${WIDGET_CONFIG.triggerIconColor};
     transition: transform 0.2s ease;
   }
 
