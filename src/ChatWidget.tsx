@@ -8,7 +8,8 @@ import { createRoot } from 'react-dom/client';
 const WIDGET_CONFIG = {
   // Display
   mode: 'dark' as 'light' | 'dark',
-  position: 'left' as 'left' | 'right',
+  position: 'right' as 'left' | 'right',
+  verticalOffset: 24, // px from bottom - moves trigger, widget and bubble together
   triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
   
   // Edge trigger settings (only used when triggerStyle is 'edge')
@@ -88,7 +89,7 @@ const WIDGET_STYLES = `
     --bm-border: ${WIDGET_CONFIG.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
     --bm-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     position: fixed;
-    bottom: 24px;
+    bottom: ${WIDGET_CONFIG.verticalOffset}px;
     ${WIDGET_CONFIG.position}: 24px;
     z-index: 999999;
     font-size: 14px;
@@ -178,7 +179,7 @@ const WIDGET_STYLES = `
   .bm-trigger-edge {
     position: fixed;
     ${WIDGET_CONFIG.position}: 0;
-    bottom: 24px;
+    bottom: ${WIDGET_CONFIG.verticalOffset}px;
     background: var(--bm-primary);
     border: none;
     cursor: pointer;
@@ -245,7 +246,7 @@ const WIDGET_STYLES = `
   /* Welcome Bubble */
   .bm-welcome-bubble {
     position: absolute;
-    bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '90px' : '72px'};
+    bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? (WIDGET_CONFIG.verticalOffset + 66) : (WIDGET_CONFIG.verticalOffset + 48)}px;
     ${WIDGET_CONFIG.position}: 0;
     background: var(--bm-primary);
     border: none;
@@ -308,7 +309,7 @@ const WIDGET_STYLES = `
   /* Main Widget */
   .bm-widget {
     position: absolute;
-    bottom: 72px;
+    bottom: ${WIDGET_CONFIG.verticalOffset + 48}px;
     ${WIDGET_CONFIG.position}: 0;
     width: 420px;
     height: 716px;
@@ -2482,7 +2483,7 @@ const WIDGET_STYLES = `
   /* Small tablets (iPad Mini portrait - 481px to 768px) */
   @media (min-width: 481px) and (max-width: 768px) {
     .bm-widget-container {
-      bottom: 24px;
+      bottom: ${WIDGET_CONFIG.verticalOffset}px;
       ${WIDGET_CONFIG.position}: 24px;
     }
 
@@ -2490,7 +2491,7 @@ const WIDGET_STYLES = `
       width: 400px;
       height: calc(100vh - 140px);
       max-height: 700px;
-      bottom: 72px;
+      bottom: ${WIDGET_CONFIG.verticalOffset + 48}px;
       border-radius: 16px;
     }
 
