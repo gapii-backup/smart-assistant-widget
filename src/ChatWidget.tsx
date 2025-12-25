@@ -82,8 +82,11 @@ const DEFAULT_CONFIG = {
 // Type for config
 type WidgetConfig = typeof DEFAULT_CONFIG;
 
-// Alias for backward compatibility in styles (uses DEFAULT_CONFIG values)
-const WIDGET_CONFIG = DEFAULT_CONFIG;
+// React Context for config - allows all components to access config
+const ConfigContext = React.createContext<WidgetConfig>(DEFAULT_CONFIG);
+
+// Custom hook to access config
+const useConfig = () => React.useContext(ConfigContext);
 
 // ============================================================================
 // UTILITIES (needed before styles)
@@ -110,7 +113,10 @@ function hexToRgba(hex: string, alpha: number): string {
 // STYLES
 // ============================================================================
 
-const getWidgetStyles = (config: WidgetConfig) => `
+const getWidgetStyles = (config: WidgetConfig) => {
+  // Alias for easier migration - all WIDGET_CONFIG references now use config parameter
+  const WIDGET_CONFIG = config;
+  return `
   .bm-widget-container * {
     box-sizing: border-box;
     margin: 0;
@@ -2678,7 +2684,7 @@ const getWidgetStyles = (config: WidgetConfig) => `
     }
   }
 `;
-
+};
 // ============================================================================
 // MORE UTILITIES
 // ============================================================================
@@ -2815,12 +2821,13 @@ const Icons = {
 // ============================================================================
 
 const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
+  const config = useConfig();
   const className = small ? 'bm-avatar-small' : 'bm-avatar';
   
-  if (WIDGET_CONFIG.botAvatar) {
+  if (config.botAvatar) {
     return (
       <div className={className}>
-        <img src={WIDGET_CONFIG.botAvatar} alt={WIDGET_CONFIG.botName} />
+        <img src={config.botAvatar} alt={config.botName} />
       </div>
     );
   }
@@ -2828,7 +2835,7 @@ const Avatar: React.FC<{ small?: boolean }> = ({ small }) => {
   return (
     <div className={className}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
+        {config.botIcon.map((path, i) => <path key={i} d={path} />)}
       </svg>
     </div>
   );
@@ -2925,6 +2932,7 @@ const ContactForm: React.FC<{
   onSuccess?: () => void;
   sessionId?: string;
 }> = ({ onClose, chatHistory, onSuccess, sessionId }) => {
+  const config = useConfig();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [countryCode, setCountryCode] = useState('+386');
@@ -2999,7 +3007,7 @@ const ContactForm: React.FC<{
     const fullPhone = phone ? `${countryCode} ${phone}` : undefined;
 
     try {
-      await fetch(WIDGET_CONFIG.supportWebhookUrl, {
+      await fetch(config.supportWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3011,7 +3019,7 @@ const ContactForm: React.FC<{
           chatHistory: chatHistory.map(m => 
             `${m.role === 'user' ? '👤 User' : '🤖 Bot'}: ${m.content}`
           ).join('\n\n'),
-          tableName: WIDGET_CONFIG.tableName
+          tableName: config.tableName
         })
       });
       setSuccess(true);
@@ -3142,15 +3150,16 @@ const ContactForm: React.FC<{
           </div>
         )}
         <div className="bm-footer">
-          <span>{WIDGET_CONFIG.footerPrefix}</span>
-          <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-          <span>{WIDGET_CONFIG.footerSuffix}</span>
+          <span>{config.footerPrefix}</span>
+          <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+          <span>{config.footerSuffix}</span>
         </div>
       </div>
   );
 };
 
 const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showSuccess: boolean }> = ({ onClose, onSuccess, showSuccess }) => {
+  const config = useConfig();
   const hasCalledSuccess = useRef(false);
 
   const handleBookingSuccess = useCallback(() => {
@@ -3233,7 +3242,7 @@ const BookingView: React.FC<{ onClose: () => void; onSuccess?: () => void; showS
   return (
     <div className="bm-booking-view">
       <div className="bm-booking-iframe-wrapper">
-        <iframe src={WIDGET_CONFIG.bookingUrl} title="Booking" />
+        <iframe src={config.bookingUrl} title="Booking" />
       </div>
     </div>
   );
@@ -3472,6 +3481,7 @@ const MessageContent: React.FC<{
   onNewsletterSuccess?: (messageId: string) => void;
   submittedNewsletterIds: Set<string>;
 }> = ({ content, onContactClick, onBookingClick, sessionId, messageId, onNewsletterSuccess, submittedNewsletterIds }) => {
+  const config = useConfig();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const isValidEmail = newsletterEmail.includes('@');
@@ -3482,14 +3492,14 @@ const MessageContent: React.FC<{
       return;
     }
     try {
-      await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+      await fetch(config.leadWebhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           sessionId: sessionId,
           email: newsletterEmail,
           type: 'newsletter',
-          tableName: WIDGET_CONFIG.tableName
+          tableName: config.tableName
         })
       });
       onNewsletterSuccess?.(messageId);
@@ -3624,7 +3634,7 @@ const MessageContent: React.FC<{
   };
 
   // Contact form
-  if (remaining.includes('[CONTACT_FORM]') && WIDGET_CONFIG.supportEnabled) {
+  if (remaining.includes('[CONTACT_FORM]') && config.supportEnabled) {
     const [before, after] = remaining.split('[CONTACT_FORM]');
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
@@ -3639,7 +3649,7 @@ const MessageContent: React.FC<{
   }
 
   // Booking
-  if (remaining.includes('[BOOKING]') && WIDGET_CONFIG.bookingEnabled) {
+  if (remaining.includes('[BOOKING]') && config.bookingEnabled) {
     const [before, after] = remaining.split('[BOOKING]');
     if (before) parts.push(<React.Fragment key={key++}>{parseTextWithFormatting(before)}</React.Fragment>);
     parts.push(
@@ -3897,7 +3907,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const response = await fetch(WIDGET_CONFIG.healthCheckUrl, { method: 'GET' });
+        const response = await fetch(config.healthCheckUrl, { method: 'GET' });
         setIsHealthy(response.ok);
       } catch {
         setIsHealthy(false);
@@ -3915,7 +3925,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
 
   // Load sessions from localStorage and restore current session if on desktop
   useEffect(() => {
-    const saved = localStorage.getItem(`bm_sessions_${WIDGET_CONFIG.tableName}`);
+    const saved = localStorage.getItem(`bm_sessions_${config.tableName}`);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -3955,7 +3965,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   useEffect(() => {
     if (sessions.length > 0) {
       localStorage.setItem(
-        `bm_sessions_${WIDGET_CONFIG.tableName}`,
+        `bm_sessions_${config.tableName}`,
         JSON.stringify(sessions)
       );
     }
@@ -4183,7 +4193,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
 
     try {
       const result = await sendMessageToWebhook(
-        WIDGET_CONFIG.webhookUrl,
+        config.webhookUrl,
         currentSessionId,
         content.trim()
       );
@@ -4226,14 +4236,14 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     // Send lead data
     if (userName || userEmail) {
       try {
-        await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+        await fetch(config.leadWebhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sessionId: sessionId,
             name: userName,
             email: userEmail,
-            tableName: WIDGET_CONFIG.tableName
+            tableName: config.tableName
           })
         });
       } catch (error) {
@@ -4263,14 +4273,14 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     // Send lead data if available
     if (userName || userEmail) {
       try {
-        await fetch(WIDGET_CONFIG.leadWebhookUrl, {
+        await fetch(config.leadWebhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             sessionId: sessionId,
             name: userName,
             email: userEmail,
-            tableName: WIDGET_CONFIG.tableName
+            tableName: config.tableName
           })
         });
       } catch (error) {
@@ -4304,14 +4314,15 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   }
 
   return (
-    <div 
-      className={`bm-widget-container ${isOpen ? 'widget-open' : ''} ${keyboardHeight > 0 ? 'keyboard-open' : ''}`}
-      style={{ '--keyboard-height': `${keyboardHeight}px` } as React.CSSProperties}
-    >
+    <ConfigContext.Provider value={config}>
+      <div 
+        className={`bm-widget-container ${isOpen ? 'widget-open' : ''} ${keyboardHeight > 0 ? 'keyboard-open' : ''}`}
+        style={{ '--keyboard-height': `${keyboardHeight}px` } as React.CSSProperties}
+      >
       {/* Welcome Bubble */}
       {showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
-          <p>{WIDGET_CONFIG.welcomeMessage}</p>
+          <p>{config.welcomeMessage}</p>
           {/* Hide close button on mobile - bubble click opens widget directly */}
           {window.innerWidth > 480 && (
             <button 
@@ -4330,7 +4341,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       )}
 
       {/* Trigger Button - Floating Style */}
-      {WIDGET_CONFIG.triggerStyle === 'floating' && (
+      {config.triggerStyle === 'floating' && (
         <button 
           className={`bm-trigger ${isOpen ? 'open' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
@@ -4339,7 +4350,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
             <Icons.Close />
           ) : (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d={WIDGET_CONFIG.triggerIcon} />
+              <path d={config.triggerIcon} />
             </svg>
           )}
           <span className="bm-trigger-dot"></span>
@@ -4347,12 +4358,12 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       )}
 
       {/* Trigger Button - Edge Style */}
-      {WIDGET_CONFIG.triggerStyle === 'edge' && (
+      {config.triggerStyle === 'edge' && (
         <button 
           className={`bm-trigger-edge ${isOpen ? 'open' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
-          <span>{WIDGET_CONFIG.edgeTriggerText}</span>
+          <span>{config.edgeTriggerText}</span>
         </button>
       )}
 
@@ -4380,17 +4391,17 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   </button>
                 </div>
                 <div className="bm-monitor-icon">
-                  {WIDGET_CONFIG.botAvatar ? (
-                    <img src={WIDGET_CONFIG.botAvatar} alt={WIDGET_CONFIG.botName} />
+                  {config.botAvatar ? (
+                    <img src={config.botAvatar} alt={config.botName} />
                   ) : (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
+                      {config.botIcon.map((path, i) => <path key={i} d={path} />)}
                     </svg>
                   )}
                 </div>
                 <h2>
-                  <span>{WIDGET_CONFIG.homeTitle}</span>
-                  <span>{WIDGET_CONFIG.homeSubtitleLine2}</span>
+                  <span>{config.homeTitle}</span>
+                  <span>{config.homeSubtitleLine2}</span>
                 </h2>
               </div>
 
@@ -4398,7 +4409,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               <div className="bm-quick-section">
                 <div className="bm-quick-label">Pogosta vprašanja</div>
                 <div className="bm-quick-questions">
-                  {WIDGET_CONFIG.quickQuestions.map((question, index) => (
+                  {config.quickQuestions.map((question, index) => (
                     <button
                       key={index}
                       className="bm-quick-btn"
@@ -4422,7 +4433,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               {/* Bottom Section - Email + Message Input (fixed together) */}
               <div className="bm-bottom-section">
                 {/* Input Stack - Email */}
-              {WIDGET_CONFIG.showEmailField && (
+              {config.showEmailField && (
                   <div className="bm-input-stack">
                     <input
                       type="email"
@@ -4468,9 +4479,9 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
 
               {/* Footer */}
               <div className="bm-footer">
-                <span>{WIDGET_CONFIG.footerPrefix}</span>
-                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                <span>{WIDGET_CONFIG.footerSuffix}</span>
+                <span>{config.footerPrefix}</span>
+                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                <span>{config.footerSuffix}</span>
               </div>
             </div>
           )}
@@ -4490,16 +4501,16 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   <Icons.Back />
                 </button>
                 <div className="bm-avatar-header">
-                  {WIDGET_CONFIG.botAvatar ? (
-                    <img src={WIDGET_CONFIG.botAvatar} alt={WIDGET_CONFIG.botName} />
+                  {config.botAvatar ? (
+                    <img src={config.botAvatar} alt={config.botName} />
                   ) : (
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      {WIDGET_CONFIG.botIcon.map((path, i) => <path key={i} d={path} />)}
+                      {config.botIcon.map((path, i) => <path key={i} d={path} />)}
                     </svg>
                   )}
                 </div>
                 <div className="bm-header-info">
-                  <h3>{WIDGET_CONFIG.botName}</h3>
+                  <h3>{config.botName}</h3>
                   <span className="bm-online-status">
                     <span className="bm-online-dot"></span>
                     Online
@@ -4596,9 +4607,9 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                 </button>
               </div>
               <div className="bm-footer">
-                <span>{WIDGET_CONFIG.footerPrefix}</span>
-                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                <span>{WIDGET_CONFIG.footerSuffix}</span>
+                <span>{config.footerPrefix}</span>
+                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                <span>{config.footerSuffix}</span>
               </div>
             </div>
           )}
@@ -4697,9 +4708,9 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                 </button>
               </div>
               <div className="bm-footer">
-                <span>{WIDGET_CONFIG.footerPrefix}</span>
-                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                <span>{WIDGET_CONFIG.footerSuffix}</span>
+                <span>{config.footerPrefix}</span>
+                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                <span>{config.footerSuffix}</span>
               </div>
             </div>
           )}
@@ -4741,15 +4752,16 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                 }}
               />
               <div className="bm-footer">
-                <span>{WIDGET_CONFIG.footerPrefix}</span>
-                <a href={WIDGET_CONFIG.footerLinkUrl} target="_blank" rel="noopener noreferrer">{WIDGET_CONFIG.footerLinkText}</a>
-                <span>{WIDGET_CONFIG.footerSuffix}</span>
+                <span>{config.footerPrefix}</span>
+                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                <span>{config.footerSuffix}</span>
               </div>
             </div>
           )}
         </div>
       )}
-    </div>
+      </div>
+    </ConfigContext.Provider>
   );
 };
 
