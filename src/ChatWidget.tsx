@@ -73,10 +73,10 @@ const DEFAULT_CONFIG = {
   bookingUrl: 'https://cal.botmotion.ai/admin/demo-klic',
   
   // Footer
-  footerPrefix: '⚡ Powered by ',
-  footerLinkText: 'BotMotion.ai Slovenia',
-  footerLinkUrl: 'https://botmotion.ai',
-  footerSuffix: ' ⚡',
+  footerPrefix: '',
+  footerLinkText: '',
+  footerLinkUrl: '',
+  footerSuffix: '',
   
   // Identification
   tableName: 'x001_botmotion'
@@ -3154,8 +3154,10 @@ const ContactForm: React.FC<{
         )}
         <div className="bm-footer">
           <span>{config.footerPrefix}</span>
-          <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-          <span>{config.footerSuffix}</span>
+          {config.footerLinkText && config.footerLinkUrl && (
+            <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+          )}
+          {config.footerSuffix && <span>{config.footerSuffix}</span>}
         </div>
       </div>
   );
@@ -4483,8 +4485,10 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               {/* Footer */}
               <div className="bm-footer">
                 <span>{config.footerPrefix}</span>
-                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                <span>{config.footerSuffix}</span>
+                {config.footerLinkText && config.footerLinkUrl && (
+                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                )}
+                {config.footerSuffix && <span>{config.footerSuffix}</span>}
               </div>
             </div>
           )}
@@ -4611,8 +4615,10 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               </div>
               <div className="bm-footer">
                 <span>{config.footerPrefix}</span>
-                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                <span>{config.footerSuffix}</span>
+                {config.footerLinkText && config.footerLinkUrl && (
+                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                )}
+                {config.footerSuffix && <span>{config.footerSuffix}</span>}
               </div>
             </div>
           )}
@@ -4712,8 +4718,10 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               </div>
               <div className="bm-footer">
                 <span>{config.footerPrefix}</span>
-                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                <span>{config.footerSuffix}</span>
+                {config.footerLinkText && config.footerLinkUrl && (
+                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                )}
+                {config.footerSuffix && <span>{config.footerSuffix}</span>}
               </div>
             </div>
           )}
@@ -4756,8 +4764,10 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               />
               <div className="bm-footer">
                 <span>{config.footerPrefix}</span>
-                <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
-                <span>{config.footerSuffix}</span>
+                {config.footerLinkText && config.footerLinkUrl && (
+                  <a href={config.footerLinkUrl} target="_blank" rel="noopener noreferrer">{config.footerLinkText}</a>
+                )}
+                {config.footerSuffix && <span>{config.footerSuffix}</span>}
               </div>
             </div>
           )}
