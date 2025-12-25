@@ -27,6 +27,7 @@ const WIDGET_CONFIG = {
   // Najdi ikone na: https://lucide.dev/icons ali https://heroicons.com
   botIcon: 'M3 11h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11zm9-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 2v4M8 16h0M16 16h0', // robot
   botIconBackground: '#3B82F6', // barva ozadja ikone bota
+  botIconColor: '#ffffff', // barva ikone bota
   
   // Trigger icon - SVG path (24x24 viewBox)
   // Privzeta chat ikona je spodaj. Zamenjaj z drugim SVG path-om!
@@ -504,7 +505,7 @@ const WIDGET_STYLES = `
   .bm-monitor-icon svg {
     width: 32px;
     height: 32px;
-    color: white;
+    color: ${WIDGET_CONFIG.botIconColor};
   }
 
   .bm-header-home h2 {
@@ -655,7 +656,7 @@ const WIDGET_STYLES = `
   .bm-avatar svg {
     width: 32px;
     height: 32px;
-    color: white;
+    color: ${WIDGET_CONFIG.botIconColor};
   }
 
   .bm-avatar-small {
@@ -673,7 +674,7 @@ const WIDGET_STYLES = `
   }
 
   .bm-avatar-small svg {
-    color: white;
+    color: ${WIDGET_CONFIG.botIconColor};
   }
 
   .bm-avatar-header {
@@ -692,7 +693,7 @@ const WIDGET_STYLES = `
   .bm-avatar-header svg {
     width: 20px;
     height: 20px;
-    color: white;
+    color: ${WIDGET_CONFIG.botIconColor};
   }
 
   .bm-avatar-small img {
