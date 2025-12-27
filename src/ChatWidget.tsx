@@ -631,6 +631,19 @@ const getWidgetStyles = (config: WidgetConfig) => {
     font-size: 12px;
   }
 
+  /* Light mode - black text for header */
+  .bm-widget.bm-light .bm-header-info h3 {
+    color: #1a1a1a;
+  }
+
+  .bm-widget.bm-light .bm-header-info span {
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .bm-widget.bm-light .bm-online-status {
+    color: rgba(0, 0, 0, 0.8);
+  }
+
   .bm-online-dot {
     width: 8px;
     height: 8px;
