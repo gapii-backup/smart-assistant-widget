@@ -7,7 +7,7 @@ import { createRoot } from 'react-dom/client';
 
 const DEFAULT_CONFIG = {
   // Display
-  mode: 'dark' as 'light' | 'dark',
+  mode: 'light' as 'light' | 'dark',
   position: 'right' as 'left' | 'right',
   verticalOffset: 24, // px from bottom - moves trigger, widget and bubble together
   triggerStyle: 'floating' as 'floating' | 'edge', // 'floating' = round button, 'edge' = side tab
