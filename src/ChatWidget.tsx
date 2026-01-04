@@ -132,6 +132,26 @@ const getWidgetStyles = (config: WidgetConfig) => {
     font-weight: normal !important;
   }
 
+  .bm-widget-container p,
+  .bm-widget-container span,
+  .bm-widget-container div,
+  .bm-widget-container h1,
+  .bm-widget-container h2,
+  .bm-widget-container h3,
+  .bm-widget-container button,
+  .bm-widget-container input,
+  .bm-widget-container textarea,
+  .bm-widget-container a,
+  .bm-widget-container li,
+  .bm-widget-container ul {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    color: inherit !important;
+  }
+
   .bm-widget-container {
     --bm-primary: ${config.primaryColor};
     --bm-primary-hover: ${adjustColor(config.primaryColor, -10)};
