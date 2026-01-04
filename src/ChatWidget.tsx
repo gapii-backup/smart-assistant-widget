@@ -127,10 +127,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 
-  #bm-chat-widget .bm-widget-container,
-  #bm-chat-widget .bm-widget-container * {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-  }
 
   .bm-widget-container {
     --bm-primary: ${config.primaryColor};
