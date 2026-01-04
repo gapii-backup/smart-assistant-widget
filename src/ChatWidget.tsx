@@ -120,16 +120,11 @@ const getWidgetStyles = (config: WidgetConfig) => {
   // Alias for easier migration - all WIDGET_CONFIG references now use config parameter
   const WIDGET_CONFIG = config;
   return `
-  .bm-widget-container, .bm-widget-container * {
-    box-sizing: border-box !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-    font-size: 14px !important;
-    line-height: 1.5 !important;
-    letter-spacing: normal !important;
-    text-transform: none !important;
-    font-weight: normal !important;
+  .bm-widget-container * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
 
   .bm-widget-container {
