@@ -3995,7 +3995,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   // Show welcome bubble after delay (only if showBubble is enabled)
   useEffect(() => {
     if (config.showBubble && !isOpen && !welcomeDismissed && isHealthy) {
-      const timer = setTimeout(() => setShowWelcome(true), 1000);
+      const timer = setTimeout(() => setShowWelcome(true), 5000);
       return () => clearTimeout(timer);
     }
   }, [isOpen, welcomeDismissed, isHealthy, config.showBubble]);
