@@ -62,7 +62,7 @@ const DEFAULT_CONFIG = {
   // Webhooks  
   webhookUrl: 'https://hub.botmotion.ai/webhook/051e33f1-1f96-4722-af95-a28f2f3afd01/chat',
   leadWebhookUrl: 'https://hub.botmotion.ai/webhook/lead',
-  healthCheckUrl: 'https://hub.botmotion.ai/webhook/health-check',
+  healthCheckUrl: '',
   
   // Support/Contact
   supportEnabled: true,
