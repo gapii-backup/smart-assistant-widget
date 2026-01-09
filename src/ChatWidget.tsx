@@ -4831,6 +4831,7 @@ function mapApiConfig(apiConfig: Record<string, any>): Partial<WidgetConfig> {
     show_bubble: 'showBubble',
     quick_questions: 'quickQuestions',
     show_email_field: 'showEmailField',
+    health_check_url: 'healthCheckUrl',
   };
   
   const mapped: Partial<WidgetConfig> = {};
