@@ -4876,8 +4876,8 @@ async function fetchWidgetConfig(): Promise<WidgetConfig> {
   const apiKey = scriptTag?.getAttribute('data-key');
   
   if (!apiKey) {
-    console.log('BotMotion: No API key found, using default config');
-    return DEFAULT_CONFIG;
+    console.log('BotMotion: No API key found - widget disabled');
+    return null;
   }
   
   try {
@@ -4900,8 +4900,8 @@ async function fetchWidgetConfig(): Promise<WidgetConfig> {
 
     return mergedConfig;
   } catch (error) {
-    console.error('BotMotion: Failed to fetch config', error);
-    return DEFAULT_CONFIG;
+    console.error('BotMotion: Failed to fetch config - widget disabled', error);
+    return null;
   }
 }
 
@@ -4924,6 +4924,12 @@ function injectStyles(config: WidgetConfig) {
 
 async function initWidget() {
   const config = await fetchWidgetConfig();
+  
+  // Če ni veljavne konfiguracije, ne prikaži widgeta
+  if (!config) {
+    console.log('BotMotion: Widget disabled - no valid configuration');
+    return;
+  }
   
   // Store config globally for components
   (window as any).__BM_CONFIG = config;
