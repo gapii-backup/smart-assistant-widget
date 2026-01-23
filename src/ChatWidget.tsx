@@ -373,7 +373,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
   .bm-widget {
     position: absolute;
     bottom: ${WIDGET_CONFIG.verticalOffset + 48}px;
-    ${WIDGET_CONFIG.position}: 0;
+    ${WIDGET_CONFIG.position}: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '48px' : '0'};
     width: 420px;
     height: 716px;
     background: var(--bm-bg);
