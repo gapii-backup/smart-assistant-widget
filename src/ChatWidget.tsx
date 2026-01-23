@@ -4088,11 +4088,11 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
         setTimeout(() => setShowShake(false), 800);
       };
       
-      // Initial shake after 10 seconds
-      const initialTimer = setTimeout(triggerShake, 10000);
+      // Initial shake after 5 seconds
+      const initialTimer = setTimeout(triggerShake, 5000);
       
-      // Repeat every 10 seconds
-      const intervalId = setInterval(triggerShake, 10000);
+      // Repeat every 5 seconds
+      const intervalId = setInterval(triggerShake, 5000);
       
       return () => {
         clearTimeout(initialTimer);
