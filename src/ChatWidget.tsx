@@ -119,12 +119,33 @@ function hexToRgba(hex: string, alpha: number): string {
 const getWidgetStyles = (config: WidgetConfig) => {
   // Alias for easier migration - all WIDGET_CONFIG references now use config parameter
   const WIDGET_CONFIG = config;
+  const widgetFont = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
   return `
-  .bm-widget-container * {
-    box-sizing: border-box;
+  .bm-widget-container,
+  .bm-widget-container *,
+  .bm-widget-container *::before,
+  .bm-widget-container *::after {
+    box-sizing: border-box !important;
     margin: 0;
     padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-family: ${widgetFont} !important;
+  }
+
+  .bm-widget-container h1,
+  .bm-widget-container h2,
+  .bm-widget-container h3,
+  .bm-widget-container h4,
+  .bm-widget-container h5,
+  .bm-widget-container h6,
+  .bm-widget-container p,
+  .bm-widget-container span,
+  .bm-widget-container a,
+  .bm-widget-container button,
+  .bm-widget-container input,
+  .bm-widget-container textarea,
+  .bm-widget-container label,
+  .bm-widget-container div {
+    font-family: ${widgetFont} !important;
   }
 
 
