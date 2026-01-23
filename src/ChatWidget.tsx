@@ -438,6 +438,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     ${WIDGET_CONFIG.position}: ${config.triggerStyle === 'edge' ? '24px' : '0'};
     width: 420px;
     height: 716px;
+    max-height: calc(100vh - 100px);
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -2692,11 +2693,55 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Very small height devices (landscape phones) */
+  /* Medium height devices (800px and below) - scale down elements */
+  @media (min-width: 481px) and (max-height: 800px) {
+    .bm-widget {
+      height: calc(100vh - 100px);
+      max-height: calc(100vh - 100px);
+    }
+
+    .bm-header-home {
+      padding: 12px 18px 24px;
+    }
+
+    .bm-monitor-icon {
+      width: 52px;
+      height: 52px;
+      margin: 10px auto 14px;
+    }
+
+    .bm-header-home h2 {
+      font-size: 22px;
+    }
+
+    .bm-quick-section {
+      padding: 0 18px 12px;
+    }
+
+    .bm-quick-btn {
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .bm-footer {
+      padding: 8px 16px !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      max-height: 38px !important;
+      flex: 0 0 38px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 11px !important;
+    }
+  }
+
+  /* Very small height devices (landscape phones, 600px and below) */
   @media (max-height: 600px) {
     .bm-widget {
       height: calc(100vh - 80px);
-      max-height: none;
+      max-height: calc(100vh - 80px);
       bottom: 64px;
     }
 
@@ -2720,6 +2765,20 @@ const getWidgetStyles = (config: WidgetConfig) => {
 
     .bm-quick-btn {
       padding: 10px 14px;
+      font-size: 12px;
+    }
+
+    .bm-footer {
+      padding: 6px 14px !important;
+      height: 34px !important;
+      min-height: 34px !important;
+      max-height: 34px !important;
+      flex: 0 0 34px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 10px !important;
     }
   }
 
