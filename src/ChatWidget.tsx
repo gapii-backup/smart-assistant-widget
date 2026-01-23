@@ -438,7 +438,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     ${WIDGET_CONFIG.position}: ${config.triggerStyle === 'edge' ? '24px' : '0'};
     width: 420px;
     height: 716px;
-    max-height: calc(100vh - 100px);
+    max-height: calc(100vh - 150px);
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -2693,13 +2693,52 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Height breakpoint 1: 850px - minimal changes */
+  /* Height breakpoint 1: 850px - very subtle changes */
   @media (min-width: 481px) and (max-height: 850px) {
     .bm-widget {
-      height: calc(100vh - 100px);
-      max-height: calc(100vh - 100px);
+      height: calc(100vh - 150px);
+      max-height: calc(100vh - 150px);
     }
 
+    .bm-header-home {
+      padding: 15px 21px 29px;
+    }
+
+    .bm-monitor-icon {
+      width: 59px;
+      height: 59px;
+      margin: 13px auto 17px;
+    }
+
+    .bm-header-home h2 {
+      font-size: 23.5px;
+    }
+
+    .bm-quick-section {
+      padding: 0 21px 14px;
+    }
+
+    .bm-quick-btn {
+      padding: 11px 15px;
+      font-size: 13.5px;
+    }
+
+    .bm-footer {
+      padding: 10px 19px !important;
+      height: 43px !important;
+      min-height: 43px !important;
+      max-height: 43px !important;
+      flex: 0 0 43px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 12.5px !important;
+    }
+  }
+
+  /* Height breakpoint 2: 800px */
+  @media (min-width: 481px) and (max-height: 800px) {
     .bm-header-home {
       padding: 14px 20px 28px;
     }
@@ -2715,12 +2754,12 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 20px 14px;
+      padding: 0 20px 13px;
     }
 
     .bm-quick-btn {
-      padding: 11px 15px;
-      font-size: 13.5px;
+      padding: 11px 14px;
+      font-size: 13px;
     }
 
     .bm-footer {
@@ -2737,8 +2776,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Height breakpoint 2: 800px */
-  @media (min-width: 481px) and (max-height: 800px) {
+  /* Height breakpoint 3: 750px */
+  @media (min-width: 481px) and (max-height: 750px) {
     .bm-header-home {
       padding: 13px 19px 26px;
     }
@@ -2754,12 +2793,12 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 19px 13px;
+      padding: 0 19px 12px;
     }
 
     .bm-quick-btn {
-      padding: 10px 14px;
-      font-size: 13px;
+      padding: 10px 13px;
+      font-size: 12.5px;
     }
 
     .bm-footer {
@@ -2776,8 +2815,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Height breakpoint 3: 750px */
-  @media (min-width: 481px) and (max-height: 750px) {
+  /* Height breakpoint 4: 700px */
+  @media (min-width: 481px) and (max-height: 700px) {
     .bm-header-home {
       padding: 12px 18px 24px;
     }
@@ -2793,12 +2832,12 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 18px 12px;
+      padding: 0 18px 11px;
     }
 
     .bm-quick-btn {
-      padding: 9px 13px;
-      font-size: 12.5px;
+      padding: 9px 12px;
+      font-size: 12px;
     }
 
     .bm-footer {
@@ -2815,8 +2854,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Height breakpoint 4: 700px */
-  @media (min-width: 481px) and (max-height: 700px) {
+  /* Height breakpoint 5: 650px */
+  @media (min-width: 481px) and (max-height: 650px) {
     .bm-header-home {
       padding: 11px 17px 22px;
     }
@@ -2832,12 +2871,12 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 17px 11px;
+      padding: 0 17px 10px;
     }
 
     .bm-quick-btn {
-      padding: 8px 12px;
-      font-size: 12px;
+      padding: 8px 11px;
+      font-size: 11.5px;
     }
 
     .bm-footer {
@@ -2854,8 +2893,14 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Height breakpoint 5: 650px */
-  @media (min-width: 481px) and (max-height: 650px) {
+  /* Height breakpoint 6: 600px - smallest version */
+  @media (min-width: 481px) and (max-height: 600px) {
+    .bm-widget {
+      height: calc(100vh - 120px);
+      max-height: calc(100vh - 120px);
+      bottom: 64px;
+    }
+
     .bm-header-home {
       padding: 10px 16px 20px;
     }
@@ -2871,12 +2916,12 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 16px 10px;
+      padding: 0 16px 9px;
     }
 
     .bm-quick-btn {
-      padding: 7px 11px;
-      font-size: 11.5px;
+      padding: 7px 10px;
+      font-size: 11px;
     }
 
     .bm-footer {
@@ -2890,51 +2935,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-footer span,
     .bm-footer a {
       font-size: 10px !important;
-    }
-  }
-
-  /* Height breakpoint 6: 600px - smallest version */
-  @media (min-width: 481px) and (max-height: 600px) {
-    .bm-widget {
-      height: calc(100vh - 80px);
-      max-height: calc(100vh - 80px);
-      bottom: 64px;
-    }
-
-    .bm-header-home {
-      padding: 8px 14px 18px;
-    }
-
-    .bm-monitor-icon {
-      width: 46px;
-      height: 46px;
-      margin: 6px auto 10px;
-    }
-
-    .bm-header-home h2 {
-      font-size: 18px;
-    }
-
-    .bm-quick-section {
-      padding: 0 14px 8px;
-    }
-
-    .bm-quick-btn {
-      padding: 6px 10px;
-      font-size: 11px;
-    }
-
-    .bm-footer {
-      padding: 4px 12px !important;
-      height: 32px !important;
-      min-height: 32px !important;
-      max-height: 32px !important;
-      flex: 0 0 32px !important;
-    }
-
-    .bm-footer span,
-    .bm-footer a {
-      font-size: 9.5px !important;
     }
   }
 
