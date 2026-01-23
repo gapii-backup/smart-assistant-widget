@@ -989,7 +989,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     font-family: inherit;
     line-height: 1.4;
     min-height: 24px;
-    max-height: 72px;
+    max-height: 48px;
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -5014,7 +5014,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                         setInitialMessage(e.target.value);
                         // Auto-resize textarea
                         e.target.style.height = 'auto';
-                        e.target.style.height = Math.min(e.target.scrollHeight, 72) + 'px';
+                        e.target.style.height = Math.min(e.target.scrollHeight, 48) + 'px';
                       }}
                       onKeyDown={e => {
                         if (e.key === 'Enter' && !e.shiftKey && initialMessage.trim()) {
@@ -5143,7 +5143,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                     setInputValue(e.target.value);
                     // Auto-resize textarea
                     e.target.style.height = 'auto';
-                    e.target.style.height = Math.min(e.target.scrollHeight, 64) + 'px';
+                    e.target.style.height = Math.min(e.target.scrollHeight, 48) + 'px';
                   }}
                   onKeyDown={e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
