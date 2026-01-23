@@ -3768,6 +3768,9 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   const [welcomeDismissed, setWelcomeDismissed] = useState(() => {
     return sessionStorage.getItem('bm-welcome-dismissed') === 'true';
   });
+  const [autoOpenDismissed, setAutoOpenDismissed] = useState(() => {
+    return sessionStorage.getItem('bm-auto-open-dismissed') === 'true';
+  });
   const [view, setViewState] = useState<View>(() => {
     // Only restore view on desktop (> 768px)
     if (typeof window !== 'undefined' && window.innerWidth > 768) {
@@ -3993,6 +3996,25 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       return () => clearTimeout(timer);
     }
   }, [isOpen, welcomeDismissed, isHealthy, config.showBubble]);
+
+  // Auto-open widget after 10 seconds (desktop only, once per session)
+  useEffect(() => {
+    const isDesktop = window.innerWidth > 480;
+    if (isDesktop && !isOpen && !autoOpenDismissed && isHealthy) {
+      const timer = setTimeout(() => {
+        setIsOpen(true);
+        setShowWelcome(false);
+        setWelcomeDismissed(true);
+        sessionStorage.setItem('bm-welcome-dismissed', 'true');
+        setAutoOpenDismissed(true);
+        sessionStorage.setItem('bm-auto-open-dismissed', 'true');
+        if (!currentSessionId) {
+          startNewSession();
+        }
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, autoOpenDismissed, isHealthy, currentSessionId]);
 
   // Lock body scroll and disable zoom when widget is open on mobile
   useEffect(() => {
@@ -4322,6 +4344,9 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     setIsOpen(false);
     setViewDirection('none');
     // Welcome bubble stays dismissed after widget was opened
+    // Mark auto-open as dismissed so widget never auto-opens again
+    setAutoOpenDismissed(true);
+    sessionStorage.setItem('bm-auto-open-dismissed', 'true');
   };
 
   if (!isHealthy) {
