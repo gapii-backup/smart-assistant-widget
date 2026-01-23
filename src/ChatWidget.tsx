@@ -437,8 +437,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     bottom: ${WIDGET_CONFIG.verticalOffset + 48}px;
     ${WIDGET_CONFIG.position}: ${config.triggerStyle === 'edge' ? '24px' : '0'};
     width: 420px;
-    height: 716px;
-    max-height: calc(100vh - 150px);
+    height: calc(100vh - 150px);
+    max-height: 716px;
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -2695,10 +2695,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
 
   /* Height breakpoint 1: 850px - very subtle changes */
   @media (min-width: 481px) and (max-height: 850px) {
-    .bm-widget {
-      height: calc(100vh - 150px);
-      max-height: calc(100vh - 150px);
-    }
 
     .bm-header-home {
       padding: 15px 21px 29px;
@@ -2895,11 +2891,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
 
   /* Height breakpoint 6: 600px - smallest version */
   @media (min-width: 481px) and (max-height: 600px) {
-    .bm-widget {
-      height: calc(100vh - 120px);
-      max-height: calc(100vh - 120px);
-      bottom: 64px;
-    }
 
     .bm-header-home {
       padding: 10px 16px 20px;
