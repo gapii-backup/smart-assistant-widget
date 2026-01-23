@@ -392,6 +392,13 @@ const getWidgetStyles = (config: WidgetConfig) => {
     opacity: 1;
   }
 
+  /* On mobile, always show close button */
+  @media (max-width: 480px) {
+    .bm-welcome-close {
+      opacity: 1;
+    }
+  }
+
   .bm-welcome-close:hover {
     background: white;
     transform: scale(1.1);
@@ -4451,20 +4458,20 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       {config.showBubble && showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
           <p>{bubbleTypedText}{bubbleTypedText.length < config.welcomeMessage.length && <span className="bm-typing-cursor">|</span>}</p>
-          {/* Hide close button on mobile - bubble click opens widget directly */}
-          {window.innerWidth > 480 && (
-            <button 
-              className="bm-welcome-close" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowWelcome(false);
+          <button 
+            className="bm-welcome-close" 
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowWelcome(false);
+              // On desktop, mark as dismissed. On mobile, just hide bubble without persisting
+              if (window.innerWidth > 480) {
                 setWelcomeDismissed(true);
                 sessionStorage.setItem('bm-welcome-dismissed', 'true');
-              }}
-            >
-              <Icons.Close />
-            </button>
-          )}
+              }
+            }}
+          >
+            <Icons.Close />
+          </button>
         </div>
       )}
 
