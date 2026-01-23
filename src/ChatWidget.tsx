@@ -2451,8 +2451,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-welcome-bubble {
-      ${WIDGET_CONFIG.triggerStyle === 'edge' ? `${WIDGET_CONFIG.position}: 60px;` : `${WIDGET_CONFIG.position}: 0;`}
-      max-width: ${WIDGET_CONFIG.triggerStyle === 'edge' ? 'calc(100vw - 140px)' : 'calc(100vw - 80px)'};
+      ${WIDGET_CONFIG.triggerStyle === 'edge' ? `${WIDGET_CONFIG.position}: 20px;` : `${WIDGET_CONFIG.position}: 0;`}
+      max-width: ${WIDGET_CONFIG.triggerStyle === 'edge' ? 'calc(100vw - 100px)' : 'calc(100vw - 80px)'};
       padding: 10px 14px;
       bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '80px' : '60px'};
     }
