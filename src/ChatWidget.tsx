@@ -4085,10 +4085,24 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     }
   }, [isOpen, autoOpenDismissed, isHealthy, currentSessionId]);
 
-  // Shake animation on trigger button every 10 seconds (mobile only)
+  // Track if user has ever opened widget in this session (to stop shake permanently)
+  const [hasOpenedWidget, setHasOpenedWidget] = useState(() => {
+    return sessionStorage.getItem('bm-widget-opened') === 'true';
+  });
+
+  // When widget opens, mark it and stop shake permanently
+  useEffect(() => {
+    if (isOpen && !hasOpenedWidget) {
+      setHasOpenedWidget(true);
+      sessionStorage.setItem('bm-widget-opened', 'true');
+      setShowShake(false);
+    }
+  }, [isOpen, hasOpenedWidget]);
+
+  // Shake animation on trigger button every 5 seconds (mobile only, until widget is opened)
   useEffect(() => {
     const isMobile = window.innerWidth <= 480;
-    if (isMobile && !isOpen && isHealthy) {
+    if (isMobile && !isOpen && !hasOpenedWidget && isHealthy) {
       const triggerShake = () => {
         setShowShake(true);
         // Stop shake after animation completes (2 iterations × 0.4s = 0.8s)
@@ -4106,7 +4120,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
         clearInterval(intervalId);
       };
     }
-  }, [isOpen, isHealthy]);
+  }, [isOpen, hasOpenedWidget, isHealthy]);
 
   // Lock body scroll and disable zoom when widget is open on mobile
   useEffect(() => {
