@@ -1509,7 +1509,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
   }
 
   .bm-footer a {
-    color: #3B82F6 !important;
+    color: ${WIDGET_CONFIG.mode === 'dark' ? '#3B82F6' : '#1D4ED8'} !important;
     font-size: 12px;
     line-height: 1;
     text-decoration: none;
@@ -1527,12 +1527,12 @@ const getWidgetStyles = (config: WidgetConfig) => {
     bottom: -2px;
     left: 50%;
     transform: translateX(-50%);
-    background: #3B82F6;
+    background: ${WIDGET_CONFIG.mode === 'dark' ? '#3B82F6' : '#1D4ED8'};
     transition: width 0.3s ease;
   }
 
   .bm-footer a:hover {
-    color: #3B82F6 !important;
+    color: ${WIDGET_CONFIG.mode === 'dark' ? '#3B82F6' : '#1D4ED8'} !important;
   }
 
   .bm-footer a:hover::after {
