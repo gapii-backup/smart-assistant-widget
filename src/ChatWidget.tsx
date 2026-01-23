@@ -2693,21 +2693,60 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Medium height devices (800px and below) - scale down elements */
-  @media (min-width: 481px) and (max-height: 800px) {
+  /* Height breakpoint 1: 850px - minimal changes */
+  @media (min-width: 481px) and (max-height: 850px) {
     .bm-widget {
       height: calc(100vh - 100px);
       max-height: calc(100vh - 100px);
     }
 
     .bm-header-home {
-      padding: 12px 18px 24px;
+      padding: 14px 20px 28px;
     }
 
     .bm-monitor-icon {
-      width: 52px;
-      height: 52px;
-      margin: 10px auto 14px;
+      width: 58px;
+      height: 58px;
+      margin: 12px auto 16px;
+    }
+
+    .bm-header-home h2 {
+      font-size: 23px;
+    }
+
+    .bm-quick-section {
+      padding: 0 20px 14px;
+    }
+
+    .bm-quick-btn {
+      padding: 11px 15px;
+      font-size: 13.5px;
+    }
+
+    .bm-footer {
+      padding: 9px 18px !important;
+      height: 42px !important;
+      min-height: 42px !important;
+      max-height: 42px !important;
+      flex: 0 0 42px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 12px !important;
+    }
+  }
+
+  /* Height breakpoint 2: 800px */
+  @media (min-width: 481px) and (max-height: 800px) {
+    .bm-header-home {
+      padding: 13px 19px 26px;
+    }
+
+    .bm-monitor-icon {
+      width: 56px;
+      height: 56px;
+      margin: 11px auto 15px;
     }
 
     .bm-header-home h2 {
@@ -2715,7 +2754,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 18px 12px;
+      padding: 0 19px 13px;
     }
 
     .bm-quick-btn {
@@ -2724,7 +2763,46 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-footer {
-      padding: 8px 16px !important;
+      padding: 8px 17px !important;
+      height: 40px !important;
+      min-height: 40px !important;
+      max-height: 40px !important;
+      flex: 0 0 40px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 11.5px !important;
+    }
+  }
+
+  /* Height breakpoint 3: 750px */
+  @media (min-width: 481px) and (max-height: 750px) {
+    .bm-header-home {
+      padding: 12px 18px 24px;
+    }
+
+    .bm-monitor-icon {
+      width: 54px;
+      height: 54px;
+      margin: 10px auto 14px;
+    }
+
+    .bm-header-home h2 {
+      font-size: 21px;
+    }
+
+    .bm-quick-section {
+      padding: 0 18px 12px;
+    }
+
+    .bm-quick-btn {
+      padding: 9px 13px;
+      font-size: 12.5px;
+    }
+
+    .bm-footer {
+      padding: 7px 16px !important;
       height: 38px !important;
       min-height: 38px !important;
       max-height: 38px !important;
@@ -2737,22 +2815,16 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
-  /* Very small height devices (landscape phones, 600px and below) */
-  @media (max-height: 600px) {
-    .bm-widget {
-      height: calc(100vh - 80px);
-      max-height: calc(100vh - 80px);
-      bottom: 64px;
-    }
-
+  /* Height breakpoint 4: 700px */
+  @media (min-width: 481px) and (max-height: 700px) {
     .bm-header-home {
-      padding: 10px 16px 20px;
+      padding: 11px 17px 22px;
     }
 
     .bm-monitor-icon {
-      width: 48px;
-      height: 48px;
-      margin: 8px auto 12px;
+      width: 52px;
+      height: 52px;
+      margin: 9px auto 13px;
     }
 
     .bm-header-home h2 {
@@ -2760,16 +2832,55 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-quick-section {
-      padding: 0 16px 10px;
+      padding: 0 17px 11px;
     }
 
     .bm-quick-btn {
-      padding: 10px 14px;
+      padding: 8px 12px;
       font-size: 12px;
     }
 
     .bm-footer {
-      padding: 6px 14px !important;
+      padding: 6px 15px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      max-height: 36px !important;
+      flex: 0 0 36px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 10.5px !important;
+    }
+  }
+
+  /* Height breakpoint 5: 650px */
+  @media (min-width: 481px) and (max-height: 650px) {
+    .bm-header-home {
+      padding: 10px 16px 20px;
+    }
+
+    .bm-monitor-icon {
+      width: 50px;
+      height: 50px;
+      margin: 8px auto 12px;
+    }
+
+    .bm-header-home h2 {
+      font-size: 19px;
+    }
+
+    .bm-quick-section {
+      padding: 0 16px 10px;
+    }
+
+    .bm-quick-btn {
+      padding: 7px 11px;
+      font-size: 11.5px;
+    }
+
+    .bm-footer {
+      padding: 5px 14px !important;
       height: 34px !important;
       min-height: 34px !important;
       max-height: 34px !important;
@@ -2779,6 +2890,51 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-footer span,
     .bm-footer a {
       font-size: 10px !important;
+    }
+  }
+
+  /* Height breakpoint 6: 600px - smallest version */
+  @media (min-width: 481px) and (max-height: 600px) {
+    .bm-widget {
+      height: calc(100vh - 80px);
+      max-height: calc(100vh - 80px);
+      bottom: 64px;
+    }
+
+    .bm-header-home {
+      padding: 8px 14px 18px;
+    }
+
+    .bm-monitor-icon {
+      width: 46px;
+      height: 46px;
+      margin: 6px auto 10px;
+    }
+
+    .bm-header-home h2 {
+      font-size: 18px;
+    }
+
+    .bm-quick-section {
+      padding: 0 14px 8px;
+    }
+
+    .bm-quick-btn {
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+
+    .bm-footer {
+      padding: 4px 12px !important;
+      height: 32px !important;
+      min-height: 32px !important;
+      max-height: 32px !important;
+      flex: 0 0 32px !important;
+    }
+
+    .bm-footer span,
+    .bm-footer a {
+      font-size: 9.5px !important;
     }
   }
 
