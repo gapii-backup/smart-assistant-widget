@@ -4335,6 +4335,9 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     setShowWelcome(false);
     setWelcomeDismissed(true);
     sessionStorage.setItem('bm-welcome-dismissed', 'true');
+    // Cancel auto-open since user opened manually
+    setAutoOpenDismissed(true);
+    sessionStorage.setItem('bm-auto-open-dismissed', 'true');
     if (!currentSessionId) {
       startNewSession();
     }
