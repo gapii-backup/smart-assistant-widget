@@ -2954,24 +2954,11 @@ const getWidgetStyles = (config: WidgetConfig) => {
 
   /* ========================================
      MOBILE HEIGHT BREAKPOINTS (max-width: 480px)
-     Gradual scaling every 20px for smooth transitions
+     Scaling starts at 680px and below
      ======================================== */
 
-  /* Mobile height: 720px */
-  @media (max-width: 480px) and (max-height: 720px) {
-    .bm-header-home { padding: 15px 16px 23px; padding-top: calc(15px + env(safe-area-inset-top, 0px)); }
-    .bm-header-home h2 { font-size: 23.5px; }
-    .bm-monitor-icon { width: 55px; height: 55px; }
-    .bm-monitor-icon svg { width: 27px; height: 27px; }
-    .bm-quick-section { padding: 0 16px 11px; }
-    .bm-quick-btn { padding: 13px 15px; font-size: 13.5px; }
-    .bm-input-stack { padding: 0 16px 5px; }
-    .bm-input-full { padding: 13px 15px; font-size: 13.5px; }
-    .bm-footer { flex: 0 0 39px !important; height: 39px !important; min-height: 39px !important; max-height: 39px !important; }
-  }
-
-  /* Mobile height: 700px */
-  @media (max-width: 480px) and (max-height: 700px) {
+  /* Mobile height: 680px - first breakpoint, subtle changes */
+  @media (max-width: 480px) and (max-height: 680px) {
     .bm-header-home { padding: 15px 16px 22px; padding-top: calc(15px + env(safe-area-inset-top, 0px)); }
     .bm-header-home h2 { font-size: 23px; }
     .bm-monitor-icon { width: 54px; height: 54px; }
@@ -2981,19 +2968,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-input-stack { padding: 0 16px 5px; }
     .bm-input-full { padding: 13px 15px; font-size: 13.5px; }
     .bm-footer { flex: 0 0 39px !important; height: 39px !important; min-height: 39px !important; max-height: 39px !important; }
-  }
-
-  /* Mobile height: 680px */
-  @media (max-width: 480px) and (max-height: 680px) {
-    .bm-header-home { padding: 14px 16px 21px; padding-top: calc(14px + env(safe-area-inset-top, 0px)); }
-    .bm-header-home h2 { font-size: 22.5px; }
-    .bm-monitor-icon { width: 53px; height: 53px; }
-    .bm-monitor-icon svg { width: 26px; height: 26px; }
-    .bm-quick-section { padding: 0 16px 10px; }
-    .bm-quick-btn { padding: 12px 14px; font-size: 13px; }
-    .bm-input-stack { padding: 0 16px 5px; }
-    .bm-input-full { padding: 12px 14px; font-size: 13px; }
-    .bm-footer { flex: 0 0 38px !important; height: 38px !important; min-height: 38px !important; max-height: 38px !important; }
   }
 
   /* Mobile height: 660px */
