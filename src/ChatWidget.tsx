@@ -310,7 +310,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
   .bm-welcome-bubble {
     position: absolute;
     bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? (WIDGET_CONFIG.verticalOffset + 66) : (WIDGET_CONFIG.verticalOffset + 48)}px;
-    ${WIDGET_CONFIG.position}: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '48px' : '0'};
+    ${WIDGET_CONFIG.position}: 0;
     background: var(--bm-primary);
     border: none;
     border-radius: 20px;
@@ -373,7 +373,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
   .bm-widget {
     position: absolute;
     bottom: ${WIDGET_CONFIG.verticalOffset + 48}px;
-    ${WIDGET_CONFIG.position}: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '48px' : '0'};
+    ${WIDGET_CONFIG.position}: 0;
     width: 420px;
     height: 716px;
     background: var(--bm-bg);
@@ -2417,7 +2417,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-welcome-bubble {
-      ${WIDGET_CONFIG.position}: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '48px' : '0'};
+      ${WIDGET_CONFIG.position}: 0;
       max-width: calc(100vw - 80px);
       padding: 10px 14px;
       bottom: 60px;
