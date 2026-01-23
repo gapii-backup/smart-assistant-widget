@@ -4140,7 +4140,7 @@ const MessageContent: React.FC<{
     parts.push(
       <div key={key++} className="bm-newsletter" style={{ marginTop: '8px' }}>
         {submittedNewsletterIds.has(messageId) ? null : (
-          <div className="bm-newsletter-form">
+          <form className="bm-newsletter-form" onSubmit={e => { e.preventDefault(); handleNewsletterSubmit(); }}>
             <input
               type="email"
               placeholder="Vaš email"
@@ -4150,9 +4150,10 @@ const MessageContent: React.FC<{
                 setAttemptedSubmit(false);
               }}
               className={attemptedSubmit && !isValidEmail ? 'bm-input-error' : ''}
+              autoFocus
             />
-            <button onClick={handleNewsletterSubmit}>Prijava</button>
-          </div>
+            <button type="submit">Prijava</button>
+          </form>
         )}
       </div>
     );
