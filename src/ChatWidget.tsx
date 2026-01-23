@@ -1509,36 +1509,21 @@ const getWidgetStyles = (config: WidgetConfig) => {
   }
 
   .bm-footer a {
-    color: var(--bm-primary);
+    color: #3B82F6 !important;
     font-size: 12px;
     line-height: 1;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.25s ease;
+    transition: text-decoration 0.2s ease;
     position: relative;
     margin: 0;
     padding: 0;
   }
 
-  .bm-footer a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: -2px;
-    left: 50%;
-    background: var(--bm-primary);
-    transition: all 0.3s ease;
-  }
-
   .bm-footer a:hover {
-    color: ${WIDGET_CONFIG.mode === 'dark' ? adjustColor(WIDGET_CONFIG.primaryColor, 30) : adjustColor(WIDGET_CONFIG.primaryColor, -20)};
-    text-shadow: ${WIDGET_CONFIG.mode === 'dark' ? `0 0 8px ${hexToRgba(WIDGET_CONFIG.primaryColor, 0.5)}` : 'none'};
-  }
-
-  .bm-footer a:hover::after {
-    width: 100%;
-    left: 0;
+    color: #3B82F6 !important;
+    text-decoration: underline;
+    text-shadow: none;
   }
 
   /* Message links */
