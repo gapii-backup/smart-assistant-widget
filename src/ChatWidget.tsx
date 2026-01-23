@@ -2948,7 +2948,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 16px 11px; }
     .bm-quick-btn { padding: 13px 15px; font-size: 13.5px; }
     .bm-footer { flex: 0 0 39px !important; height: 39px !important; min-height: 39px !important; max-height: 39px !important; }
-    .bm-footer span, .bm-footer a { font-size: 10.5px; }
   }
 
   /* Mobile height: 700px */
@@ -2960,7 +2959,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 16px 11px; }
     .bm-quick-btn { padding: 13px 15px; font-size: 13.5px; }
     .bm-footer { flex: 0 0 39px !important; height: 39px !important; min-height: 39px !important; max-height: 39px !important; }
-    .bm-footer span, .bm-footer a { font-size: 10.5px; }
   }
 
   /* Mobile height: 680px */
@@ -2972,7 +2970,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 16px 10px; }
     .bm-quick-btn { padding: 12px 14px; font-size: 13px; }
     .bm-footer { flex: 0 0 38px !important; height: 38px !important; min-height: 38px !important; max-height: 38px !important; }
-    .bm-footer span, .bm-footer a { font-size: 10.5px; }
   }
 
   /* Mobile height: 660px */
@@ -2984,7 +2981,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 15px 10px; }
     .bm-quick-btn { padding: 12px 14px; font-size: 13px; }
     .bm-footer { flex: 0 0 38px !important; height: 38px !important; min-height: 38px !important; max-height: 38px !important; }
-    .bm-footer span, .bm-footer a { font-size: 10px; }
   }
 
   /* Mobile height: 640px */
@@ -2996,7 +2992,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 15px 9px; }
     .bm-quick-btn { padding: 11px 13px; font-size: 12.5px; }
     .bm-footer { flex: 0 0 37px !important; height: 37px !important; min-height: 37px !important; max-height: 37px !important; }
-    .bm-footer span, .bm-footer a { font-size: 10px; }
   }
 
   /* Mobile height: 620px */
@@ -3008,7 +3003,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 15px 9px; }
     .bm-quick-btn { padding: 11px 13px; font-size: 12.5px; }
     .bm-footer { flex: 0 0 37px !important; height: 37px !important; min-height: 37px !important; max-height: 37px !important; }
-    .bm-footer span, .bm-footer a { font-size: 10px; }
   }
 
   /* Mobile height: 600px */
@@ -3020,7 +3014,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 14px 8px; }
     .bm-quick-btn { padding: 10px 12px; font-size: 12px; }
     .bm-footer { flex: 0 0 36px !important; height: 36px !important; min-height: 36px !important; max-height: 36px !important; }
-    .bm-footer span, .bm-footer a { font-size: 9.5px; }
   }
 
   /* Mobile height: 580px */
@@ -3032,7 +3025,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 14px 8px; }
     .bm-quick-btn { padding: 10px 12px; font-size: 12px; }
     .bm-footer { flex: 0 0 36px !important; height: 36px !important; min-height: 36px !important; max-height: 36px !important; }
-    .bm-footer span, .bm-footer a { font-size: 9.5px; }
   }
 
   /* Mobile height: 560px */
@@ -3044,7 +3036,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 14px 7px; }
     .bm-quick-btn { padding: 9px 11px; font-size: 11.5px; }
     .bm-footer { flex: 0 0 35px !important; height: 35px !important; min-height: 35px !important; max-height: 35px !important; }
-    .bm-footer span, .bm-footer a { font-size: 9px; }
   }
 
   /* Mobile height: 540px */
@@ -3056,7 +3047,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 13px 7px; }
     .bm-quick-btn { padding: 9px 11px; font-size: 11.5px; }
     .bm-footer { flex: 0 0 35px !important; height: 35px !important; min-height: 35px !important; max-height: 35px !important; }
-    .bm-footer span, .bm-footer a { font-size: 9px; }
   }
 
   /* Mobile height: 520px */
@@ -3068,7 +3058,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 13px 6px; }
     .bm-quick-btn { padding: 8px 10px; font-size: 11px; }
     .bm-footer { flex: 0 0 34px !important; height: 34px !important; min-height: 34px !important; max-height: 34px !important; }
-    .bm-footer span, .bm-footer a { font-size: 9px; }
   }
 
   /* Mobile height: 500px */
@@ -3080,7 +3069,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 12px 6px; }
     .bm-quick-btn { padding: 8px 10px; font-size: 11px; }
     .bm-footer { flex: 0 0 34px !important; height: 34px !important; min-height: 34px !important; max-height: 34px !important; }
-    .bm-footer span, .bm-footer a { font-size: 8.5px; }
   }
 
   /* Mobile height: 480px */
@@ -3092,7 +3080,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 12px 5px; }
     .bm-quick-btn { padding: 7px 9px; font-size: 10.5px; }
     .bm-footer { flex: 0 0 33px !important; height: 33px !important; min-height: 33px !important; max-height: 33px !important; }
-    .bm-footer span, .bm-footer a { font-size: 8.5px; }
   }
 
   /* Mobile height: 460px */
@@ -3104,7 +3091,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-quick-section { padding: 0 12px 5px; }
     .bm-quick-btn { padding: 7px 9px; font-size: 10.5px; }
     .bm-footer { flex: 0 0 32px !important; height: 32px !important; min-height: 32px !important; max-height: 32px !important; }
-    .bm-footer span, .bm-footer a { font-size: 8px; }
   }
 
   /* Touch-friendly adjustments for all mobile */
