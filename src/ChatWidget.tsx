@@ -4029,7 +4029,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       const timer = setTimeout(() => {
         setShowWelcome(true);
         setBubbleTypedText(''); // Reset typed text when bubble shows
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [isOpen, welcomeDismissed, isHealthy, config.showBubble]);
