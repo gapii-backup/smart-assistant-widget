@@ -3924,7 +3924,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     };
   }, []);
 
-  // Health check on mount and every 10 minutes
+  // Health check on mount
   useEffect(() => {
     const checkHealth = async () => {
       try {
@@ -3935,13 +3935,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       }
     };
     
-    // Initial check
     checkHealth();
-    
-    // Periodic check every 10 minutes (600000ms)
-    const intervalId = setInterval(checkHealth, 600000);
-    
-    return () => clearInterval(intervalId);
   }, []);
 
   // Load sessions from localStorage and restore current session if on desktop
