@@ -437,8 +437,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     bottom: ${WIDGET_CONFIG.verticalOffset + 48}px;
     ${WIDGET_CONFIG.position}: ${config.triggerStyle === 'edge' ? '24px' : '0'};
     width: 420px;
-    height: calc(100vh - 150px);
-    max-height: 716px;
+    height: auto;
+    max-height: min(716px, calc(100vh - 150px));
     background: var(--bm-bg);
     border-radius: 16px;
     box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -845,6 +845,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .bm-quick-label {
@@ -858,6 +861,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     background: var(--bm-bg);
     padding: 8px 16px;
     border-radius: 20px;
+    flex-shrink: 0;
   }
 
   .bm-quick-questions {
@@ -1514,6 +1518,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     line-height: 1;
 
     /* hard lock height (prevents “tall footer” on published) */
+    flex-shrink: 0 !important;
     flex: 0 0 42px !important;
     height: 42px !important;
     min-height: 42px !important;
