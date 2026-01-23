@@ -4579,6 +4579,19 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
+  // Auto-focus chat input after bot message (unless it contains newsletter)
+  useEffect(() => {
+    if (messages.length > 0 && view === 'chat' && !isTyping) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === 'bot' && !lastMessage.content.includes('[NEWSLETTER]')) {
+        setTimeout(() => {
+          const chatInput = document.getElementById('bm-chat-textarea') as HTMLTextAreaElement;
+          if (chatInput) chatInput.focus();
+        }, 100);
+      }
+    }
+  }, [messages, isTyping, view]);
+
   // Scroll to bottom when chat view opens or widget opens
   useEffect(() => {
     if (isOpen && view === 'chat') {
