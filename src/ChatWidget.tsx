@@ -4467,7 +4467,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                     <textarea
                       placeholder="Napišite vprašanje..."
                       value={initialMessage}
-                      maxLength={100}
+                      maxLength={200}
                       onChange={e => {
                         setInitialMessage(e.target.value);
                         // Auto-resize textarea
@@ -4596,7 +4596,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   className="bm-chat-input"
                   placeholder="Napišite vprašanje..."
                   value={inputValue}
-                  maxLength={100}
+                  maxLength={200}
                   onChange={e => {
                     setInputValue(e.target.value);
                     // Auto-resize textarea
