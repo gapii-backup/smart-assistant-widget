@@ -352,6 +352,18 @@ const getWidgetStyles = (config: WidgetConfig) => {
     word-break: normal;
   }
 
+  .bm-typing-cursor {
+    display: inline-block;
+    margin-left: 1px;
+    font-weight: 400;
+    animation: bm-blink 0.7s step-end infinite;
+  }
+
+  @keyframes bm-blink {
+    from, to { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
   .bm-welcome-bubble:hover p {
     padding-right: 0;
   }
@@ -3792,6 +3804,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     return sessionStorage.getItem('bm-auto-open-dismissed') === 'true';
   });
   const [showShake, setShowShake] = useState(false);
+  const [bubbleTypedText, setBubbleTypedText] = useState('');
   const [view, setViewState] = useState<View>(() => {
     // Only restore view on desktop (> 768px)
     if (typeof window !== 'undefined' && window.innerWidth > 768) {
@@ -4013,10 +4026,36 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   // Show welcome bubble after delay (only if showBubble is enabled)
   useEffect(() => {
     if (config.showBubble && !isOpen && !welcomeDismissed && isHealthy) {
-      const timer = setTimeout(() => setShowWelcome(true), 5000);
+      const timer = setTimeout(() => {
+        setShowWelcome(true);
+        setBubbleTypedText(''); // Reset typed text when bubble shows
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [isOpen, welcomeDismissed, isHealthy, config.showBubble]);
+
+  // Typing animation for welcome bubble
+  useEffect(() => {
+    if (!showWelcome || !config.welcomeMessage) return;
+    
+    const message = config.welcomeMessage;
+    const totalDuration = 2000; // 2 seconds
+    const intervalTime = totalDuration / message.length;
+    let currentIndex = 0;
+    
+    setBubbleTypedText('');
+    
+    const typingInterval = setInterval(() => {
+      currentIndex++;
+      setBubbleTypedText(message.slice(0, currentIndex));
+      
+      if (currentIndex >= message.length) {
+        clearInterval(typingInterval);
+      }
+    }, intervalTime);
+    
+    return () => clearInterval(typingInterval);
+  }, [showWelcome, config.welcomeMessage]);
 
   // Auto-open widget after 10 seconds (desktop only, once per session)
   useEffect(() => {
@@ -4399,7 +4438,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       {/* Welcome Bubble - only shown when showBubble is enabled */}
       {config.showBubble && showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
-          <p>{config.welcomeMessage}</p>
+          <p>{bubbleTypedText}{bubbleTypedText.length < config.welcomeMessage.length && <span className="bm-typing-cursor">|</span>}</p>
           {/* Hide close button on mobile - bubble click opens widget directly */}
           {window.innerWidth > 480 && (
             <button 
