@@ -518,7 +518,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     background: transparent;
     border-radius: 50%;
     cursor: pointer;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
@@ -533,13 +533,6 @@ const getWidgetStyles = (config: WidgetConfig) => {
     width: 18px;
     height: 18px;
     color: rgba(255, 255, 255, 0.7);
-  }
-
-  /* Show close button on mobile */
-  @media (max-width: 480px) {
-    .bm-close-btn-home {
-      display: flex;
-    }
   }
 
   .bm-history-btn {
