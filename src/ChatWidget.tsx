@@ -227,6 +227,26 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
   }
 
+  @keyframes bm-shake-horizontal {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+  }
+
+  @keyframes bm-shake-vertical {
+    0%, 100% { transform: translateY(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateY(-4px); }
+    20%, 40%, 60%, 80% { transform: translateY(4px); }
+  }
+
+  .bm-trigger.shake {
+    animation: bm-shake-horizontal 0.6s ease-in-out 3;
+  }
+
+  .bm-trigger-edge.shake {
+    animation: bm-shake-vertical 0.6s ease-in-out 3;
+  }
+
   .bm-trigger.open .bm-trigger-dot {
     display: none;
   }
@@ -3771,6 +3791,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   const [autoOpenDismissed, setAutoOpenDismissed] = useState(() => {
     return sessionStorage.getItem('bm-auto-open-dismissed') === 'true';
   });
+  const [showShake, setShowShake] = useState(false);
   const [view, setViewState] = useState<View>(() => {
     // Only restore view on desktop (> 768px)
     if (typeof window !== 'undefined' && window.innerWidth > 768) {
@@ -4015,6 +4036,19 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       return () => clearTimeout(timer);
     }
   }, [isOpen, autoOpenDismissed, isHealthy, currentSessionId]);
+
+  // Shake animation on trigger button after 10 seconds (mobile only)
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 480;
+    if (isMobile && !isOpen && !autoOpenDismissed && isHealthy) {
+      const timer = setTimeout(() => {
+        setShowShake(true);
+        // Stop shake after animation completes (3 iterations × 0.6s = 1.8s)
+        setTimeout(() => setShowShake(false), 1800);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, autoOpenDismissed, isHealthy]);
 
   // Lock body scroll and disable zoom when widget is open on mobile
   useEffect(() => {
@@ -4386,7 +4420,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       {/* Trigger Button - Floating Style */}
       {config.triggerStyle === 'floating' && (
         <button 
-          className={`bm-trigger ${isOpen ? 'open' : ''}`}
+          className={`bm-trigger ${isOpen ? 'open' : ''} ${showShake && !isOpen ? 'shake' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
           {isOpen ? (
@@ -4403,7 +4437,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
       {/* Trigger Button - Edge Style */}
       {config.triggerStyle === 'edge' && (
         <button 
-          className={`bm-trigger-edge ${isOpen ? 'open' : ''}`}
+          className={`bm-trigger-edge ${isOpen ? 'open' : ''} ${showShake && !isOpen ? 'shake' : ''}`}
           onClick={() => isOpen ? handleClose() : handleOpen()}
         >
           <span>{config.edgeTriggerText}</span>
