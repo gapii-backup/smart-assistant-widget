@@ -2724,6 +2724,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
       font-size: 13.5px;
     }
 
+    .bm-input-stack { padding: 0 21px 7px; }
+    .bm-input-full { padding: 13px 15px; font-size: 13.5px; }
+
     .bm-footer {
       padding: 10px 19px !important;
       height: 43px !important;
@@ -2762,6 +2765,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
       padding: 11px 14px;
       font-size: 13px;
     }
+
+    .bm-input-stack { padding: 0 20px 7px; }
+    .bm-input-full { padding: 12px 14px; font-size: 13px; }
 
     .bm-footer {
       padding: 9px 18px !important;
@@ -2802,6 +2808,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
       font-size: 12.5px;
     }
 
+    .bm-input-stack { padding: 0 19px 6px; }
+    .bm-input-full { padding: 11px 13px; font-size: 12.5px; }
+
     .bm-footer {
       padding: 8px 17px !important;
       height: 40px !important;
@@ -2841,6 +2850,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
       font-size: 12px;
     }
 
+    .bm-input-stack { padding: 0 18px 6px; }
+    .bm-input-full { padding: 10px 12px; font-size: 12px; }
+
     .bm-footer {
       padding: 7px 16px !important;
       height: 38px !important;
@@ -2879,6 +2891,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
       padding: 8px 11px;
       font-size: 11.5px;
     }
+
+    .bm-input-stack { padding: 0 17px 5px; }
+    .bm-input-full { padding: 9px 11px; font-size: 11.5px; }
 
     .bm-footer {
       padding: 6px 15px !important;
@@ -2920,6 +2935,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
       font-size: 11px;
     }
 
+    .bm-input-stack { padding: 0 16px 5px; }
+    .bm-input-full { padding: 8px 10px; font-size: 11px; }
+
     .bm-footer {
       padding: 5px 14px !important;
       height: 34px !important;
@@ -2947,6 +2965,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 27px; height: 27px; }
     .bm-quick-section { padding: 0 16px 11px; }
     .bm-quick-btn { padding: 13px 15px; font-size: 13.5px; }
+    .bm-input-stack { padding: 0 16px 5px; }
+    .bm-input-full { padding: 13px 15px; font-size: 13.5px; }
     .bm-footer { flex: 0 0 39px !important; height: 39px !important; min-height: 39px !important; max-height: 39px !important; }
   }
 
@@ -2958,6 +2978,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 27px; height: 27px; }
     .bm-quick-section { padding: 0 16px 11px; }
     .bm-quick-btn { padding: 13px 15px; font-size: 13.5px; }
+    .bm-input-stack { padding: 0 16px 5px; }
+    .bm-input-full { padding: 13px 15px; font-size: 13.5px; }
     .bm-footer { flex: 0 0 39px !important; height: 39px !important; min-height: 39px !important; max-height: 39px !important; }
   }
 
@@ -2969,6 +2991,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 26px; height: 26px; }
     .bm-quick-section { padding: 0 16px 10px; }
     .bm-quick-btn { padding: 12px 14px; font-size: 13px; }
+    .bm-input-stack { padding: 0 16px 5px; }
+    .bm-input-full { padding: 12px 14px; font-size: 13px; }
     .bm-footer { flex: 0 0 38px !important; height: 38px !important; min-height: 38px !important; max-height: 38px !important; }
   }
 
@@ -2980,6 +3004,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 26px; height: 26px; }
     .bm-quick-section { padding: 0 15px 10px; }
     .bm-quick-btn { padding: 12px 14px; font-size: 13px; }
+    .bm-input-stack { padding: 0 15px 5px; }
+    .bm-input-full { padding: 12px 14px; font-size: 13px; }
     .bm-footer { flex: 0 0 38px !important; height: 38px !important; min-height: 38px !important; max-height: 38px !important; }
   }
 
@@ -2991,6 +3017,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 25px; height: 25px; }
     .bm-quick-section { padding: 0 15px 9px; }
     .bm-quick-btn { padding: 11px 13px; font-size: 12.5px; }
+    .bm-input-stack { padding: 0 15px 4px; }
+    .bm-input-full { padding: 11px 13px; font-size: 12.5px; }
     .bm-footer { flex: 0 0 37px !important; height: 37px !important; min-height: 37px !important; max-height: 37px !important; }
   }
 
@@ -3002,6 +3030,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 25px; height: 25px; }
     .bm-quick-section { padding: 0 15px 9px; }
     .bm-quick-btn { padding: 11px 13px; font-size: 12.5px; }
+    .bm-input-stack { padding: 0 15px 4px; }
+    .bm-input-full { padding: 11px 13px; font-size: 12.5px; }
     .bm-footer { flex: 0 0 37px !important; height: 37px !important; min-height: 37px !important; max-height: 37px !important; }
   }
 
@@ -3013,6 +3043,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 24px; height: 24px; }
     .bm-quick-section { padding: 0 14px 8px; }
     .bm-quick-btn { padding: 10px 12px; font-size: 12px; }
+    .bm-input-stack { padding: 0 14px 4px; }
+    .bm-input-full { padding: 10px 12px; font-size: 12px; }
     .bm-footer { flex: 0 0 36px !important; height: 36px !important; min-height: 36px !important; max-height: 36px !important; }
   }
 
@@ -3024,6 +3056,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 24px; height: 24px; }
     .bm-quick-section { padding: 0 14px 8px; }
     .bm-quick-btn { padding: 10px 12px; font-size: 12px; }
+    .bm-input-stack { padding: 0 14px 4px; }
+    .bm-input-full { padding: 10px 12px; font-size: 12px; }
     .bm-footer { flex: 0 0 36px !important; height: 36px !important; min-height: 36px !important; max-height: 36px !important; }
   }
 
@@ -3035,6 +3069,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 23px; height: 23px; }
     .bm-quick-section { padding: 0 14px 7px; }
     .bm-quick-btn { padding: 9px 11px; font-size: 11.5px; }
+    .bm-input-stack { padding: 0 14px 3px; }
+    .bm-input-full { padding: 9px 11px; font-size: 11.5px; }
     .bm-footer { flex: 0 0 35px !important; height: 35px !important; min-height: 35px !important; max-height: 35px !important; }
   }
 
@@ -3046,6 +3082,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 23px; height: 23px; }
     .bm-quick-section { padding: 0 13px 7px; }
     .bm-quick-btn { padding: 9px 11px; font-size: 11.5px; }
+    .bm-input-stack { padding: 0 13px 3px; }
+    .bm-input-full { padding: 9px 11px; font-size: 11.5px; }
     .bm-footer { flex: 0 0 35px !important; height: 35px !important; min-height: 35px !important; max-height: 35px !important; }
   }
 
@@ -3057,6 +3095,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 22px; height: 22px; }
     .bm-quick-section { padding: 0 13px 6px; }
     .bm-quick-btn { padding: 8px 10px; font-size: 11px; }
+    .bm-input-stack { padding: 0 13px 3px; }
+    .bm-input-full { padding: 8px 10px; font-size: 11px; }
     .bm-footer { flex: 0 0 34px !important; height: 34px !important; min-height: 34px !important; max-height: 34px !important; }
   }
 
@@ -3068,6 +3108,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 22px; height: 22px; }
     .bm-quick-section { padding: 0 12px 6px; }
     .bm-quick-btn { padding: 8px 10px; font-size: 11px; }
+    .bm-input-stack { padding: 0 12px 3px; }
+    .bm-input-full { padding: 8px 10px; font-size: 11px; }
     .bm-footer { flex: 0 0 34px !important; height: 34px !important; min-height: 34px !important; max-height: 34px !important; }
   }
 
@@ -3079,6 +3121,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 21px; height: 21px; }
     .bm-quick-section { padding: 0 12px 5px; }
     .bm-quick-btn { padding: 7px 9px; font-size: 10.5px; }
+    .bm-input-stack { padding: 0 12px 2px; }
+    .bm-input-full { padding: 7px 9px; font-size: 10.5px; }
     .bm-footer { flex: 0 0 33px !important; height: 33px !important; min-height: 33px !important; max-height: 33px !important; }
   }
 
@@ -3090,6 +3134,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
     .bm-monitor-icon svg { width: 21px; height: 21px; }
     .bm-quick-section { padding: 0 12px 5px; }
     .bm-quick-btn { padding: 7px 9px; font-size: 10.5px; }
+    .bm-input-stack { padding: 0 12px 2px; }
+    .bm-input-full { padding: 7px 9px; font-size: 10.5px; }
     .bm-footer { flex: 0 0 32px !important; height: 32px !important; min-height: 32px !important; max-height: 32px !important; }
   }
 
