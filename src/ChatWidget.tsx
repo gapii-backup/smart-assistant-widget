@@ -2378,18 +2378,18 @@ const getWidgetStyles = (config: WidgetConfig) => {
     }
 
     .bm-trigger {
-      width: 64px;
-      height: 64px;
+      width: 58px;
+      height: 58px;
     }
 
     .bm-trigger svg {
-      width: 30px;
-      height: 30px;
+      width: 27px;
+      height: 27px;
     }
 
     .bm-trigger img {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
     }
 
     /* Reduce ripple intensity on mobile */
