@@ -1306,6 +1306,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
     background: var(--bm-primary);
     color: white;
     border-bottom-right-radius: 6px;
+    text-align: left;
   }
 
   .bm-timestamp {
