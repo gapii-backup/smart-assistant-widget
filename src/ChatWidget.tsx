@@ -1514,16 +1514,29 @@ const getWidgetStyles = (config: WidgetConfig) => {
     line-height: 1;
     text-decoration: none;
     font-weight: 600;
-    transition: text-decoration 0.2s ease;
     position: relative;
     margin: 0;
     padding: 0;
   }
 
+  .bm-footer a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #3B82F6;
+    transition: width 0.3s ease;
+  }
+
   .bm-footer a:hover {
     color: #3B82F6 !important;
-    text-decoration: underline;
-    text-shadow: none;
+  }
+
+  .bm-footer a:hover::after {
+    width: 100%;
   }
 
   /* Message links */
