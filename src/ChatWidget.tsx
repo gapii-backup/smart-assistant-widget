@@ -229,22 +229,24 @@ const getWidgetStyles = (config: WidgetConfig) => {
 
   @keyframes bm-shake-horizontal {
     0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-    20%, 40%, 60%, 80% { transform: translateX(4px); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    75% { transform: translateX(-1px); }
   }
 
   @keyframes bm-shake-vertical {
     0%, 100% { transform: translateY(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateY(-4px); }
-    20%, 40%, 60%, 80% { transform: translateY(4px); }
+    25% { transform: translateY(-2px); }
+    50% { transform: translateY(2px); }
+    75% { transform: translateY(-1px); }
   }
 
   .bm-trigger.shake {
-    animation: bm-shake-horizontal 0.6s ease-in-out 3;
+    animation: bm-shake-horizontal 0.4s ease-in-out 2;
   }
 
   .bm-trigger-edge.shake {
-    animation: bm-shake-vertical 0.6s ease-in-out 3;
+    animation: bm-shake-vertical 0.4s ease-in-out 2;
   }
 
   .bm-trigger.open .bm-trigger-dot {
@@ -4076,18 +4078,28 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     }
   }, [isOpen, autoOpenDismissed, isHealthy, currentSessionId]);
 
-  // Shake animation on trigger button after 10 seconds (mobile only)
+  // Shake animation on trigger button every 10 seconds (mobile only)
   useEffect(() => {
     const isMobile = window.innerWidth <= 480;
-    if (isMobile && !isOpen && !autoOpenDismissed && isHealthy) {
-      const timer = setTimeout(() => {
+    if (isMobile && !isOpen && isHealthy) {
+      const triggerShake = () => {
         setShowShake(true);
-        // Stop shake after animation completes (3 iterations × 0.6s = 1.8s)
-        setTimeout(() => setShowShake(false), 1800);
-      }, 10000);
-      return () => clearTimeout(timer);
+        // Stop shake after animation completes (2 iterations × 0.4s = 0.8s)
+        setTimeout(() => setShowShake(false), 800);
+      };
+      
+      // Initial shake after 10 seconds
+      const initialTimer = setTimeout(triggerShake, 10000);
+      
+      // Repeat every 10 seconds
+      const intervalId = setInterval(triggerShake, 10000);
+      
+      return () => {
+        clearTimeout(initialTimer);
+        clearInterval(intervalId);
+      };
     }
-  }, [isOpen, autoOpenDismissed, isHealthy]);
+  }, [isOpen, isHealthy]);
 
   // Lock body scroll and disable zoom when widget is open on mobile
   useEffect(() => {
