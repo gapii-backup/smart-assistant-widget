@@ -9,17 +9,16 @@ export default defineConfig({
     obfuscatorPlugin({
       options: {
         compact: true,
-        controlFlowFlattening: true,
-        controlFlowFlatteningThreshold: 0.75,
-        deadCodeInjection: true,
-        deadCodeInjectionThreshold: 0.4,
+        controlFlowFlattening: false,
+        deadCodeInjection: false,
         stringArray: true,
         stringArrayEncoding: ['base64'],
         stringArrayThreshold: 0.75,
         transformObjectKeys: true,
         unicodeEscapeSequence: false,
         identifierNamesGenerator: 'hexadecimal',
-        renameGlobals: false
+        renameGlobals: false,
+        ignoreImports: true
       }
     })
   ],
@@ -43,6 +42,7 @@ export default defineConfig({
     }
   },
   define: {
-    'process.env.NODE_ENV': '"production"'
+    'process.env.NODE_ENV': JSON.stringify('production'),
+    'process.env': JSON.stringify({})
   }
 });
