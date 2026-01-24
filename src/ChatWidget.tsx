@@ -78,6 +78,9 @@ const DEFAULT_CONFIG = {
   footerLinkUrl: '',
   footerSuffix: '',
   
+  // Auto-engagement
+  autoOpenDesktop: true, // Auto-open widget on desktop after 10 seconds
+  
   // Identification
   tableName: 'x001_botmotion'
 };
@@ -4478,7 +4481,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   // Auto-open widget after 10 seconds (desktop only, once per session)
   useEffect(() => {
     const isDesktop = window.innerWidth > 480;
-    if (isDesktop && !isOpen && !autoOpenDismissed && isHealthy) {
+    if (isDesktop && config.autoOpenDesktop && !isOpen && !autoOpenDismissed && isHealthy) {
       const timer = setTimeout(() => {
         setIsOpen(true);
         setShowWelcome(false);
@@ -5388,6 +5391,7 @@ function mapApiConfig(apiConfig: Record<string, any>): Partial<WidgetConfig> {
     quick_questions: 'quickQuestions',
     show_email_field: 'showEmailField',
     health_check_url: 'healthCheckUrl',
+    auto_open_desktop: 'autoOpenDesktop',
   };
   
   const mapped: Partial<WidgetConfig> = {};
