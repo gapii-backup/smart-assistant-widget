@@ -4150,7 +4150,7 @@ const MessageContent: React.FC<{
                 setAttemptedSubmit(false);
               }}
               className={attemptedSubmit && !isValidEmail ? 'bm-input-error' : ''}
-              autoFocus
+              autoFocus={window.innerWidth > 480}
             />
             <button type="submit">Prijava</button>
           </form>
@@ -4581,6 +4581,10 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
 
   // Auto-focus chat input after bot message (unless it contains newsletter)
   useEffect(() => {
+    // Only auto-focus on desktop (not mobile) to avoid opening keyboard unexpectedly
+    const isMobile = window.innerWidth <= 480;
+    if (isMobile) return;
+    
     if (messages.length > 0 && view === 'chat' && !isTyping) {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.role === 'bot' && !lastMessage.content.includes('[NEWSLETTER]')) {
