@@ -125,190 +125,104 @@ const getWidgetStyles = (config: WidgetConfig) => {
   const widgetFont = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
   return `
 /* ============================================================================
-   SHADOW DOM CSS RESET - MUST BE FIRST!
-   Inheritable properties penetrate Shadow DOM, so we must reset them.
+   SHADOW DOM CSS RESET
+   Only reset inherited properties, NOT all properties!
    ============================================================================ */
 
 :host {
-  /* Reset ALL inherited properties to initial values */
-  all: initial;
-  
-  /* Re-establish necessary properties for the host */
   display: block;
   position: fixed;
   bottom: ${config.verticalOffset}px;
   ${config.position}: 24px;
   z-index: 999999;
   
-  /* Contain the widget */
-  contain: layout style;
-}
-
-/* Comprehensive reset for ALL elements inside the widget */
-.bm-widget-container,
-.bm-widget-container *,
-.bm-widget-container *::before,
-.bm-widget-container *::after {
-  /* Reset inherited properties that can leak through Shadow DOM */
-  all: revert;
-  
-  /* Then set our defaults */
-  box-sizing: border-box !important;
-  margin: 0;
-  padding: 0;
-  font-family: ${widgetFont} !important;
+  /* Reset inherited properties at shadow boundary */
+  font-family: ${widgetFont};
   font-size: 14px;
   font-weight: normal;
   font-style: normal;
   line-height: 1.5;
+  color: ${config.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
   letter-spacing: normal;
-  word-spacing: normal;
-  text-transform: none;
-  text-indent: 0;
-  text-shadow: none;
-  text-decoration: none;
   text-align: left;
-  white-space: normal;
-  word-break: normal;
-  word-wrap: normal;
+  text-transform: none;
+  text-shadow: none;
+  word-spacing: normal;
   direction: ltr;
-  color: inherit;
   visibility: visible;
-  cursor: auto;
-  border: none;
-  outline: none;
-  background: transparent;
-  vertical-align: baseline;
-  list-style: none;
 }
 
-/* Reset specific HTML elements that commonly get styled globally */
+/* Base reset - only box model, NOT all properties */
+.bm-widget-container,
+.bm-widget-container *,
+.bm-widget-container *::before,
+.bm-widget-container *::after {
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+  font-family: ${widgetFont} !important;
+}
+
+/* Typography elements */
 .bm-widget-container h1,
 .bm-widget-container h2,
 .bm-widget-container h3,
 .bm-widget-container h4,
 .bm-widget-container h5,
-.bm-widget-container h6 {
-  font-size: inherit;
-  font-weight: inherit;
-  margin: 0;
-  padding: 0;
+.bm-widget-container h6,
+.bm-widget-container p,
+.bm-widget-container span,
+.bm-widget-container a,
+.bm-widget-container button,
+.bm-widget-container input,
+.bm-widget-container textarea,
+.bm-widget-container label,
+.bm-widget-container div {
+  font-family: ${widgetFont} !important;
 }
 
-.bm-widget-container p {
-  margin: 0;
-  padding: 0;
-}
-
-.bm-widget-container a {
-  color: inherit;
-  text-decoration: none;
-  background: transparent;
-}
-
+/* Reset button defaults */
 .bm-widget-container button {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
   cursor: pointer;
-  outline: none;
   appearance: none;
   -webkit-appearance: none;
 }
 
+/* Reset input defaults */
 .bm-widget-container input,
 .bm-widget-container textarea {
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-  background: transparent;
-  border: none;
-  padding: 0;
-  margin: 0;
-  outline: none;
   appearance: none;
   -webkit-appearance: none;
-  border-radius: 0;
 }
 
-.bm-widget-container input::placeholder,
-.bm-widget-container textarea::placeholder {
-  color: inherit;
-  opacity: 1;
-}
-
+/* Reset list defaults */
 .bm-widget-container ul,
 .bm-widget-container ol {
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 
-.bm-widget-container li {
-  margin: 0;
-  padding: 0;
-}
-
-.bm-widget-container img {
-  max-width: 100%;
-  height: auto;
-  border: none;
-  vertical-align: middle;
-}
-
-.bm-widget-container svg {
-  display: inline-block;
-  vertical-align: middle;
-  overflow: visible;
-}
-
-.bm-widget-container iframe {
-  border: none;
-}
-
-.bm-widget-container table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-.bm-widget-container form {
-  margin: 0;
-  padding: 0;
-}
-
-.bm-widget-container label {
-  cursor: default;
-}
-
-.bm-widget-container span,
-.bm-widget-container div {
-  /* These are reset above but just to be safe */
+/* Reset link defaults */
+.bm-widget-container a {
+  text-decoration: none;
 }
 
 /* ============================================================================
-   END OF CSS RESET - Original styles continue below
+   MAIN WIDGET STYLES
    ============================================================================ */
 
-  .bm-widget-container {
-    --bm-primary: ${config.primaryColor};
-    --bm-primary-hover: ${adjustColor(config.primaryColor, -10)};
-    --bm-bg: ${config.mode === 'dark' ? '#0f0f0f' : '#ffffff'};
-    --bm-bg-secondary: ${config.mode === 'dark' ? '#1a1a1a' : '#f5f5f5'};
-    --bm-text: ${config.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
-    --bm-text-muted: ${config.mode === 'dark' ? '#888888' : '#666666'};
-    --bm-border: ${config.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
-    --bm-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    /* Note: position, bottom, right/left, z-index moved to :host */
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--bm-text);
-  }
+.bm-widget-container {
+  --bm-primary: ${config.primaryColor};
+  --bm-primary-hover: ${adjustColor(config.primaryColor, -10)};
+  --bm-bg: ${config.mode === 'dark' ? '#0f0f0f' : '#ffffff'};
+  --bm-bg-secondary: ${config.mode === 'dark' ? '#1a1a1a' : '#f5f5f5'};
+  --bm-text: ${config.mode === 'dark' ? '#ffffff' : '#0f0f0f'};
+  --bm-text-muted: ${config.mode === 'dark' ? '#888888' : '#666666'};
+  --bm-border: ${config.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
+  --bm-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--bm-text);
+}
 
   /* Trigger Button */
   .bm-trigger {
