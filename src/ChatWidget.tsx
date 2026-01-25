@@ -124,33 +124,176 @@ const getWidgetStyles = (config: WidgetConfig) => {
   const WIDGET_CONFIG = config;
   const widgetFont = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
   return `
-  .bm-widget-container,
-  .bm-widget-container *,
-  .bm-widget-container *::before,
-  .bm-widget-container *::after {
-    box-sizing: border-box !important;
-    margin: 0;
-    padding: 0;
-    font-family: ${widgetFont} !important;
-  }
+/* ============================================================================
+   SHADOW DOM CSS RESET - MUST BE FIRST!
+   Inheritable properties penetrate Shadow DOM, so we must reset them.
+   ============================================================================ */
 
-  .bm-widget-container h1,
-  .bm-widget-container h2,
-  .bm-widget-container h3,
-  .bm-widget-container h4,
-  .bm-widget-container h5,
-  .bm-widget-container h6,
-  .bm-widget-container p,
-  .bm-widget-container span,
-  .bm-widget-container a,
-  .bm-widget-container button,
-  .bm-widget-container input,
-  .bm-widget-container textarea,
-  .bm-widget-container label,
-  .bm-widget-container div {
-    font-family: ${widgetFont} !important;
-  }
+:host {
+  /* Reset ALL inherited properties to initial values */
+  all: initial;
+  
+  /* Re-establish necessary properties for the host */
+  display: block;
+  position: fixed;
+  bottom: ${config.verticalOffset}px;
+  ${config.position}: 24px;
+  z-index: 999999;
+  
+  /* Contain the widget */
+  contain: layout style;
+}
 
+/* Comprehensive reset for ALL elements inside the widget */
+.bm-widget-container,
+.bm-widget-container *,
+.bm-widget-container *::before,
+.bm-widget-container *::after {
+  /* Reset inherited properties that can leak through Shadow DOM */
+  all: revert;
+  
+  /* Then set our defaults */
+  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+  font-family: ${widgetFont} !important;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-transform: none;
+  text-indent: 0;
+  text-shadow: none;
+  text-decoration: none;
+  text-align: left;
+  white-space: normal;
+  word-break: normal;
+  word-wrap: normal;
+  direction: ltr;
+  color: inherit;
+  visibility: visible;
+  cursor: auto;
+  border: none;
+  outline: none;
+  background: transparent;
+  vertical-align: baseline;
+  list-style: none;
+}
+
+/* Reset specific HTML elements that commonly get styled globally */
+.bm-widget-container h1,
+.bm-widget-container h2,
+.bm-widget-container h3,
+.bm-widget-container h4,
+.bm-widget-container h5,
+.bm-widget-container h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.bm-widget-container p {
+  margin: 0;
+  padding: 0;
+}
+
+.bm-widget-container a {
+  color: inherit;
+  text-decoration: none;
+  background: transparent;
+}
+
+.bm-widget-container button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.bm-widget-container input,
+.bm-widget-container textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+}
+
+.bm-widget-container input::placeholder,
+.bm-widget-container textarea::placeholder {
+  color: inherit;
+  opacity: 1;
+}
+
+.bm-widget-container ul,
+.bm-widget-container ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bm-widget-container li {
+  margin: 0;
+  padding: 0;
+}
+
+.bm-widget-container img {
+  max-width: 100%;
+  height: auto;
+  border: none;
+  vertical-align: middle;
+}
+
+.bm-widget-container svg {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: visible;
+}
+
+.bm-widget-container iframe {
+  border: none;
+}
+
+.bm-widget-container table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.bm-widget-container form {
+  margin: 0;
+  padding: 0;
+}
+
+.bm-widget-container label {
+  cursor: default;
+}
+
+.bm-widget-container span,
+.bm-widget-container div {
+  /* These are reset above but just to be safe */
+}
+
+/* ============================================================================
+   END OF CSS RESET - Original styles continue below
+   ============================================================================ */
 
   .bm-widget-container {
     --bm-primary: ${config.primaryColor};
@@ -161,12 +304,10 @@ const getWidgetStyles = (config: WidgetConfig) => {
     --bm-text-muted: ${config.mode === 'dark' ? '#888888' : '#666666'};
     --bm-border: ${config.mode === 'dark' ? '#2a2a2a' : '#e5e5e5'};
     --bm-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    position: fixed;
-    bottom: ${config.verticalOffset}px;
-    ${config.position}: 24px;
-    z-index: 999999;
+    /* Note: position, bottom, right/left, z-index moved to :host */
     font-size: 14px;
     line-height: 1.5;
+    color: var(--bm-text);
   }
 
   /* Trigger Button */
@@ -5469,17 +5610,26 @@ async function fetchWidgetConfig(): Promise<WidgetConfig> {
 // AUTO-INIT
 // ============================================================================
 
-function injectStyles(config: WidgetConfig) {
-  const existing = document.getElementById('bm-widget-styles') as HTMLStyleElement | null;
+function injectStyles(config: WidgetConfig, target: Document | ShadowRoot = document) {
+  const container = target instanceof ShadowRoot ? target : target.head;
+  const existing = container.querySelector('#bm-widget-styles') as HTMLStyleElement | null;
+  
   if (existing) {
     // Always refresh styles so published/embedded versions can't get stuck with old CSS.
     existing.textContent = getWidgetStyles(config);
     return;
   }
+  
   const style = document.createElement('style');
   style.id = 'bm-widget-styles';
   style.textContent = getWidgetStyles(config);
-  document.head.appendChild(style);
+  
+  if (target instanceof ShadowRoot) {
+    // Insert at the beginning of shadow root
+    target.insertBefore(style, target.firstChild);
+  } else {
+    document.head.appendChild(style);
+  }
 }
 
 async function initWidget() {
@@ -5494,13 +5644,29 @@ async function initWidget() {
   // Store config globally for components
   (window as any).__BM_CONFIG = config;
   
-  injectStyles(config);
+  // Create host element for Shadow DOM
+  let hostElement = document.getElementById('bm-chat-widget-host');
+  if (!hostElement) {
+    hostElement = document.createElement('div');
+    hostElement.id = 'bm-chat-widget-host';
+    document.body.appendChild(hostElement);
+  }
   
-  let container = document.getElementById('bm-chat-widget');
+  // Attach Shadow DOM (mode: 'open' allows devtools inspection)
+  let shadowRoot = hostElement.shadowRoot;
+  if (!shadowRoot) {
+    shadowRoot = hostElement.attachShadow({ mode: 'open' });
+  }
+  
+  // Inject styles INTO the shadow root (this is critical!)
+  injectStyles(config, shadowRoot);
+  
+  // Create container inside shadow DOM
+  let container = shadowRoot.querySelector('#bm-chat-widget') as HTMLElement;
   if (!container) {
     container = document.createElement('div');
     container.id = 'bm-chat-widget';
-    document.body.appendChild(container);
+    shadowRoot.appendChild(container);
   }
   
   const root = createRoot(container);
