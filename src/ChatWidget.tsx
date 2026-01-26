@@ -224,6 +224,14 @@ const getWidgetStyles = (config: WidgetConfig) => {
   outline-offset: 2px;
 }
 
+/* Remove focus outline from inputs inside styled wrappers */
+.bm-widget-container .bm-message-input-wrapper textarea:focus,
+.bm-widget-container .bm-message-input-wrapper textarea:focus-visible,
+.bm-widget-container .bm-input-full:focus,
+.bm-widget-container .bm-input-full:focus-visible {
+  outline: none !important;
+}
+
 /* SVG reset */
 .bm-widget-container svg {
   overflow: visible;
