@@ -537,7 +537,9 @@ const getWidgetStyles = (config: WidgetConfig) => {
     max-height: min(716px, calc(100vh - 150px));
     background: var(--bm-bg);
     border-radius: 16px;
-    box-shadow: 0 10px 60px rgba(0, 0, 0, 0.15), 0 4px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 
+      0 10px 40px rgba(0, 0, 0, 0.25),
+      0 0 0 1px ${config.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'};
     display: flex;
     flex-direction: column;
     overflow: hidden;
