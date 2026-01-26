@@ -150,6 +150,14 @@ const getWidgetStyles = (config: WidgetConfig) => {
   word-spacing: normal;
   direction: ltr;
   visibility: visible;
+  font-variant: normal;
+  text-indent: 0;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  cursor: auto;
+  filter: none;
+  pointer-events: auto;
 }
 
 /* Base reset - only box model, NOT all properties */
@@ -204,6 +212,28 @@ const getWidgetStyles = (config: WidgetConfig) => {
 /* Reset link defaults */
 .bm-widget-container a {
   text-decoration: none;
+}
+
+/* Focus reset */
+.bm-widget-container *:focus {
+  outline: none;
+}
+
+.bm-widget-container *:focus-visible {
+  outline: 2px solid var(--bm-primary);
+  outline-offset: 2px;
+}
+
+/* SVG reset */
+.bm-widget-container svg {
+  overflow: visible;
+  vertical-align: middle;
+}
+
+/* Selection styling */
+.bm-widget-container ::selection {
+  background: rgba(59, 130, 246, 0.3);
+  color: inherit;
 }
 
 /* ============================================================================
