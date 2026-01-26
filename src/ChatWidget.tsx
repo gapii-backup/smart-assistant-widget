@@ -4412,6 +4412,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingMessageIndex = useRef(0);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // iOS keyboard detection using visualViewport API
   useEffect(() => {
@@ -4675,22 +4676,27 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Auto-focus chat input after bot message (unless it contains newsletter)
+  // Auto-focus textarea when bot finishes typing (desktop only)
   useEffect(() => {
-    // Only auto-focus on desktop (not mobile) to avoid opening keyboard unexpectedly
-    const isMobile = window.innerWidth <= 480;
-    if (isMobile) return;
+    // Only auto-focus on desktop (> 768px) to avoid opening keyboard unexpectedly
+    if (window.innerWidth <= 768) return;
     
     if (messages.length > 0 && view === 'chat' && !isTyping) {
       const lastMessage = messages[messages.length - 1];
       if (lastMessage.role === 'bot' && !lastMessage.content.includes('[NEWSLETTER]')) {
         setTimeout(() => {
-          const chatInput = document.getElementById('bm-chat-textarea') as HTMLTextAreaElement;
-          if (chatInput) chatInput.focus();
+          textareaRef.current?.focus();
         }, 100);
       }
     }
   }, [messages, isTyping, view]);
+
+  // Auto-focus on chat view mount (desktop only)
+  useEffect(() => {
+    if (view === 'chat' && window.innerWidth > 768) {
+      setTimeout(() => textareaRef.current?.focus(), 100);
+    }
+  }, [view]);
 
   // Scroll to bottom when chat view opens or widget opens
   useEffect(() => {
@@ -5248,6 +5254,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
               </div>
               <div className="bm-input-area">
                 <textarea
+                  ref={textareaRef}
                   id="bm-chat-textarea"
                   className="bm-chat-input"
                   placeholder="Napišite vprašanje..."
@@ -5275,8 +5282,7 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
                   onClick={() => {
                     sendMessage(inputValue);
                     // Reset textarea height
-                    const textarea = document.getElementById('bm-chat-textarea') as HTMLTextAreaElement;
-                    if (textarea) textarea.style.height = '44px';
+                    if (textareaRef.current) textareaRef.current.style.height = '44px';
                   }}
                   disabled={!inputValue.trim() || isTyping}
                 >
