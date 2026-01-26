@@ -449,7 +449,7 @@ const getWidgetStyles = (config: WidgetConfig) => {
   .bm-welcome-bubble {
     position: absolute;
     bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? (WIDGET_CONFIG.verticalOffset + 66) : (WIDGET_CONFIG.verticalOffset + 48)}px;
-    ${WIDGET_CONFIG.position}: 0;
+    ${WIDGET_CONFIG.position}: ${WIDGET_CONFIG.triggerStyle === 'edge' ? '24px' : '0'};
     background: var(--bm-primary);
     border: none;
     border-radius: 20px;
