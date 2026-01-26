@@ -448,10 +448,8 @@ const getWidgetStyles = (config: WidgetConfig) => {
   /* Welcome Bubble */
   .bm-welcome-bubble {
     position: absolute;
-    ${WIDGET_CONFIG.triggerStyle === 'edge' 
-      ? `bottom: 100%; margin-bottom: 12px; ${WIDGET_CONFIG.position}: 24px;` 
-      : `bottom: ${WIDGET_CONFIG.verticalOffset + 48}px; ${WIDGET_CONFIG.position}: 0;`
-    }
+    bottom: ${WIDGET_CONFIG.triggerStyle === 'edge' ? (WIDGET_CONFIG.verticalOffset + 66) : (WIDGET_CONFIG.verticalOffset + 48)}px;
+    ${WIDGET_CONFIG.position}: 0;
     background: var(--bm-primary);
     border: none;
     border-radius: 20px;
@@ -5000,8 +4998,8 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
         className={`bm-widget-container ${isOpen ? 'widget-open' : ''} ${keyboardHeight > 0 ? 'keyboard-open' : ''}`}
         style={{ '--keyboard-height': `${keyboardHeight}px` } as React.CSSProperties}
       >
-      {/* Welcome Bubble - only shown when showBubble is enabled (floating trigger only) */}
-      {config.showBubble && showWelcome && !isOpen && config.triggerStyle !== 'edge' && (
+      {/* Welcome Bubble - only shown when showBubble is enabled */}
+      {config.showBubble && showWelcome && !isOpen && (
         <div className="bm-welcome-bubble" onClick={handleOpen}>
           <p>{bubbleTypedText}{bubbleTypedText.length < config.welcomeMessage.length && <span className="bm-typing-cursor">|</span>}</p>
           <button 
@@ -5038,48 +5036,14 @@ const ChatWidget: React.FC<{ config?: WidgetConfig }> = ({ config = DEFAULT_CONF
         </button>
       )}
 
-      {/* Edge Trigger Container - includes bubble and trigger together */}
+      {/* Trigger Button - Edge Style */}
       {config.triggerStyle === 'edge' && (
-        <div style={{ 
-          position: 'fixed', 
-          [config.position]: 0, 
-          bottom: config.verticalOffset + 'px', 
-          zIndex: 999999,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: config.position === 'right' ? 'flex-end' : 'flex-start'
-        }}>
-          {/* Welcome bubble - edge trigger */}
-          {config.showBubble && showWelcome && !isOpen && (
-            <div 
-              className="bm-welcome-bubble" 
-              onClick={handleOpen} 
-              style={{ position: 'relative', marginBottom: '12px', [config.position]: '24px' }}
-            >
-              <p>{bubbleTypedText}{bubbleTypedText.length < config.welcomeMessage.length && <span className="bm-typing-cursor">|</span>}</p>
-              <button 
-                className="bm-welcome-close" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowWelcome(false);
-                  if (window.innerWidth > 480) {
-                    setWelcomeDismissed(true);
-                    sessionStorage.setItem('bm-welcome-dismissed', 'true');
-                  }
-                }}
-              >
-                <Icons.Close />
-              </button>
-            </div>
-          )}
-          {/* Edge trigger button */}
-          <button 
-            className={`bm-trigger-edge ${isOpen ? 'open' : ''} ${showShake && !isOpen ? 'shake' : ''}`}
-            onClick={() => isOpen ? handleClose() : handleOpen()}
-          >
-            <span>{config.edgeTriggerText}</span>
-          </button>
-        </div>
+        <button 
+          className={`bm-trigger-edge ${isOpen ? 'open' : ''} ${showShake && !isOpen ? 'shake' : ''}`}
+          onClick={() => isOpen ? handleClose() : handleOpen()}
+        >
+          <span>{config.edgeTriggerText}</span>
+        </button>
       )}
 
       {/* Widget */}
